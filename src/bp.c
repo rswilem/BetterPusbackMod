@@ -900,11 +900,11 @@ bp_state_init(void) {
     return (B_TRUE);
 }
 
-static bool_t
+bool_t
 audio_sys_init(void) {
     lang_pref_t lang_pref = LANG_PREF_MATCH_REAL;
     char icao[8];
-
+    logMsg(BP_INFO_LOG "Initialising audio");
     find_nearest_airport(icao);
     (void) conf_get_i(bp_conf, "lang_pref", (int *) &lang_pref);
     if (!msg_init(bp_get_lang(), icao, lang_pref)) {

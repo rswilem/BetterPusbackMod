@@ -184,6 +184,8 @@ void read_acf_airline(char airline[1024]);
 
 bool_t find_nearest_airport(char icao[8]);
 
+bool_t audio_sys_init(void);
+
 extern bool_t late_plan_requested;
 
 #ifdef    __cplusplus

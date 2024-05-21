@@ -57,6 +57,7 @@
 #include "driving.h"
 #include "xplane.h"
 #include "cfg.h"
+#include "msg.h"
 
 #define    MAX_PRED_DISTANCE    10000    /* meters */
 #define    ANGLE_DRAW_STEP        5
@@ -1160,6 +1161,11 @@ bp_cam_start(void) {
                           "with BetterPushback."));
         return (B_FALSE);
     }
+
+    // reload here the voices according the current airport i.e after landing
+    msg_fini();
+    logMsg(BP_INFO_LOG "RE-Initialising messages languages");
+    audio_sys_init();
 
     (void) find_nearest_airport(icao);
     if (acf_is_airliner())
