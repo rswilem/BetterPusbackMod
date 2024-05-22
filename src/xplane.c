@@ -54,7 +54,7 @@
 
 #define BP_PLUGIN_NAME          "BetterPushback-" BP_PLUGIN_VERSION
 #define BP_PLUGIN_SIG           "skiselkov.BetterPushback"
-#define BP_PLUGIN_DESCRIPTION   "Generic automated pushback plugin. Modified by thWelly."
+#define BP_PLUGIN_DESCRIPTION   "Generic automated pushback plugin."
 
 #define    STATUS_CHECK_INTVAL    1    /* second */
 enum {

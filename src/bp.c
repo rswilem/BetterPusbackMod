@@ -852,9 +852,10 @@ bp_state_init(void) {
     }
     if (bp.acf.model_flags.is_helicopter ||
         bp.acf.model_flags.fly_like_a_helo) {
-        XPLMSpeakString(_("Pushback failure: Are you seriously "
-                          "trying to call pushback for a helicopter?"));
-        logMsg("User is calling pushback for helicopter?");
+        //XPLMSpeakString(_("Pushback failure: Are you seriously "
+        //                  "trying to call pushback for a helicopter?"));
+        // no need to speak up here
+        logMsg("User is starting flight with an helicopter: BpB idle for now");
         return (B_FALSE);
     }
 
@@ -1100,7 +1101,11 @@ bp_init(void) {
              "sim/flightmodel2/gear/tire_rotation_speed_rad_sec");
     fdr_find(&drs.mtow, "sim/aircraft/weight/acf_m_max");
     fdr_find(&drs.leg_len, "sim/aircraft/parts/acf_gear_leglen");
-    fdr_find(&drs.tirrad, "sim/aircraft/parts/acf_gear_tirrad");
+    if (bp_xp_ver >= 12100) {
+        fdr_find(&drs.tirrad, "sim/flightmodel2/gear/tire_radius_mtrs");
+    } else {
+        fdr_find(&drs.tirrad, "sim/aircraft/parts/acf_gear_tirrad");
+    }
     fdr_find(&drs.nw_steerdeg1, "sim/aircraft/gear/acf_nw_steerdeg1");
     fdr_find(&drs.nw_steerdeg2, "sim/aircraft/gear/acf_nw_steerdeg2");
     fdr_find(&drs.tire_steer_cmd,

@@ -37,7 +37,7 @@
 #include "msg.h"
 #include "xplane.h"
  
-#define GITURL "https://api.github.com/repos/rwellinger/BetterPusbackMod/releases/latest"
+#define GITURL "https://api.github.com/repos/olivierbutler/BetterPusbackMod/releases/latest"
 #define	DL_TIMEOUT		5L		/* seconds */
 #define MAX_VERSION_BF_SIZE 32000 
 
@@ -60,7 +60,7 @@ static XPWidgetID main_win = NULL;
 #define    MAIN_WINDOW_HEIGHT    (MARGIN + 16 * BUTTON_HEIGHT + MARGIN)
 
 #define    COPYRIGHT1    "BetterPushback " BP_PLUGIN_VERSION \
-    "       Copyright 2017 S.Kiselkov, Modified RobWell 2024. All rights reserved."
+    "       © 2017-2014 S.Kiselkov, Robwell, Obutler. All rights reserved."
 #define    COPYRIGHT2    "BetterPushback is open-source software. See COPYING for " \
             "more information."
 
