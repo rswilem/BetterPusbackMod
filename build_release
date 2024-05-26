@@ -27,6 +27,7 @@ rm -rf lin_x64
 CMAKE_OPTS_COMMON="-DCMAKE_BUILD_TYPE=Release"
 
 DIST_FILES=(
+    'plg_exclude.cfg'					''
     'COPYING'					''
     'data/msgs/README.txt'			''
     'data/msgs/cc_aliases.cfg'			''

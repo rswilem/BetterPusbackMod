@@ -78,6 +78,12 @@ void clear_bottom_msg(void);
 
 void init_bottom_msg(char *msg);
 
+void eye_track_ini(void);
+
+void eye_track_debut(void);
+
+void eye_track_fini(void);
+
 #ifdef    __cplusplus
 }
 #endif

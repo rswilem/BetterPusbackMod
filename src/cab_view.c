@@ -312,6 +312,7 @@ cab_view_start(void)
 	 * To avoid aircraft parts clipping over scenery, we need to first
 	 * shift the view to an external one, before controlling the camera.
 	 */
+	eye_track_debut(); 
 	XPLMCommandOnce(XPLMFindCommand("sim/view/circle"));
 
 	XPLMControlCamera(xplm_ControlCameraUntilViewChanges, cam_ctl, NULL);
@@ -394,5 +395,6 @@ cab_view_stop(void)
 		}
 	}
 
+	eye_track_fini();
 	started = B_FALSE;
 }

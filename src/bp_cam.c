@@ -39,6 +39,7 @@
 #include <XPLMUtilities.h>
 #include <XPLMPlanes.h>
 #include <XPLMProcessing.h>
+#include <XPLMPlugin.h>
 
 #include <acfutils/assert.h>
 #include <acfutils/dr.h>
@@ -206,6 +207,12 @@ static struct {
 
 static FT_Library ft;
 static FT_Face face;
+
+static struct {
+    int is_init;
+    int plg_status;
+    XPLMPluginID plg_id;
+} eye_tracker_plg = { 0, 0 , -1 };
 
 bool_t
 load_icon(button_t *btn) {
@@ -1195,7 +1202,7 @@ bp_cam_start(void) {
 #endif    /* !PB_DEBUG_INTF */
 
     push_reset_fov_values();
-
+    eye_track_debut();
     BPGetScreenSizeUIScaled(&fake_win_ops.right, &fake_win_ops.top, B_TRUE);
 
     circle_view_cmd = XPLMFindCommand("sim/view/circle");
@@ -1320,7 +1327,7 @@ bp_cam_stop(void) {
     cam_inited = B_FALSE;
 
     pop_fov_values();
-
+    eye_track_fini();
     clear_bottom_msg();
 
     return (B_TRUE);
@@ -1426,4 +1433,53 @@ draw_bottom_msg(int screen_x, int screen_y) {
     glTexCoord2f(1.0, 1.0);
     glVertex2f((screen_x + bottom_msg.width) / 2 + MARGIN_SIZE, 0);
     glEnd();
+}
+
+void eye_track_ini(void) {
+    #define PLG_SIG_MAX_LEN 100 
+    char *plg_eye_tracker = mkpathname(bp_xpdir, bp_plugindir, "plg_exclude.cfg", NULL);
+    char *plgSignature = safe_calloc(PLG_SIG_MAX_LEN, sizeof(*plgSignature));
+
+
+    if (file_exists(plg_eye_tracker, NULL)) {
+        FILE *cfg_f = fopen(plg_eye_tracker, "r");
+        fscanf(cfg_f, "%99[^\n]", plgSignature);
+        for ( int i = 0;  plgSignature[i] != '\0' ; i++ ) {
+            if ( plgSignature[i] == ' ') {
+                plgSignature[i] = '\0';
+                break;
+            }
+        }
+        logMsg(BP_INFO_LOG "plg_exclude.cfg file found, exclusion to do on plugin %s<-", plgSignature);
+        eye_tracker_plg.plg_id =  XPLMFindPluginBySignature(plgSignature);
+    } else {
+        logMsg(BP_INFO_LOG "plg_exclude.cfg file not found, no exclusion to do");
+    }
+    free(plg_eye_tracker);
+    free(plgSignature);
+
+    eye_tracker_plg.is_init = 1 ;
+}
+
+void eye_track_debut(void) {
+    if ( !eye_tracker_plg.is_init) {
+        eye_track_ini();
+    }
+
+    if (eye_tracker_plg.plg_id != -1) {
+       eye_tracker_plg.plg_status = XPLMIsPluginEnabled(eye_tracker_plg.plg_id);
+        if (eye_tracker_plg.plg_status) {
+            XPLMDisablePlugin(eye_tracker_plg.plg_id);
+            logMsg("XPLMDisablePlugin");
+        }
+    }
+}
+
+void eye_track_fini(void) {
+    if (eye_tracker_plg.plg_id != -1) {
+        if (eye_tracker_plg.plg_status) {
+            int r = XPLMEnablePlugin(eye_tracker_plg.plg_id);
+            logMsg("XPLMEnablePlugin %d", r);
+        }
+    }
 }
