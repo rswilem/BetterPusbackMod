@@ -1443,18 +1443,31 @@ void eye_track_ini(void) {
 
     if (file_exists(plg_eye_tracker, NULL)) {
         FILE *cfg_f = fopen(plg_eye_tracker, "r");
-        fscanf(cfg_f, "%99[^\n]", plgSignature);
+        if (fscanf(cfg_f, "%99[^\n]", plgSignature) != 1) {
+            logMsg(BP_INFO_LOG "plg_exclude.cfg file found, but no plugin signature found");
+            goto end_eye;
+        }
+        if (plgSignature[0] == '#' ) {
+            logMsg(BP_INFO_LOG "plg_exclude.cfg file found, but no plugin signature found");
+            goto end_eye;
+        }
         for ( int i = 0;  plgSignature[i] != '\0' ; i++ ) {
             if ( plgSignature[i] == ' ') {
                 plgSignature[i] = '\0';
                 break;
             }
         }
-        logMsg(BP_INFO_LOG "plg_exclude.cfg file found, exclusion to do on plugin %s<-", plgSignature);
         eye_tracker_plg.plg_id =  XPLMFindPluginBySignature(plgSignature);
+        if (eye_tracker_plg.plg_id != -1) {
+            logMsg(BP_INFO_LOG "plg_exclude.cfg file found, temporary disabling plugin %s<-", plgSignature);
+        } else {
+            logMsg(BP_INFO_LOG "No plugin found with signature %s<-", plgSignature);
+        }
     } else {
-        logMsg(BP_INFO_LOG "plg_exclude.cfg file not found, no exclusion to do");
+        logMsg(BP_INFO_LOG "plg_exclude.cfg file not found, no plugin to disable to do");
     }
+
+end_eye:    
     free(plg_eye_tracker);
     free(plgSignature);
 
