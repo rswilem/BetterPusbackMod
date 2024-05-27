@@ -522,6 +522,7 @@ menu_cb(void *inMenuRef, void *inItemRef) {
 void
 bp_done_notify(void) {
     if (!slave_mode) {
+        prefs_enable = B_TRUE;
         start_pb_enable = B_TRUE;
         conn_first_enable = B_TRUE;
         stop_pb_enable = B_FALSE;

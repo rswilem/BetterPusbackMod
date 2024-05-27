@@ -2045,9 +2045,9 @@ pb_step_stopped(void) {
         if (!cfg_ignore_park_break)
             brakes_set(B_TRUE);
     }
-    if (!pbrake_is_set() && !cfg_disco_when_done) {
+    if (!pbrake_is_set() && !cfg_ignore_park_break) {
         /*
-         * Ignoring Brake status if disco_when_done is set
+         * Ignoring Brake status if ignore_park_break is set
          * Keep resetting the start time to enforce a delay
          * when the parking brake is set.
          */

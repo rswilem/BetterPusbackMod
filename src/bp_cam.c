@@ -91,7 +91,7 @@
 #else	/* !IBM */
 #define	BOTTOM_MSG_FONT		"Aileron/Aileron-Regular.otf"
 #endif	/* !IBM */
-#define	BOTTOM_MSG_FONT_SIZE	21
+#define	BOTTOM_MSG_FONT_SIZE	18
 
 enum { MARGIN_SIZE = 10 };
 
@@ -1273,7 +1273,7 @@ bp_cam_start(void) {
 
     updateAvailable = getPluginUpdateStatus();
     if (updateAvailable != NULL) {
-        snprintf(bottom_msg, sizeof(bottom_msg), "New version of BetterPushBack available: %s", updateAvailable);
+        snprintf(bottom_msg, sizeof(bottom_msg), "New version of BetterPushBack available: %s (Use SkunkCrafts Updater to update)", updateAvailable);
         init_bottom_msg(bottom_msg);
     }
     

@@ -156,13 +156,12 @@ const char *dev_menu_tooltip = "Show the developer menu options.";
 const char *save_prefs_tooltip = "Save current preferences to disk.";
 const char *disco_when_done_tooltip =
         "Never ask and always automatically disconnect\n"
-        "the tug when the pushback operation is complete\n"
-        "(Parking brake check will be by-passed)";
+        "the tug when the pushback operation is complete.";
 const char *ignore_park_brake_tooltip =
-        "Never check \"set parking brake\"\n"
+        "Never check \"set parking brake\".\n"
         "Some aircraft stuck on this check.\n"
         "It's on the beginning and on the end.\n"
-        "This should solve this problem for some aircraft's. (KA350 for instance)";
+        "This should solve this problem for some aircraft's. (KA350 for instance).";
 const char *hide_xp11_tug_tooltip =
         "Hides default X-Plane 11 pushback tug.\n"
         "Restart X-Plane for this change to take effect.";
@@ -259,6 +258,7 @@ main_window_cb(XPWidgetMessage msg, XPWidgetID widget, intptr_t param1,
         if (btn == buttons.save_cfg && !bp_started) {
             (void) bp_conf_save();
             bp_sched_reload();
+            set_pref_widget_status(B_FALSE);
         }
         return (0);
     } else if (msg == xpMsg_ButtonStateChanged) {
