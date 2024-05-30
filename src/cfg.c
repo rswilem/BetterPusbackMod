@@ -505,6 +505,7 @@ create_main_window(void) {
     free(prefs_title);
 
     tts = tooltip_set_new(main_win);
+    tooltip_set_font_size(tts, 14);
 
     layout_checkboxes(col1, MARGIN, MARGIN, tts);
     layout_checkboxes(col2, MARGIN + col1_width + MARGIN, MARGIN, tts);

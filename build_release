@@ -18,7 +18,11 @@
 # Some Cleanup's
 
 # Delivery File Name
-ZIP_DELIVERY_FILE="BetterPushback_V110.zip"
+version=$(git describe --abbrev=0 --tags)
+version="${version//v/}"
+version="${version//V/}"
+
+ZIP_DELIVERY_FILE="BetterPushback_V${version}.zip"
 
 rm -rf BetterPushback_*.zip
 rm -rf win_x64
