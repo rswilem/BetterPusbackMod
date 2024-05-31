@@ -66,7 +66,8 @@ enum {
 
 static bool_t inited = B_FALSE;
 
-static XPLMCommandRef start_pb, stop_pb, start_cam, stop_cam, conn_first;
+XPLMCommandRef start_pb,  start_cam;
+static XPLMCommandRef  stop_pb, stop_cam, conn_first;
 static XPLMCommandRef cab_cam, recreate_routes;
 static XPLMCommandRef   abort_push;
 static XPLMMenuID root_menu;
@@ -74,10 +75,12 @@ static int plugins_menu_item;
 static int start_pb_plan_menu_item, stop_pb_plan_menu_item;
 static int start_pb_menu_item, stop_pb_menu_item, conn_first_menu_item;
 static int cab_cam_menu_item, prefs_menu_item;
-static bool_t prefs_enable, start_pb_plan_enable, stop_pb_plan_enable,
-    start_pb_enable, stop_pb_enable, conn_first_enable, cab_cam_enable;
+static bool_t prefs_enable, stop_pb_plan_enable,
+     stop_pb_enable, conn_first_enable, cab_cam_enable;
+bool_t  start_pb_plan_enable, start_pb_enable;
 
 static bool_t pref_widget_active_status = B_FALSE;
+static bool_t hide_main_intf = B_FALSE;
 
 bool_t get_pref_widget_status(void);
 void set_pref_widget_status(bool_t active);
@@ -615,6 +618,10 @@ status_check(float elapsed, float elapsed2, int counter, void *refcon)
     cab_cam_enable = cab_view_can_start();
     enable_menu_items();
 
+    if (!hide_main_intf) {
+        main_intf();
+    }
+        
     // Status check only needed if we have a known system of coupling installed...
     if (!smartcopilot_present && !sharedflight_present)
         return (1);
@@ -926,6 +933,8 @@ bp_priv_enable(void) {
     enable_menu_items();
 
     XPLMRegisterFlightLoopCallback(status_check, STATUS_CHECK_INTVAL, NULL);
+
+    (void) conf_get_b(bp_conf, "hide_magic_squares", &hide_main_intf);
 
     /* If the user OK'd it, remove the default tug */
     (void) conf_get_b(bp_conf, "dont_hide_xp11_tug", &dont_hide_xp_tug);

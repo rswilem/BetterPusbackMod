@@ -86,6 +86,7 @@ static struct {
     XPWidgetID disco_when_done;
     XPWidgetID ignore_set_park_brake;
     XPWidgetID hide_xp11_tug;
+    XPWidgetID hide_magic_squares;
     XPWidgetID show_dev_menu;
 
     size_t num_radio_boxes;
@@ -165,6 +166,9 @@ const char *ignore_park_brake_tooltip =
 const char *hide_xp11_tug_tooltip =
         "Hides default X-Plane 11 pushback tug.\n"
         "Restart X-Plane for this change to take effect.";
+const char *hide_magic_squares_tooltip =
+        "Hides the shortcut buttons on the left side of the screen.\n"
+        "These buttons are to start the planner and to start the push-back.";
 
 static void
 buttons_update(void) {
@@ -173,6 +177,7 @@ buttons_update(void) {
     lang_pref_t lang_pref;
     bool_t disco_when_done = B_FALSE;
     bool_t ignore_park_brake = B_FALSE;
+    bool_t hide_magic_squares = B_FALSE;
     bool_t show_dev_menu = B_FALSE;
     const char *radio_dev = "", *sound_dev = "";
 
@@ -189,6 +194,7 @@ buttons_update(void) {
 
     (void) conf_get_str(bp_conf, "radio_device", &radio_dev);
     (void) conf_get_str(bp_conf, "sound_device", &sound_dev);
+    (void) conf_get_b(bp_conf, "hide_magic_squares", &hide_magic_squares);
 
 #define    SET_LANG_BTN(btn, l) \
     (XPSetWidgetProperty(buttons.btn, xpProperty_ButtonState, \
@@ -216,6 +222,8 @@ buttons_update(void) {
                         xpProperty_ButtonState, disco_when_done);
     XPSetWidgetProperty(buttons.ignore_set_park_brake,
                         xpProperty_ButtonState, ignore_park_brake);
+    XPSetWidgetProperty(buttons.hide_magic_squares,
+                        xpProperty_ButtonState, hide_magic_squares);
     XPSetWidgetProperty(buttons.show_dev_menu, xpProperty_ButtonState,
                         show_dev_menu);
     // X-Plane 12 doesn't support this feature
@@ -304,6 +312,10 @@ main_window_cb(XPWidgetMessage msg, XPWidgetID widget, intptr_t param1,
         } else if (bp_xp_ver >= 11000 && btn == buttons.hide_xp11_tug) {
             conf_set_b(bp_conf, "dont_hide_xp11_tug",
                        !XPGetWidgetProperty(buttons.hide_xp11_tug,
+                                            xpProperty_ButtonState, NULL));
+        } else if (btn == buttons.hide_magic_squares) {
+            conf_set_b(bp_conf, "hide_magic_squares",
+                       XPGetWidgetProperty(buttons.hide_magic_squares,
                                             xpProperty_ButtonState, NULL));
         }
         for (size_t i = 1; i < buttons.num_radio_boxes; i++) {
@@ -466,7 +478,7 @@ create_main_window(void) {
     checkbox_t *sound_out = sound_checkboxes_init(_("Sound output device"),
                                                   &buttons.sound_devs, &buttons.num_sound_devs,
                                                   &buttons.sound_boxes, &buttons.num_sound_boxes);
-    checkbox_t other[5] = {
+    checkbox_t other[6] = {
             {_("Miscellaneous"), NULL, NULL},
             {
              _("Auto disconnect when done **"),
@@ -477,6 +489,10 @@ create_main_window(void) {
                     &buttons.ignore_set_park_brake, ignore_park_brake_tooltip
             },
             {
+             _("Hide the magic squares"),
+                    &buttons.hide_magic_squares, hide_magic_squares_tooltip
+            },
+            {
              _("Hide default X-Plane 11 tug"),
                     &buttons.hide_xp11_tug,         hide_xp11_tug_tooltip
             },
@@ -484,7 +500,7 @@ create_main_window(void) {
     };
 
     if ((bp_xp_ver < 11000) || (bp_xp_ver >= 12000)) //Feature only for Xp11
-        other[3] = (checkbox_t) {NULL, NULL, NULL};
+        other[4] = (checkbox_t) {NULL, NULL, NULL};
 
     col1_width = measure_checkboxes_width(col1);
     col2_width = measure_checkboxes_width(col2);

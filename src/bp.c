@@ -178,6 +178,10 @@ static void tug_pos_update(vect2_t my_pos, double my_hdg, bool_t pos_only);
 
 static void disco_intf_hide(void);
 
+static void main_intf_show(void);
+
+static void main_intf_hide(void);
+
 static int disco_handler(XPLMCommandRef, XPLMCommandPhase, void *);
 
 static int recon_handler(XPLMCommandRef, XPLMCommandPhase, void *);
@@ -189,9 +193,11 @@ static const acf_info_t incompatible_acf[] = {
 };
 
 static XPLMCommandRef disco_cmd = NULL, recon_cmd = NULL;
-static button_t disco_buttons[2] = {
+static button_t disco_buttons[4] = {
         {.filename = "disconnect.png", .vk = -1, .tex = 0, .tex_data = NULL},
         {.filename = "reconnect.png", .vk = -1, .tex = 0, .tex_data = NULL},
+        {.filename = "planner.png", .vk = -1, .tex = 0, .tex_data = NULL},
+        {.filename = "push-back.png", .vk = -1, .tex = 0, .tex_data = NULL},
 };
 
 /*
@@ -2354,6 +2360,116 @@ disco_intf_hide(void) {
     if (bp_ls.recon_win != NULL) {
         XPLMDestroyWindow(bp_ls.recon_win);
         bp_ls.recon_win = NULL;
+    }
+}
+
+static int
+main_win_click(XPLMWindowID inWindowID, int x, int y, XPLMMouseStatus inMouse,
+                void *inRefcon) {
+    UNUSED(x);
+    UNUSED(y);
+    UNUSED(inRefcon);
+
+    if (inMouse != xplm_MouseUp)
+        return (1);
+    if (inWindowID == bp_ls.planner_win) {
+        XPLMCommandOnce(start_cam);
+    } else if (inWindowID == bp_ls.start_pb_win)
+        XPLMCommandOnce(start_pb);
+
+    return (1);
+}
+
+static void
+main_win_draw(XPLMWindowID inWindowID, void *inRefcon) {
+    int w, h, mx, my;
+
+    UNUSED(inRefcon);
+    BPGetScreenSizeUIScaled(&w, &h, B_FALSE);
+    XPLMGetMouseLocationGlobal(&mx, &my);
+
+    XPLMSetGraphicsState(0, 1, 0, 0, 1, 0, 0);
+    if (inWindowID == bp_ls.planner_win) {
+        bool_t is_lit = (mx >= 0 &&
+                         mx <= disco_buttons[2].w &&
+                         my >= h/2 - disco_buttons[2].h &&
+                         my <= h/2 );
+        draw_icon(&disco_buttons[2], 0,
+                  h/2 - disco_buttons[2].h, 1.0,
+                  B_FALSE, is_lit);
+    } else {
+        bool_t is_lit = (mx >= 0 &&
+                         mx <= disco_buttons[3].w &&
+                         my >= h/2 - 1.5 * disco_buttons[2].h - disco_buttons[3].h &&
+                         my <= h/2 - 1.5 * disco_buttons[2].h);
+        ASSERT(inWindowID == bp_ls.start_pb_win);
+        draw_icon(&disco_buttons[3], 0,
+                  h/2 - 1.5 * disco_buttons[2].h - disco_buttons[3].h, 1.0,
+                  B_FALSE, is_lit);
+    }
+}
+
+static void
+main_intf_show(void) {
+    if ((bp_ls.planner_win == NULL) || (bp_ls.start_pb_win == NULL)) {
+        XPLMCreateWindow_t disco_ops = {
+                .structSize = sizeof(XPLMCreateWindow_t),
+                .left = 0, .top = 0, .right = 0, .bottom = 0, .visible = 1,
+                .drawWindowFunc = main_win_draw,
+                .handleMouseClickFunc = main_win_click,
+                .handleKeyFunc = nil_win_key,
+                .handleCursorFunc = nil_win_cursor,
+                .handleMouseWheelFunc = nil_win_wheel,
+                .refcon = NULL
+        };
+        int w, h;
+
+        BPGetScreenSizeUIScaled(&w, &h, B_TRUE);
+
+    if (bp_ls.planner_win == NULL)  {
+        load_icon(&disco_buttons[2]);
+        disco_ops.left = 0 ; // w / 2 - 1.5 * disco_buttons[0].w;
+        disco_ops.right = disco_buttons[2].w;
+        disco_ops.top = h/2 ; // - 0.5 * disco_buttons[0].h;
+        disco_ops.bottom = h/2 - disco_buttons[2].h;
+        bp_ls.planner_win = XPLMCreateWindowEx(&disco_ops);
+        ASSERT(bp_ls.planner_win != NULL);
+        XPLMBringWindowToFront(bp_ls.planner_win);
+    }
+
+    if (bp_ls.start_pb_win == NULL) {
+        load_icon(&disco_buttons[3]);
+        disco_ops.left = 0; //w / 2 + 0.5 * disco_buttons[1].w;
+        disco_ops.right = disco_buttons[3].w;
+        disco_ops.top = h/2 - 1.5 * disco_buttons[2].h;
+        disco_ops.bottom = disco_ops.top - disco_buttons[3].h;
+        bp_ls.start_pb_win = XPLMCreateWindowEx(&disco_ops);
+        ASSERT(bp_ls.start_pb_win != NULL);
+        XPLMBringWindowToFront(bp_ls.start_pb_win);
+    }
+    }
+}
+
+static void
+main_intf_hide(void) {
+    if (bp_ls.planner_win != NULL) {
+        XPLMDestroyWindow(bp_ls.planner_win);
+        unload_icon(&disco_buttons[2]);
+        bp_ls.planner_win = NULL;
+    }
+    if (bp_ls.start_pb_win != NULL) {
+        XPLMDestroyWindow(bp_ls.start_pb_win);
+        unload_icon(&disco_buttons[3]);
+        bp_ls.start_pb_win = NULL;
+    }
+}
+
+void
+main_intf(void) {
+    if (acf_is_airliner() && acf_on_gnd_stopped(NULL) && (start_pb_plan_enable == B_TRUE) && (start_pb_enable == B_TRUE)) {
+        main_intf_show();
+    } else {
+        main_intf_hide();
     }
 }
 

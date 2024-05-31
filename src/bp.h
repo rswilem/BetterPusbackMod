@@ -151,6 +151,8 @@ typedef struct {
 typedef struct {
     XPLMWindowID disco_win;
     XPLMWindowID recon_win;
+    XPLMWindowID planner_win;
+    XPLMWindowID start_pb_win;
     tug_t *tug;
     acf_outline_t *outline;    /* size & outline of aircraft shape */
 } bp_long_state_t;
@@ -185,6 +187,8 @@ void read_acf_airline(char airline[1024]);
 bool_t find_nearest_airport(char icao[8]);
 
 bool_t audio_sys_init(void);
+
+void main_intf(void);
 
 extern bool_t late_plan_requested;
 

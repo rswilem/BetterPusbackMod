@@ -807,7 +807,7 @@ draw_icon(button_t *btn, int x, int y, double scale, bool_t is_clicked,
     glVertex2f(x + btn->w * scale, y);
     glEnd();
 
-    if (is_clicked) {
+    if (is_clicked || is_lit) {
         /*
          * If this button was hit by a mouse click, highlight
          * it by drawing a translucent white quad over it.
