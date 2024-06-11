@@ -873,9 +873,10 @@ bp_state_init(void) {
     bp.veh.wheelbase = bp.acf.main_z - bp.acf.nw_z;
     bp.veh.fixed_z_off = -bp.acf.main_z;    /* X-Plane's Z is negative */
     if (bp.veh.wheelbase <= 0) {
-        XPLMSpeakString(_("Pushback failure: aircraft has non-positive "
-                          "wheelbase. Sorry, tail daggers aren't supported."));
-        logMsg(BP_ERROR_LOG "aircraft has still non-positive wheelbase. (wheelbase = %f)", bp.veh.wheelbase);
+        //XPLMSpeakString(_("Pushback failure: aircraft has non-positive "
+        //                  "wheelbase. Sorry, tail daggers aren't supported."));
+        // No need to speak up here
+        logMsg("aircraft has still non-positive wheelbase. (wheelbase = %f): BpB idle for now", bp.veh.wheelbase);
         return (B_FALSE);
     }
 
