@@ -158,6 +158,16 @@ static struct {
     dr_t sim_paused;
 } drs;
 
+#define MAX_DOOR 20
+static struct {
+	const char	ICAO[8];
+	const char	acf_filename[64];
+	const char	studio[64];
+    bool_t      info_valid;
+	int		    nb_doors;
+	char	    dr[MAX_DOOR][64];
+} doors_info = {0};
+
 bp_state_t bp = {0};
 bp_long_state_t bp_ls = {0};
 
@@ -381,6 +391,217 @@ brakes_set(bool_t flag) {
     ASSERT(!slave_mode);
     dr_setf(&drs.lbrake, val);
     dr_setf(&drs.rbrake, val);
+}
+
+/*
+ * Initializes the doors dataref list
+ *
+ * This function attempts to match the currently loaded aircraft with our
+ * door datarefs in  BetterPushback_doors.cfg. The file is
+ * parsed here. It consists of a set of whitespace-separated keywords with
+ * optional arguments. String arguments allow for "%XY" escape sequences.
+ * See unescape_percent in helpers.c.
+ * A typical config file will consists from one or more blocks like this:
+ *	icao	ABCD
+ *	studio	Foo%20Bar%20Studios
+ *	author	Bob%20The%20Aircraft%20Builder
+ *	acf	WrightFlyer3000.acf
+ *	door	737u/doors/L1
+ *	door	737u/doors/L2
+ *
+ *
+ * These keywords have the following meanings:
+ *	icao (required): Denotes the start of an aircraft block and must be
+ *		followed by a 4-letter ICAO aircraft type identifier (e.g.
+ *		"B752"). This must be matched by the ICAO identifier of the
+ *		currently loaded aircraft.
+ *	studio (optional): When specified, checks if the currently loaded
+ *		aircraft's studio (as defined in Plane Maker) matches the
+ *		string argument.
+ *	author (optional): When specified, checks if the currently loaded
+ *		aircraft's author (as defined in Plane Maker) matches the
+ *		string argument.
+ *	acf	(optional): When specified, checks if the currently loaded
+ *		aircraft's ACF filename matches the string argument.
+ *	door (required): the dataref of 1 door. you may provide multiple 
+ *	    door block as necessary
+ *		format can be 737u/doors/L1 or 737u/doorsarray[1] in case of an array
+ *      if the value of the door dataref is below 0.1, the door is considered as closed
+ */
+static void
+doors_refs_init(void)
+{
+	char		buf[128] = { 0 };
+	FILE		*fp;
+	char		*filename;
+	char		my_icao[8] = { 0 }, my_author[256] = { 0 };
+	char		my_studio[256] = { 0 }, my_acf[256] = { 0 };
+	char		acf_path[512] = { 0 };
+	char		*line = NULL;
+	size_t		line_len = 0;
+	dr_t		icao_dr, auth_dr;
+	bool_t		skip = B_FALSE;
+
+    memset(&doors_info, 0, sizeof(doors_info));
+	fdr_find(&icao_dr, "sim/aircraft/view/acf_ICAO");
+	fdr_find(&auth_dr, "sim/aircraft/view/acf_author");
+
+	XPLMGetNthAircraftModel(0, my_acf, acf_path);
+	dr_gets(&icao_dr, my_icao, sizeof (my_icao));
+	dr_gets(&auth_dr, my_author, sizeof (my_author));
+
+	/*
+	 * Unfortunately the studio isn't available via datarefs, so parse
+	 * our acf file instead.
+	 */
+	fp = fopen(acf_path, "r");
+	if (fp == NULL)
+		return;
+	while (getline(&line, &line_len, fp) > 0) {
+		if (strstr(line, "P acf/_studio ") == line) {
+			strip_space(line);
+			strlcpy(my_studio, &line[14], sizeof (my_studio));
+			break;
+		}
+	}
+	fclose(fp);
+
+
+	filename = mkpathname(bp_xpdir, "Output", "preferences",  "BetterPushback_doors.cfg", NULL);
+	fp = fopen(filename, "r");
+	free(filename);
+	if (fp == NULL) {
+		filename = mkpathname(bp_xpdir, bp_plugindir, "BetterPushback_doors.cfg", NULL); 
+		fp = fopen(filename, "r");
+		free(filename);
+		if (fp == NULL) {
+			return;
+		}
+		logMsg("founded : X-RAAS2/BetterPushback_doors.cfg");	
+	} else {
+	logMsg("founded : Output/preferences/BetterPushback_doors.cfg");
+	}
+
+#define	FILTER_PARAM(param) \
+	do { \
+		char param[256]; \
+		int res; \
+		if (!doors_info.info_valid) \
+			continue; \
+		if (fscanf(fp, "%255s", param) != 1) { \
+			logMsg("Error parsing BetterPushback_doors.cfg: expected " \
+			    "string following \"" #param "\"."); \
+			goto errout; \
+		} \
+		unescape_percent(param); \
+		res = strcmp(param, my_ ## param); \
+		if (res != 0) { \
+			doors_info.info_valid = B_FALSE; \
+			skip = B_TRUE; \
+            logMsg("FILTER PARAM SKIP TRUE \"" #param "\"."); \
+		} \
+        logMsg("FILTER PARAM SKIP TRUE \"" #param "\"."); \
+	} while (0)
+
+
+	while (!feof(fp) && fscanf(fp, "%127s", buf) == 1) {
+		if (buf[0] == '#') {
+			while (fgetc(fp) != '\n' && !feof(fp))
+				;
+			continue;
+		}
+		if (strcmp(buf, "icao") == 0) {
+			char icao[8];
+			int res;
+			if (doors_info.info_valid) {
+				/* We're done parsing the entry we wanted */
+				break;
+			}
+			if (fscanf(fp, "%7s", icao) != 1) {
+				logMsg("Error parsing BetterPushback_doors.cfg: "
+				    "expected string following \"icao\".");
+				goto errout;
+			}
+			unescape_percent(icao);
+			res = strcmp(icao, my_icao);
+
+			if (res == 0) {
+                logMsg("icao ");
+                doors_info.info_valid = B_TRUE;
+                skip = B_FALSE;
+			} else {
+				skip = B_TRUE;
+			}
+		} else if (strcmp(buf, "studio") == 0) {
+            logMsg("studio ");
+			FILTER_PARAM(studio);
+		} else if (strcmp(buf, "acf") == 0) {
+            logMsg("acf ");
+			FILTER_PARAM(acf);
+		} else if (strcmp(buf, "author") == 0) {
+            logMsg("author ");
+			FILTER_PARAM(author);
+		} else if (strcmp(buf, "door") == 0) {
+            logMsg("door ");
+			if ((!doors_info.info_valid) || (doors_info.nb_doors >= MAX_DOOR -1) )
+				continue;
+    		if (fscanf(fp, "%64s", doors_info.dr[doors_info.nb_doors]) != 1) { 
+	    		logMsg("Error parsing BetterPushback_doors.cfg: expected " 
+		    	    "string following \"door\"."); 
+			    goto errout; 
+		        } else {
+                    doors_info.nb_doors++;
+                    logMsg("door founded:%s ", doors_info.dr[doors_info.nb_doors]);
+                }
+		}  else if (!skip) {
+			logMsg("Error parsing BetterPushback_doors.cfg: "
+			    "unknown keyword \"%s\".", buf);
+			goto errout;
+		}
+	}
+#undef	FILTER_PARAM
+
+    logMsg("icao :%s", doors_info.ICAO);
+    logMsg("acf :%s", doors_info.acf_filename);
+    logMsg("studio :%s", doors_info.studio);
+    logMsg("nb doors :%d", doors_info.nb_doors);
+
+    for ( int x = 0 ; x < MAX_DOOR ; x++) {
+        logMsg("dr :%s", doors_info.dr[x]);
+    }
+
+	fclose(fp);
+	return;
+
+errout:
+    doors_info.nb_doors = 0;
+    doors_info.info_valid = B_FALSE;
+    logMsg("ECHEC LECTURE nb doors :%d", doors_info.nb_doors);
+	fclose(fp);
+}
+
+
+bool_t
+acf_doors_closed(void) {
+    dr_t door;
+    
+    doors_refs_init();
+    
+    for (int i = 0 ; i< doors_info.nb_doors ; i++) {
+        logMsg("checking dataref %s",  doors_info.dr[i]);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wformat"
+        if (dr_find(&door, doors_info.dr[i])) {
+#pragma clang diagnostic pop
+            logMsg("dataref %s found",  doors_info.dr[i]);            
+            if (dr_getf(&door) > 0.1) {
+                logMsg("door of %s open",  doors_info.dr[i]); 
+                return B_FALSE;
+            }
+        }
+    }
+
+    return B_TRUE;
 }
 
 bool_t
@@ -1251,6 +1472,14 @@ bp_can_start(const char **reason) {
             *reason = _("Pushback failure: cannot push this "
                         "aircraft with engines running. Shutdown "
                         "engines first.");
+        }
+        return (B_FALSE);
+    }
+
+    if (!acf_doors_closed()) {
+        if (reason != NULL) {
+            *reason = _("Pushback not yet possible: Doors and hatches "
+                        "not all closed.");
         }
         return (B_FALSE);
     }

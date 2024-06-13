@@ -180,6 +180,8 @@ void bp_delete_all_segs(void);
 
 bool_t acf_is_compatible(void);
 
+bool_t acf_doors_closed(void);
+
 bool_t acf_is_airliner(void);
 
 void read_acf_airline(char airline[1024]);
