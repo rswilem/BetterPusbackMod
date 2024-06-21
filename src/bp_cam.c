@@ -1437,18 +1437,25 @@ draw_bottom_msg(int screen_x, int screen_y) {
 
 void eye_track_ini(void) {
     #define PLG_SIG_MAX_LEN 100 
-    char *plg_eye_tracker = mkpathname(bp_xpdir, bp_plugindir, "plg_exclude.cfg", NULL);
+    char *plg_eye_tracker;
     char *plgSignature = safe_calloc(PLG_SIG_MAX_LEN, sizeof(*plgSignature));
 
+    // looking for the file , fist in the Output/preferences folder 
+    plg_eye_tracker = mkpathname(bp_xpdir, "Output", "preferences",  "plg_exclude.cfg", NULL);
+    if (!file_exists(plg_eye_tracker, NULL)) {
+        free(plg_eye_tracker);
+        // if not found then in the Betterpushback plugin folder
+        plg_eye_tracker = mkpathname(bp_xpdir, bp_plugindir, "plg_exclude.cfg", NULL);
+    }
 
     if (file_exists(plg_eye_tracker, NULL)) {
         FILE *cfg_f = fopen(plg_eye_tracker, "r");
         if (fscanf(cfg_f, "%99[^\n]", plgSignature) != 1) {
-            logMsg(BP_INFO_LOG "plg_exclude.cfg file found, but no plugin signature found");
+            logMsg(BP_INFO_LOG "%s file found, but no plugin signature found", plg_eye_tracker);
             goto end_eye;
         }
         if (plgSignature[0] == '#' ) {
-            logMsg(BP_INFO_LOG "plg_exclude.cfg file found, but no plugin signature found");
+            logMsg(BP_INFO_LOG "%s file found, but no plugin signature found", plg_eye_tracker);
             goto end_eye;
         }
         for ( int i = 0;  plgSignature[i] != '\0' ; i++ ) {
@@ -1459,12 +1466,12 @@ void eye_track_ini(void) {
         }
         eye_tracker_plg.plg_id =  XPLMFindPluginBySignature(plgSignature);
         if (eye_tracker_plg.plg_id != -1) {
-            logMsg(BP_INFO_LOG "plg_exclude.cfg file found, temporary disabling plugin %s<-", plgSignature);
+            logMsg(BP_INFO_LOG "%s file found, temporary disabling plugin %s<-", plg_eye_tracker, plgSignature);
         } else {
-            logMsg(BP_INFO_LOG "No plugin found with signature %s<-", plgSignature);
+            logMsg(BP_INFO_LOG "%s file found, no plugin found with signature %s<-", plg_eye_tracker, plgSignature);
         }
     } else {
-        logMsg(BP_INFO_LOG "plg_exclude.cfg file not found, no plugin to disable to do");
+        logMsg(BP_INFO_LOG "%s file not found, no plugin to disable to do", plg_eye_tracker);
     }
 
 end_eye:    

@@ -408,7 +408,7 @@ brakes_set(bool_t flag) {
  *	acf	WrightFlyer3000.acf
  *	door	737u/doors/L1
  *	door	737u/doors/L2
- *
+ *  door	@737u/doors/cargos     <-- @ indicate here that this dataref returns an array
  *
  * These keywords have the following meanings:
  *	icao (required): Denotes the start of an aircraft block and must be
@@ -424,8 +424,8 @@ brakes_set(bool_t flag) {
  *	acf	(optional): When specified, checks if the currently loaded
  *		aircraft's ACF filename matches the string argument.
  *	door (required): the dataref of 1 door. you may provide multiple 
- *	    door block as necessary
- *		format can be 737u/doors/L1 or 737u/doorsarray[1] in case of an array
+ *	    door block as necessary ( maximum 20 per aircraft )
+ *		format can be 737u/doors/L1 or @737u/doorsarray in case of an array
  *      if the value of the door dataref is below 0.1, the door is considered as closed
  */
 static void
@@ -498,9 +498,7 @@ doors_refs_init(void)
 		if (res != 0) { \
 			doors_info.info_valid = B_FALSE; \
 			skip = B_TRUE; \
-            logMsg("FILTER PARAM SKIP TRUE \"" #param "\"."); \
 		} \
-        logMsg("FILTER PARAM SKIP TRUE \"" #param "\"."); \
 	} while (0)
 
 
@@ -526,23 +524,18 @@ doors_refs_init(void)
 			res = strcmp(icao, my_icao);
 
 			if (res == 0) {
-                logMsg("icao ");
                 doors_info.info_valid = B_TRUE;
                 skip = B_FALSE;
 			} else {
 				skip = B_TRUE;
 			}
 		} else if (strcmp(buf, "studio") == 0) {
-            logMsg("studio ");
 			FILTER_PARAM(studio);
 		} else if (strcmp(buf, "acf") == 0) {
-            logMsg("acf ");
 			FILTER_PARAM(acf);
 		} else if (strcmp(buf, "author") == 0) {
-            logMsg("author ");
 			FILTER_PARAM(author);
 		} else if (strcmp(buf, "door") == 0) {
-            logMsg("door ");
 			if ((!doors_info.info_valid) || (doors_info.nb_doors >= MAX_DOOR -1) )
 				continue;
     		if (fscanf(fp, "%64s", doors_info.dr[doors_info.nb_doors]) != 1) { 
@@ -551,7 +544,6 @@ doors_refs_init(void)
 			    goto errout; 
 		        } else {
                     doors_info.nb_doors++;
-                    logMsg("door founded:%s ", doors_info.dr[doors_info.nb_doors]);
                 }
 		}  else if (!skip) {
 			logMsg("Error parsing BetterPushback_doors.cfg: "
@@ -561,47 +553,64 @@ doors_refs_init(void)
 	}
 #undef	FILTER_PARAM
 
-    logMsg("icao :%s", doors_info.ICAO);
-    logMsg("acf :%s", doors_info.acf_filename);
-    logMsg("studio :%s", doors_info.studio);
-    logMsg("nb doors :%d", doors_info.nb_doors);
-
-    for ( int x = 0 ; x < MAX_DOOR ; x++) {
-        logMsg("dr :%s", doors_info.dr[x]);
-    }
-
 	fclose(fp);
 	return;
 
 errout:
     doors_info.nb_doors = 0;
     doors_info.info_valid = B_FALSE;
-    logMsg("ECHEC LECTURE nb doors :%d", doors_info.nb_doors);
+    logMsg("Fail reading doors info :%d", doors_info.nb_doors);
 	fclose(fp);
 }
 
+/* check the  door status 
+* return true if the door is closed OR if the dataref is not found 
+* this avoid to block the process 
+*/
+bool_t
+dr_door_check(char *dr) {
+    dr_t door;
+    if (dr_find(&door, "%s", dr)) {
+        if (dr_getf(&door) > 0.1) {
+            return B_FALSE;
+        }
+    }
+    return B_TRUE;
+}
+
+bool_t
+dr_door_check_vf32(char *dr) {
+    dr_t door;
+    int vf_size;
+    float door_pos;
+    if (dr_find(&door, "%s", dr)) {
+        vf_size = dr_getvf32(&door, NULL , 0, 0);
+        for ( int i=0; i < vf_size; i++) {
+            dr_getvf32(&door, &door_pos , i, 1);
+            if (door_pos > 0.1) {
+                return B_FALSE;
+            }
+        }  
+    }
+    return B_TRUE;
+}
 
 bool_t
 acf_doors_closed(void) {
-    dr_t door;
-    
+    bool_t result = B_TRUE;
     doors_refs_init();
     
     for (int i = 0 ; i< doors_info.nb_doors ; i++) {
-        logMsg("checking dataref %s",  doors_info.dr[i]);
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wformat"
-        if (dr_find(&door, doors_info.dr[i])) {
-#pragma clang diagnostic pop
-            logMsg("dataref %s found",  doors_info.dr[i]);            
-            if (dr_getf(&door) > 0.1) {
-                logMsg("door of %s open",  doors_info.dr[i]); 
-                return B_FALSE;
-            }
+        if (doors_info.dr[i][0] == '@') {
+            result = dr_door_check_vf32(doors_info.dr[i]+1);
+        } else {
+            result = dr_door_check(doors_info.dr[i]);
         }
+        if (!result) 
+            break;
     }
 
-    return B_TRUE;
+    return result;
 }
 
 bool_t
