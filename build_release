@@ -31,6 +31,7 @@ rm -rf lin_x64
 CMAKE_OPTS_COMMON="-DCMAKE_BUILD_TYPE=Release"
 
 DIST_FILES=(
+    'BetterPushback_doors.cfg'					''
     'plg_exclude.cfg'					''
     'COPYING'					''
     'data/msgs/README.txt'			''
