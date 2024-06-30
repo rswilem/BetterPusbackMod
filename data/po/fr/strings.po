@@ -32,14 +32,16 @@ msgid ""
 "Pushback advisory: you have your radio volume turned very low and may not be "
 "able to hear ground crew. Please increase your radio volume in the X-Plane "
 "sound preferences."
+
 msgstr "Votre volume radio est trop bas, et vous n’entendrez peut-être pas "
 "l’équipe sol. Augmentez le volume radio dans les préférences de X Plane."
 
 msgid ""
 "Pushback failure: X-Plane version too old. This plugin requires at least X-"
 "Plane %s to operate."
-msgstr "Repoussage impossible: BetterPushback nécessite au moins la version "
-"%s de X Plane pour fonctionner."
+
+msgstr "Repoussage refusé: BetterPushback exige au minimum X Plane %s "
+"pour fonctionner."
 
 msgid "Pushback failure: aircraft appears to not have any steerable gears."
 msgstr "Repoussage impossible: L’avion ne dispose pas d’un train orientable."
@@ -47,7 +49,7 @@ msgstr "Repoussage impossible: L’avion ne dispose pas d’un train orientable.
 msgid ""
 "Pushback failure: aircraft has non-positive wheelbase. Sorry, tail draggers "
 "aren't supported."
-msgstr "Repoussage impossible : L’avion ne dispose pas d’un train trycicle "
+msgstr "Repoussage impossible : L’avion ne dispose pas d’un train tricycle "
 "Les trains classiques ne sont pas supportés."
 
 msgid "Pushback failure: aircraft is incompatible with BetterPushback."
@@ -57,17 +59,19 @@ msgstr "Repoussage impossible: votre avion n’est pas compatible avec "
 msgid ""
 "Pushback failure: master requested tug \"%s\", which we don't have in our in "
 "our library. Please sync your tug libraries before trying again."
+
 msgstr "Repoussage impossible: Le tracteur demandé \"%s\", n’est pas "
 "installé. Procédez à son installation et réessayez."
 
 msgid "Pushback failure: no suitable tug for your aircraft."
-msgstr "Repoussage impossible: pas de tracteur disponible pour votre avion."
+msgstr "Repoussage refusé: pas de tracteur disponible pour cet avion."
 
 msgid ""
 "Pushback failure: smartcopilot attempted to switch master/slave or network "
 "connection lost. Stopping operation."
-msgstr "Repoussage impossible: Soit vous avez échangé les commandes par "
-"smartcopilot (request/release), soit la connexion est rompue. "
+
+msgstr "Repoussage annulé: smartcopilot a tenté de commuter soit master/slave, soit le réseau "
+"(request/release)."
 "Repoussage interrompu."
 
 msgid "Start pushback"
@@ -83,7 +87,7 @@ msgid "Stop pushback planner"
 msgstr "Arrêter le planificateur"
 
 msgid "Connect tug before entering pushback plan"
-msgstr "Connecter le tracteur en attente de la planification et du repoussage"
+msgstr "Connecter le tracteur avant de lancer la planification du repoussage"
 
 msgid "Pre-plan pushback"
 msgstr "Préplanifier le repoussage"
@@ -115,26 +119,36 @@ msgstr "Ma langue pour tous les aéroports"
 msgid "English at all airports"
 msgstr "L'anglais pour tous les aéroports"
 
+msgid "Radio output device"
+msgstr "Périphérique de sortie Radios"
+
+msgid "Sound output device"
+msgstr "Périphérique de sortie Sons"
+
 msgid "Save preferences"
-msgstr "Sauver les préférences"
+msgstr "Sauvegarder les préférences"
+
+
 
 msgid "Ground crew speaks my language only if the country the airport is\n"
 "in speaks my language. Otherwise the ground crew speaks English\n"
 "with a local accent."
-msgstr "L'équipe au sol parle ma langue uniquement si le pays où se trouve\n"
-"l'aéroport parle ma langue. Sinon, l'équipe au sol parle anglais\n"
+
+msgstr "L'equipe au sol parle ma langue uniquement si le pays ou se trouve\n"
+"l'aeroport parle ma langue. Sinon, l'equipe au sol parle anglais\n"
 "avec un accent local."
 
 msgid "Ground crew speaks my language irrespective of what country the "
 "airport is in."
-msgstr "L'équipe au sol parle ma langue quelque soit le pays dans lequel "
-"se trouve l'aéroport."
+
+msgstr "L'equipe au sol parle ma langue quelque soit le pays dans lequel "
+"se trouve l'aeroport."
 
 msgid "Ground crew always speaks English with a local accent."
-msgstr "L'équipe au sol parle toujours en anglais avec l'accent local."
+msgstr "L'equipe au sol parle toujours en anglais avec l'accent local."
 
 msgid "Save current preferences to disk."
-msgstr "Sauver les préférences."
+msgstr "Enregistre les preferences sur le disque."
 
 msgid "Disconnect tow + headset and switch to hand signals."
 msgstr "Désattelez tracteur, retirez casque et passez en signal visuel."
@@ -144,6 +158,7 @@ msgstr "Réattelez tracteur et attendez instructions."
 
 msgid "Pushback failure: cannot push this aircraft with engines running. "
 "Shutdown engines first."
+
 msgstr "Repoussage de cet avion impossible moteur(s) tournant(s). "
 "Arrêtez le(s) d'abord."
 
@@ -153,11 +168,14 @@ msgstr "Bouton gauche de la souris pour modifier l'angle de vue"
 msgid "Tug cab view"
 msgstr "Vue depuis le tracteur"
 
+msgid "Connect tug first"
+msgstr "Connectez d'abord le tracteur"
+
 msgid "** Settings related to the current aircraft"
 msgstr "** Paramètres liés à l'avion actuel"
 
 msgid "Hint: hover your mouse cursor over any knob to show a short description of what it does."
-msgstr "Astuce: passez le curseur de votre souris sur n'importe quel bouton pour afficher une desc."
+msgstr "Astuce: placez votre curseur sur n'importe quel bouton pour afficher une description."
 
 msgid "Auto disconnect when done **"
 msgstr "Déconnexion automatique une fois terminé **"
@@ -166,4 +184,48 @@ msgid "Miscellaneous"
 msgstr "Divers"
 
 msgid "Ignore check parking brake is set **"
-msgstr "Ignorer le contrôle de stationnement **"
+msgstr "Ignorer le contrôle du frein de parking **"
+
+msgid "Hide the magic squares"
+msgstr "Masquer les boutons raccourcis"
+
+msgid "Pushback not yet possible: Doors and hatches not all closed."
+msgstr "Repoussage pas encore possible: Toutes les portes ne sont pas fermées."
+
+msgid "Hide default X-Plane 11 tug"
+msgstr "Masquer le tracteur par défaut de X-Plane 11"
+
+msgid "Never ask and always automatically disconnect\n"
+        "the tug when the pushback operation is complete."
+msgstr "Deconnecte automatiquement le tracteur des que\n"
+"le repoussage termine, sans demander de confirmation."
+
+msgid "Never check \"set parking brake\".\n"
+    "Some aircraft stuck on this check.\n"
+    "It's on the beginning and on the end.\n"
+    "This should solve this problem for some aircrafts. (KA350 for instance)."
+msgstr "Ignore le controle du frein de parking.\n"
+    "Certains appareils bloquent le repoussage.\n"
+    "Aussi bien au debut qu'a la fin.\n"
+    "Cette option evite ce probleme avec certains appareils (ex le KA350)."
+
+msgid "Hides the shortcut buttons on the left side of the screen.\n"
+   "The first button starts the planner and the second starts the push-back."
+msgstr "Masquer les miniatures-raccourcis sur le cote gauche de l'ecran.\n"
+    "Le premier bouton lance la planification, l'autre le repoussage."
+
+msgid "Hides default X-Plane 11 pushback tug.\n"
+    "Restart X-Plane for this change to take effect."
+msgstr "Cache le tracteur par defaut de X-Plane 11.\n"
+    "Relancer X-Plane pour que le changement prenne effet."
+
+msgid "BetterPushback is open-source software. See COPYING for "
+    "more information."
+msgstr "BetterPushback est un logiciel open-source. Voir le fichier COPYING pour "
+    "plus d'informations."    
+
+msgid "Don't check the doors and hatches status before starting the push-back"
+msgstr "Ne verifie pas l'etat des portes avant de commencer le repoussage"
+
+msgid "Ignore doors and hatches check **"
+msgstr "Ignorer le contrôle des portes"

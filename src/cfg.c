@@ -85,6 +85,7 @@ static struct {
 
     XPWidgetID disco_when_done;
     XPWidgetID ignore_set_park_brake;
+    XPWidgetID ignore_doors_check;
     XPWidgetID hide_xp11_tug;
     XPWidgetID hide_magic_squares;
     XPWidgetID show_dev_menu;
@@ -162,35 +163,33 @@ const char *ignore_park_brake_tooltip =
         "Never check \"set parking brake\".\n"
         "Some aircraft stuck on this check.\n"
         "It's on the beginning and on the end.\n"
-        "This should solve this problem for some aircraft's. (KA350 for instance).";
+        "This should solve this problem for some aircrafts. (KA350 for instance).";
 const char *hide_xp11_tug_tooltip =
         "Hides default X-Plane 11 pushback tug.\n"
         "Restart X-Plane for this change to take effect.";
 const char *hide_magic_squares_tooltip =
         "Hides the shortcut buttons on the left side of the screen.\n"
-        "These buttons are to start the planner and to start the push-back.";
+        "The first button starts the planner and the second starts the push-back.";
+const char *ignore_doors_check_tooltip =
+        "Don't check the doors and hatches status before starting the push-back";
 
 static void
 buttons_update(void) {
     const char *lang = "XX";
-    char my_acf[512], my_path[512];
     lang_pref_t lang_pref;
     bool_t disco_when_done = B_FALSE;
     bool_t ignore_park_brake = B_FALSE;
+    bool_t ignore_doors_check = B_FALSE;
     bool_t hide_magic_squares = B_FALSE;
     bool_t show_dev_menu = B_FALSE;
     const char *radio_dev = "", *sound_dev = "";
 
     (void) conf_get_str(bp_conf, "lang", &lang);
-    XPLMGetNthAircraftModel(0, my_acf, my_path);
 
-    if (!conf_get_disco_when_done(my_acf, &disco_when_done)) {
-        conf_get_disco_when_done(NULL, &disco_when_done);
-    }
 
-    if (!conf_get_ignore_park_brake(my_acf, &ignore_park_brake)) {
-        conf_get_ignore_park_brake(NULL, &ignore_park_brake);
-    }
+    (void) conf_get_b_per_acf("disco_when_done", &disco_when_done);
+    (void) conf_get_b_per_acf("ignore_park_brake", &ignore_park_brake);
+    (void) conf_get_b_per_acf("ignore_doors_check", &ignore_doors_check);
 
     (void) conf_get_str(bp_conf, "radio_device", &radio_dev);
     (void) conf_get_str(bp_conf, "sound_device", &sound_dev);
@@ -222,6 +221,8 @@ buttons_update(void) {
                         xpProperty_ButtonState, disco_when_done);
     XPSetWidgetProperty(buttons.ignore_set_park_brake,
                         xpProperty_ButtonState, ignore_park_brake);
+    XPSetWidgetProperty(buttons.ignore_doors_check,
+                        xpProperty_ButtonState, ignore_doors_check);
     XPSetWidgetProperty(buttons.hide_magic_squares,
                         xpProperty_ButtonState, hide_magic_squares);
     XPSetWidgetProperty(buttons.show_dev_menu, xpProperty_ButtonState,
@@ -296,14 +297,13 @@ main_window_cb(XPWidgetMessage msg, XPWidgetID widget, intptr_t param1,
             conf_set_i(bp_conf, "lang_pref",
                        LANG_PREF_MATCH_ENGLISH);
         } else if (btn == buttons.disco_when_done) {
-            char my_acf[512], my_path[512];
-            XPLMGetNthAircraftModel(0, my_acf, my_path);
-            conf_set_disco_when_done(my_acf, XPGetWidgetProperty(buttons.disco_when_done,
+            conf_set_b_per_acf("disco_when_done", XPGetWidgetProperty(buttons.disco_when_done,
                                                                  xpProperty_ButtonState, NULL));
         } else if (btn == buttons.ignore_set_park_brake) {
-            char my_acf[512], my_path[512];
-            XPLMGetNthAircraftModel(0, my_acf, my_path);
-            conf_set_ignore_park_brake(my_acf, XPGetWidgetProperty(buttons.ignore_set_park_brake,
+            conf_set_b_per_acf("ignore_park_brake", XPGetWidgetProperty(buttons.ignore_set_park_brake,
+                                                                   xpProperty_ButtonState, NULL));
+        } else if (btn == buttons.ignore_doors_check) {
+            conf_set_b_per_acf("ignore_doors_check", XPGetWidgetProperty(buttons.ignore_doors_check,
                                                                    xpProperty_ButtonState, NULL));
         } else if (btn == buttons.show_dev_menu) {
             conf_set_b(bp_conf, "show_dev_menu",
@@ -478,7 +478,7 @@ create_main_window(void) {
     checkbox_t *sound_out = sound_checkboxes_init(_("Sound output device"),
                                                   &buttons.sound_devs, &buttons.num_sound_devs,
                                                   &buttons.sound_boxes, &buttons.num_sound_boxes);
-    checkbox_t other[6] = {
+    checkbox_t other[7] = {
             {_("Miscellaneous"), NULL, NULL},
             {
              _("Auto disconnect when done **"),
@@ -487,6 +487,10 @@ create_main_window(void) {
             {
              _("Ignore check parking brake is set **"),
                     &buttons.ignore_set_park_brake, ignore_park_brake_tooltip
+            },
+            {
+             _("Ignore doors and hatches check **"),
+                    &buttons.ignore_doors_check, ignore_doors_check_tooltip
             },
             {
              _("Hide the magic squares"),
@@ -560,7 +564,7 @@ create_main_window(void) {
     create_widget_rel(MARGIN,
                       main_window_height - 62 - MAIN_WINDOW_SPACE, B_FALSE,
                       main_window_width - 4 * MARGIN,
-                      BUTTON_HEIGHT, 1, COPYRIGHT2, 0, main_win,
+                      BUTTON_HEIGHT, 1, _(COPYRIGHT2), 0, main_win,
                       xpWidgetClass_Caption);
     create_widget_rel(MARGIN,
                       main_window_height - 49 - (MAIN_WINDOW_SPACE - 10), B_FALSE,
@@ -756,40 +760,51 @@ conf_get_ignore_park_brake(char *my_acf, bool_t *value) {
     }
 }
 
-void
-conf_set_disco_when_done(char *my_acf, bool_t value) {
-    if (my_acf == NULL) {
-        (void) conf_set_b(bp_conf, "disco_when_done",
-                          value);
+
+bool_t
+conf_get_b_per_acf(char *my_key,  bool_t *value) {
+    char my_acf[512], my_path[512];
+    XPLMGetNthAircraftModel(0, my_acf, my_path);
+    if (strlen(my_acf) == 0) {
+        // if not aircraft found (should never happened), try the generic key
+        return conf_get_b(bp_conf, my_key, value);
     } else {
         int l;
+        bool_t result;
         char *key;
         l = snprintf(NULL, 0,
-                     "disco_when_done_%s", my_acf);
+                     "%s_%s", my_key, my_acf);
         key = safe_malloc(l + 1);
         snprintf(key, l + 1,
-                 "disco_when_done_%s", my_acf);
+                 "%s_%s", my_key, my_acf);
         key_sanity(key);
-        conf_set_b(bp_conf, key, value);
+        result = conf_get_b(bp_conf, key, value);
+        if (!result) {
+            // if not found per aircraft, try the generic key
+            result = conf_get_b(bp_conf, my_key, value);
+        }
         free(key);
+        return result;
     }
 }
 
 void
-conf_set_ignore_park_brake(char *my_acf, bool_t value) {
-    if (my_acf == NULL) {
-        (void) conf_set_b(bp_conf, "ignore_park_brake",
-                          value);
+conf_set_b_per_acf(char *my_key,  bool_t value) {
+    char my_acf[512], my_path[512];
+    XPLMGetNthAircraftModel(0, my_acf, my_path);
+    if (strlen(my_acf) == 0) {
+        // if not aircraft found (should never happened), try the generic key
+        (void) conf_set_b(bp_conf, my_key, value);
     } else {
         int l;
         char *key;
         l = snprintf(NULL, 0,
-                     "ignore_park_brake_%s", my_acf);
+                     "%s_%s", my_key, my_acf);
         key = safe_malloc(l + 1);
         snprintf(key, l + 1,
-                 "ignore_park_brake_%s", my_acf);
+                 "%s_%s", my_key, my_acf);
         key_sanity(key);
-        conf_set_b(bp_conf, key, value);
+        (void) conf_set_b(bp_conf, key, value);
         free(key);
     }
 }

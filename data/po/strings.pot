@@ -160,3 +160,49 @@ msgstr ""
 
 msgid "Ignore check parking brake is set **"
 msgstr ""
+
+msgid "Hide the magic squares"
+msgstr ""
+
+msgid "Pushback not yet possible: Doors and hatches not all closed."
+msgstr ""
+
+msgid "Hide default X-Plane 11 tug"
+msgstr ""
+
+msgid "Connect tug first"
+msgstr ""
+
+msgid "Radio output device"
+msgstr ""
+
+msgid "Sound output device"
+msgstr ""
+
+msgid "Never ask and always automatically disconnect\n"
+        "the tug when the pushback operation is complete."
+msgstr ""
+
+msgid "Never check \"set parking brake\".\n"
+    "Some aircraft stuck on this check.\n"
+    "It's on the beginning and on the end.\n"
+    "This should solve this problem for some aircrafts. (KA350 for instance)."
+msgstr ""
+
+msgid "Hides the shortcut buttons on the left side of the screen.\n"
+   "The first button starts the planner and the second starts the push-back.";
+msgstr ""
+
+msgid "Hides default X-Plane 11 pushback tug.\n"
+    "Restart X-Plane for this change to take effect."
+msgstr ""
+
+msgid "BetterPushback is open-source software. See COPYING for "
+    "more information."
+msgstr ""    
+
+msgid "Don't check the doors and hatches status before starting the push-back"
+msgstr ""
+
+msgid "Ignore doors and hatches check **"
+msgstr ""

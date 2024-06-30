@@ -47,13 +47,9 @@ void bp_conf_set_save_enabled(bool_t flag);
 
 void bp_conf_open(void);
 
-bool_t conf_get_disco_when_done(char *my_acf, bool_t *value);
+bool_t conf_get_b_per_acf(char *my_key,  bool_t *value);
 
-bool_t conf_get_ignore_park_brake(char *my_acf, bool_t *value);
-
-void conf_set_disco_when_done(char *my_acf, bool_t value);
-
-void conf_set_ignore_park_brake(char *my_acf, bool_t value);
+void conf_set_b_per_acf(char *my_key,  bool_t value);
 
 void push_reset_fov_values(void);
 

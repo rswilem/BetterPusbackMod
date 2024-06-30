@@ -1396,18 +1396,12 @@ bp_init(void) {
     XPLMGetNthAircraftModel(0, my_acf, my_path);
 
     cfg_disco_when_done = B_FALSE;
-    if (!conf_get_disco_when_done(my_acf, &cfg_disco_when_done)) {
-        // checking for setting linked to the aircraft, if not found
-        // fallback to the general setting
-        conf_get_disco_when_done(NULL, &cfg_disco_when_done);
-    }
+    conf_get_b_per_acf("disco_when_done", &cfg_disco_when_done);
+
 
     cfg_ignore_park_break = B_FALSE;
-    if (!conf_get_ignore_park_brake(my_acf, &cfg_ignore_park_break)) {
-        // checking for setting linked to the aircraft, if not found
-        // fallback to the general setting
-        conf_get_ignore_park_brake(NULL, &cfg_ignore_park_break);
-    }
+    conf_get_b_per_acf("ignore_park_brake", &cfg_ignore_park_break);
+
 
     acf_override_file  = mkpathname(bp_xpdir, bp_plugindir, "objects", "override", my_acf, NULL);
     if (file_exists(acf_override_file, NULL)) {
@@ -1465,6 +1459,9 @@ draw_tugs(void) {
 bool_t
 bp_can_start(const char **reason) {
     seg_t *seg;
+    bool_t ignore_doors_check = B_FALSE;
+
+    (void) conf_get_b_per_acf("ignore_doors_check", &ignore_doors_check);
 
     if (!acf_is_compatible()) {
         if (reason != NULL)
@@ -1485,7 +1482,7 @@ bp_can_start(const char **reason) {
         return (B_FALSE);
     }
 
-    if (!acf_doors_closed()) {
+    if (!ignore_doors_check && (!acf_doors_closed())) {
         if (reason != NULL) {
             *reason = _("Pushback not yet possible: Doors and hatches "
                         "not all closed.");
