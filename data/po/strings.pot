@@ -161,7 +161,7 @@ msgstr ""
 msgid "Ignore check parking brake is set **"
 msgstr ""
 
-msgid "Hide the magic squares"
+msgid "Hide the magic squares **"
 msgstr ""
 
 msgid "Pushback not yet possible: Doors and hatches not all closed."

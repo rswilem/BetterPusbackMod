@@ -934,7 +934,7 @@ bp_priv_enable(void) {
 
     XPLMRegisterFlightLoopCallback(status_check, STATUS_CHECK_INTVAL, NULL);
 
-    (void) conf_get_b(bp_conf, "hide_magic_squares", &hide_main_intf);
+    (void) conf_get_b_per_acf("hide_magic_squares", &hide_main_intf);
 
     /* If the user OK'd it, remove the default tug */
     (void) conf_get_b(bp_conf, "dont_hide_xp11_tug", &dont_hide_xp_tug);

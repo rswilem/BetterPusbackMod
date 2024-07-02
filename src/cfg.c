@@ -193,7 +193,7 @@ buttons_update(void) {
 
     (void) conf_get_str(bp_conf, "radio_device", &radio_dev);
     (void) conf_get_str(bp_conf, "sound_device", &sound_dev);
-    (void) conf_get_b(bp_conf, "hide_magic_squares", &hide_magic_squares);
+    (void) conf_get_b_per_acf("hide_magic_squares", &hide_magic_squares);
 
 #define    SET_LANG_BTN(btn, l) \
     (XPSetWidgetProperty(buttons.btn, xpProperty_ButtonState, \
@@ -314,7 +314,7 @@ main_window_cb(XPWidgetMessage msg, XPWidgetID widget, intptr_t param1,
                        !XPGetWidgetProperty(buttons.hide_xp11_tug,
                                             xpProperty_ButtonState, NULL));
         } else if (btn == buttons.hide_magic_squares) {
-            conf_set_b(bp_conf, "hide_magic_squares",
+            conf_set_b_per_acf("hide_magic_squares",
                        XPGetWidgetProperty(buttons.hide_magic_squares,
                                             xpProperty_ButtonState, NULL));
         }
@@ -493,7 +493,7 @@ create_main_window(void) {
                     &buttons.ignore_doors_check, ignore_doors_check_tooltip
             },
             {
-             _("Hide the magic squares"),
+             _("Hide the magic squares **"),
                     &buttons.hide_magic_squares, hide_magic_squares_tooltip
             },
             {
