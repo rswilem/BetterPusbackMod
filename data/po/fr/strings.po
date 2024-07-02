@@ -228,4 +228,4 @@ msgid "Don't check the doors and hatches status before starting the push-back"
 msgstr "Ne verifie pas l'etat des portes avant de commencer le repoussage"
 
 msgid "Ignore doors and hatches check **"
-msgstr "Ignorer le contrôle des portes"
+msgstr "Ignorer le contrôle des portes **"

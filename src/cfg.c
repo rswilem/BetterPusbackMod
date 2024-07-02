@@ -497,14 +497,12 @@ create_main_window(void) {
                     &buttons.hide_magic_squares, hide_magic_squares_tooltip
             },
             {
-             _("Hide default X-Plane 11 tug"),
+             ((bp_xp_ver < 11000) || (bp_xp_ver >= 12000)) ? NULL : _("Hide default X-Plane 11 tug"), //Feature only for Xp11 , always at the last position
                     &buttons.hide_xp11_tug,         hide_xp11_tug_tooltip
             },
             {NULL,               NULL, NULL}
     };
 
-    if ((bp_xp_ver < 11000) || (bp_xp_ver >= 12000)) //Feature only for Xp11
-        other[4] = (checkbox_t) {NULL, NULL, NULL};
 
     col1_width = measure_checkboxes_width(col1);
     col2_width = measure_checkboxes_width(col2);
