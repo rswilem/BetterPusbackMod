@@ -2659,15 +2659,15 @@ main_intf_show(void) {
                 .refcon = NULL
         };
         int w, h;
-
+        initMonitorOrigin(0);
         BPGetScreenSizeUIScaled(&w, &h, B_TRUE);
 
     if (bp_ls.planner_win == NULL)  {
         load_icon(&disco_buttons[2]);
-        disco_ops.left = 0 ; // w / 2 - 1.5 * disco_buttons[0].w;
+        disco_ops.left = monitor_def.x_origin ; // w / 2 - 1.5 * disco_buttons[0].w;
         disco_ops.right = disco_buttons[2].w;
         disco_ops.top = h/2 ; // - 0.5 * disco_buttons[0].h;
-        disco_ops.bottom = h/2 - disco_buttons[2].h;
+        disco_ops.bottom = monitor_def.y_origin + h/2 - disco_buttons[2].h;
         bp_ls.planner_win = XPLMCreateWindowEx(&disco_ops);
         ASSERT(bp_ls.planner_win != NULL);
         XPLMBringWindowToFront(bp_ls.planner_win);
@@ -2675,10 +2675,10 @@ main_intf_show(void) {
 
     if (bp_ls.start_pb_win == NULL) {
         load_icon(&disco_buttons[3]);
-        disco_ops.left = 0; //w / 2 + 0.5 * disco_buttons[1].w;
+        disco_ops.left = monitor_def.x_origin ; //w / 2 + 0.5 * disco_buttons[1].w;
         disco_ops.right = disco_buttons[3].w;
         disco_ops.top = h/2 - 1.5 * disco_buttons[2].h;
-        disco_ops.bottom = disco_ops.top - disco_buttons[3].h;
+        disco_ops.bottom = monitor_def.y_origin + disco_ops.top - disco_buttons[3].h;
         bp_ls.start_pb_win = XPLMCreateWindowEx(&disco_ops);
         ASSERT(bp_ls.start_pb_win != NULL);
         XPLMBringWindowToFront(bp_ls.start_pb_win);

@@ -136,6 +136,11 @@ struct curl_memory {
 };
 
 
+monitors_t monitor_def = {0};    
+// by default we have only 1 monitor with org (0,0)
+// later we will set it with the first monitor found or 
+// with the one selected in the preferences
+
 void ui_status_init(void);
 
 float get_ui_scale_from_pref(void);
@@ -1027,4 +1032,40 @@ void fetchGitVersion(void)
 
 char * getPluginUpdateStatus(void) {
     return ( gitHubVersion.new_version_available ? gitHubVersion.version : NULL );
+}
+
+void inMonitorBoundsCallback(
+                         int                  inMonitorIndex,
+                         int                  inLeftBx,
+                         int                  inTopBx,
+                         int                  inRightBx,
+                         int                  inBottomBx,
+                         void *               inRefcon) {
+
+    UNUSED(inTopBx);
+    UNUSED(inRightBx);
+    UNUSED(inRefcon);
+
+    logMsg("MonitorsBounds i %d l %d t %d r %d b %d", inMonitorIndex, inLeftBx,inTopBx,inRightBx, inBottomBx);
+
+    monitor_def.monitor_count++;
+    if ( !monitor_def.monitor_found && 
+        ((inMonitorIndex == 0) || (inMonitorIndex == monitor_def.monitor_id))) {
+        // we are taking the first one and then if found the one requested
+        monitor_def.x_origin = inLeftBx;
+        monitor_def.y_origin = inBottomBx;
+        if (inMonitorIndex == monitor_def.monitor_id) {
+            monitor_def.monitor_found = B_TRUE;
+        }
+        logMsg("Founded i %d l %d t %d r %d b %d", inMonitorIndex, inLeftBx,inTopBx,inRightBx, inBottomBx);
+    } 
+                    
+}
+
+void initMonitorOrigin(int monitor_id) {
+    monitor_def.monitor_found = B_FALSE; // 'clear' the found flag
+    monitor_def.monitor_count = 0;
+    monitor_def.monitor_id = monitor_id; // We are looking for this id
+    XPLMGetAllMonitorBoundsGlobal(inMonitorBoundsCallback, NULL);
+    logMsg("fin XPLMGetAllMonitorBoundsGlobal");
 }
