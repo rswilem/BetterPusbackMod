@@ -39,10 +39,13 @@ extern conf_t *bp_conf;
 
 typedef struct {
     bool_t monitor_found; // to clear before the search
+    int monitor_requested;
     int monitor_count;
     int monitor_id;
     int x_origin;
     int y_origin;
+    int h;
+    int w;
 } monitors_t;
 
 extern  monitors_t monitor_def;
@@ -69,7 +72,7 @@ void BPGetScreenSizeUIScaled(int *w, int *h, bool_t get_ui_scale);
 
 char * getPluginUpdateStatus(void);
 
-void initMonitorOrigin(int );
+void initMonitorOrigin(void);
 
 #ifdef    __cplusplus
 }

@@ -376,18 +376,19 @@ move_camera(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon) {
 
 static void
 get_vp(vec4 vp) {
-    int scr_w, scr_h;
+///    int scr_w, scr_h;
 
     ASSERT(vp != NULL);
         /*
          * As fake_win is defined with 0,0 and sizes given by BPGetScreenSizeUIScaled
          * let's do the same here. it will fix planner drawing in Xp12
          */
-        BPGetScreenSizeUIScaled(&scr_w, &scr_h, B_FALSE);
-        vp[0] = 0;
-        vp[1] = 0;
-        vp[2] = scr_w;
-        vp[3] = scr_h;
+  ///      BPGetScreenSizeUIScaled(&scr_w, &scr_h, B_FALSE);
+        vp[0] = monitor_def.x_origin;
+        vp[1] =  monitor_def.y_origin;
+        vp[2] =  monitor_def.w;
+        vp[3] =  monitor_def.h;
+
 }
 
 /*
@@ -847,8 +848,11 @@ fake_win_draw(XPLMWindowID inWindowID, void *inRefcon) {
     UNUSED(inWindowID);
     UNUSED(inRefcon);
 
-    BPGetScreenSizeUIScaled(&w, &h, B_FALSE);
-    XPLMSetWindowGeometry(fake_win, 0, h, w, 0);
+    //BPGetScreenSizeUIScaled(&w, &h, B_FALSE);
+    h = monitor_def.h;
+    w = monitor_def.w;
+
+    XPLMSetWindowGeometry(fake_win, monitor_def.x_origin, h, w, monitor_def.y_origin);
 
     if (!XPLMIsWindowInFront(fake_win))
         XPLMBringWindowToFront(fake_win);
@@ -875,7 +879,7 @@ fake_win_draw(XPLMWindowID inWindowID, void *inRefcon) {
         if (btn->tex == 0)
             continue;
 
-        draw_icon(btn, w - btn->w * scale, h_off - btn->h * scale,
+        draw_icon(btn, monitor_def.x_origin + w - btn->w * scale, monitor_def.y_origin + h_off - btn->h * scale,
                   scale, i == button_hit, i == button_lit);
     }
 
@@ -889,7 +893,9 @@ button_hit_check(int x, int y) {
     double scale;
     int w, h, h_buttons, h_off;
 
-    BPGetScreenSizeUIScaled(&w, &h, B_FALSE);
+//    BPGetScreenSizeUIScaled(&w, &h, B_FALSE);
+    h = monitor_def.h;
+    w = monitor_def.w;
 
     h_buttons = 0;
     for (int i = 0; buttons[i].filename != NULL; i++)
@@ -903,8 +909,8 @@ button_hit_check(int x, int y) {
     h_off = (h + (h_buttons * scale)) / 2;
     for (int i = 0; buttons[i].filename != NULL;
          i++, h_off -= buttons[i].h * scale) {
-        if (x >= w - buttons[i].w * scale && x <= w &&
-            y >= h_off - buttons[i].h * scale && y <= h_off &&
+        if (x >= monitor_def.x_origin + w - buttons[i].w * scale && x <= monitor_def.x_origin + w &&
+            y >= monitor_def.y_origin + h_off - buttons[i].h * scale && y <= monitor_def.y_origin + h_off &&
             buttons[i].vk != -1)
             return (i);
     }
@@ -1203,7 +1209,14 @@ bp_cam_start(void) {
 
     push_reset_fov_values();
     eye_track_debut();
-    BPGetScreenSizeUIScaled(&fake_win_ops.right, &fake_win_ops.top, B_TRUE);
+//    BPGetScreenSizeUIScaled(&fake_win_ops.right, &fake_win_ops.top, B_TRUE);
+
+    initMonitorOrigin();
+    fake_win_ops.left = monitor_def.x_origin;
+    fake_win_ops.right = monitor_def.x_origin + monitor_def.w;
+    fake_win_ops.bottom = monitor_def.y_origin;
+    fake_win_ops.top = monitor_def.y_origin + monitor_def.h;
+
 
     circle_view_cmd = XPLMFindCommand("sim/view/circle");
     ASSERT(circle_view_cmd != NULL);
@@ -1273,9 +1286,11 @@ bp_cam_start(void) {
 
     updateAvailable = getPluginUpdateStatus();
     if (updateAvailable != NULL) {
-        snprintf(bottom_msg, sizeof(bottom_msg), "New version of BetterPushBack available: %s (Use SkunkCrafts Updater to update)", updateAvailable);
-        init_bottom_msg(bottom_msg);
+ //       snprintf(bottom_msg, sizeof(bottom_msg), "New version of BetterPushBack available: %s (Use SkunkCrafts Updater to update)", updateAvailable);
+ //       init_bottom_msg(bottom_msg);
     }
+        snprintf(bottom_msg, sizeof(bottom_msg), "New version of BetterPushBack available: xxxx (Use SkunkCrafts Updater to update)");
+        init_bottom_msg(bottom_msg);
     
     return (B_TRUE);
 }
@@ -1422,16 +1437,16 @@ draw_bottom_msg(int screen_x, int screen_y) {
 
     glBindTexture(GL_TEXTURE_2D, bottom_msg.texture);
     glBegin(GL_QUADS);
-    glTexCoord2f(0.0, 1.0);
-    glVertex2f((screen_x - bottom_msg.width) / 2 - MARGIN_SIZE, 0);
-    glTexCoord2f(0.0, 0.0);
-    glVertex2f((screen_x - bottom_msg.width) / 2 - MARGIN_SIZE,
-        bottom_msg.height + 2 * MARGIN_SIZE);
-    glTexCoord2f(1.0, 0.0);
-    glVertex2f((screen_x + bottom_msg.width) / 2 + MARGIN_SIZE,
-        bottom_msg.height + 2 * MARGIN_SIZE);
-    glTexCoord2f(1.0, 1.0);
-    glVertex2f((screen_x + bottom_msg.width) / 2 + MARGIN_SIZE, 0);
+    glTexCoord2f(monitor_def.x_origin  , monitor_def.y_origin + 1.0);
+    glVertex2f(monitor_def.x_origin + (screen_x - bottom_msg.width) / 2 - MARGIN_SIZE, monitor_def.y_origin );
+    glTexCoord2f(monitor_def.x_origin, monitor_def.y_origin);
+    glVertex2f(monitor_def.x_origin + (screen_x - bottom_msg.width) / 2 - MARGIN_SIZE,
+        monitor_def.y_origin + bottom_msg.height + 2 * MARGIN_SIZE);
+    glTexCoord2f( monitor_def.x_origin + 1, monitor_def.y_origin);
+    glVertex2f(monitor_def.x_origin + (screen_x + bottom_msg.width) / 2 + MARGIN_SIZE,
+        monitor_def.y_origin + bottom_msg.height + 2 * MARGIN_SIZE);
+    glTexCoord2f( monitor_def.x_origin + 1, monitor_def.y_origin + 1);
+    glVertex2f(monitor_def.x_origin + (screen_x + bottom_msg.width) / 2 + MARGIN_SIZE, monitor_def.y_origin);
     glEnd();
 }
 

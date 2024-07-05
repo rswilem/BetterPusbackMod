@@ -44,7 +44,7 @@
 #define    CONF_FILENAME    "BetterPushback.cfg"
 #define    CONF_DIRS    bp_xpdir, "Output", "preferences"
 #define    MISC_FILENAME    "Miscellaneous.prf"
-
+#define    XP_PREF_WINDOWS "X-Plane Window Positions.prf"
 conf_t *bp_conf = NULL;
 
 static bool_t inited = B_FALSE;
@@ -99,6 +99,13 @@ static struct {
     XPWidgetID *sound_boxes;
     size_t num_sound_devs;
     char **sound_devs;
+
+    XPWidgetID monitor0;
+    XPWidgetID monitor1;
+    XPWidgetID monitor2;
+    XPWidgetID monitor3;
+    XPWidgetID monitor4;
+    XPWidgetID monitor5;
 
     XPWidgetID save_cfg;
 } buttons;
@@ -178,6 +185,11 @@ const char *hide_magic_squares_tooltip =
 const char *ignore_doors_check_tooltip =
         "Don't check the doors and hatches status before starting the push-back";
 
+const char *monitor_tooltip =
+        "In case of mutlipe monitors configuration, BpB need to use the primary monitor\n"
+        "(the one with the x-plane menus), Bpb is unable to select it automaticaly.\n"
+        "Select the one that works ! (the monitor numbers are arbitrary.\n";
+
 static void
 buttons_update(void) {
     const char *lang = "XX";
@@ -187,10 +199,12 @@ buttons_update(void) {
     bool_t ignore_doors_check = B_FALSE;
     bool_t hide_magic_squares = B_FALSE;
     bool_t show_dev_menu = B_FALSE;
+    int monitor_id = 0;
     const char *radio_dev = "", *sound_dev = "";
 
     (void) conf_get_str(bp_conf, "lang", &lang);
 
+    (void) conf_get_i(bp_conf, "monitor_id", &monitor_id);
 
     (void) conf_get_b_per_acf("disco_when_done", &disco_when_done);
     (void) conf_get_b_per_acf("ignore_park_brake", &ignore_park_brake);
@@ -232,6 +246,19 @@ buttons_update(void) {
                         xpProperty_ButtonState, hide_magic_squares);
     XPSetWidgetProperty(buttons.show_dev_menu, xpProperty_ButtonState,
                         show_dev_menu);
+    XPSetWidgetProperty(buttons.monitor0, 
+                        xpProperty_ButtonState, monitor_id == 0);
+    XPSetWidgetProperty(buttons.monitor1, 
+                        xpProperty_ButtonState, monitor_id == 1);
+    XPSetWidgetProperty(buttons.monitor2, 
+                        xpProperty_ButtonState, monitor_id == 2);
+    XPSetWidgetProperty(buttons.monitor3,
+                        xpProperty_ButtonState, monitor_id == 3);
+    XPSetWidgetProperty(buttons.monitor4, 
+                        xpProperty_ButtonState, monitor_id == 4);
+    XPSetWidgetProperty(buttons.monitor5, 
+                        xpProperty_ButtonState, monitor_id == 5);
+
     // X-Plane 12 doesn't support this feature
     if (bp_xp_ver >= 11000 && bp_xp_ver < 12000) {
         bool_t dont_hide = B_FALSE;
@@ -322,7 +349,20 @@ main_window_cb(XPWidgetMessage msg, XPWidgetID widget, intptr_t param1,
             conf_set_b_per_acf("hide_magic_squares",
                        XPGetWidgetProperty(buttons.hide_magic_squares,
                                             xpProperty_ButtonState, NULL));
+        } else if (btn == buttons.monitor0) {
+            conf_set_i(bp_conf,"monitor_id", 0);
+        } else if (btn == buttons.monitor1) {
+            conf_set_i(bp_conf,"monitor_id", 1);
+        } else if (btn == buttons.monitor2) {
+            conf_set_i(bp_conf,"monitor_id", 2);
+        } else if (btn == buttons.monitor3) {
+            conf_set_i(bp_conf,"monitor_id", 3);
+        } else if (btn == buttons.monitor4) {
+            conf_set_i(bp_conf,"monitor_id", 4);
+        } else if (btn == buttons.monitor5) {
+            conf_set_i(bp_conf,"monitor_id", 5);
         }
+        
         for (size_t i = 1; i < buttons.num_radio_boxes; i++) {
             if (btn == buttons.radio_boxes[i]) {
                 conf_set_str(bp_conf, "radio_device",
@@ -448,6 +488,23 @@ create_main_window(void) {
     char *prefs_title;
     size_t main_window_height = MAIN_WINDOW_HEIGHT ;
 
+    initMonitorOrigin();
+
+    checkbox_t monitors[] = {
+            { monitor_def.monitor_count <= 1 ? NULL : _("User interface on monitor #"), NULL, monitor_tooltip}, // if only 1 monitor, list is disabled  
+            { monitor_def.monitor_count > 1 ?   "Monitor #0" : NULL , &buttons.monitor0,     monitor_tooltip},
+            { monitor_def.monitor_count >= 2 ?  "Monitor #1" : NULL, &buttons.monitor1,     monitor_tooltip},
+            { monitor_def.monitor_count >= 3 ?  "Monitor #2" : NULL, &buttons.monitor2,     monitor_tooltip},
+            { monitor_def.monitor_count >= 4 ?  "Monitor #3" : NULL, &buttons.monitor3,     monitor_tooltip},
+            { monitor_def.monitor_count >= 5 ?  "Monitor #4" : NULL, &buttons.monitor4,     monitor_tooltip},
+            { monitor_def.monitor_count >= 6 ?  "Monitor #5" : NULL, &buttons.monitor5,     monitor_tooltip},
+            {NULL,                NULL,                    NULL}
+    };
+
+
+
+
+
     checkbox_t col1[] = {
             {_("User interface"), NULL,                    NULL},
             {_("X-Plane's language"), &buttons.xplang,     NULL},
@@ -517,6 +574,11 @@ create_main_window(void) {
     if ((buttons.num_radio_boxes + buttons.num_sound_boxes) > 6) {
         main_window_height += (buttons.num_radio_boxes + buttons.num_sound_boxes) * BUTTON_HEIGHT ;
     }
+
+    if ( monitor_def.monitor_count > 1 ) {
+        main_window_height += monitor_def.monitor_count * BUTTON_HEIGHT * 2 ;
+    }
+
     l = snprintf(NULL, 0, "%s", _("BetterPushback Preferences"));
     prefs_title = safe_malloc(l + 1);
     snprintf(prefs_title, l + 1, "%s", _("BetterPushback Preferences"));
@@ -526,6 +588,10 @@ create_main_window(void) {
     XPSetWidgetProperty(main_win, xpProperty_MainWindowHasCloseBoxes, 1);
     XPAddWidgetCallback(main_win, main_window_cb);
     free(prefs_title);
+int  wleft, wtop, wright, wbottom;
+XPGetWidgetGeometry(main_win, &wleft, &wtop, &wright,
+		    &wbottom);
+logMsg("main win pos l %d  t %d r %d b%d", wleft, wtop, wright, wbottom);            
 
     tts = tooltip_set_new(main_win);
     tooltip_set_font_size(tts, 14);
@@ -534,6 +600,11 @@ create_main_window(void) {
     layout_checkboxes(col2, MARGIN + col1_width + MARGIN, MARGIN, tts);
     layout_checkboxes(other, MARGIN + col1_width + MARGIN,
                       MARGIN + 4.5 * BUTTON_HEIGHT, tts);
+    if (monitors[0].string != NULL) {
+        layout_checkboxes(monitors, MARGIN + col1_width + MARGIN,
+                        MARGIN + 11 * BUTTON_HEIGHT, tts);
+    }
+
     layout_checkboxes(radio_out, 3 * MARGIN + col1_width + col2_width, MARGIN, tts);
     layout_checkboxes(sound_out, 3 * MARGIN + col1_width + col2_width,
                       MARGIN + (buttons.num_radio_boxes + 1.5) * BUTTON_HEIGHT, tts);
@@ -909,6 +980,36 @@ get_ui_scale_from_pref(void) {
     return (scale);
 }
 
+int 
+get_ui_monitor_from_pref(void) {
+    char *path = mkpathname(CONF_DIRS, XP_PREF_WINDOWS, NULL);
+    const char *key = "monitor/0/m_monitor";
+    int monit_id = 0;
+    FILE *fp = fopen(path, "rb");
+    char *line = NULL;
+    char *search;
+    size_t cap = 0;
+    int line_num;
+
+    UNUSED(line_num);
+
+    if (fp != NULL) {
+        for (line_num = 1; getline(&line, &cap, fp) > 0; line_num++) {
+            search = strstr(line, key);
+            if (search != NULL) {
+                monit_id = atoi(search + strlen(key));
+                break;
+            }
+
+        }
+        free(line);
+        fclose(fp);
+    }
+
+    free(path);
+    return (monit_id);
+}
+
 
 
 
@@ -1050,11 +1151,14 @@ void inMonitorBoundsCallback(
 
     monitor_def.monitor_count++;
     if ( !monitor_def.monitor_found && 
-        ((inMonitorIndex == 0) || (inMonitorIndex == monitor_def.monitor_id))) {
+        ((monitor_def.monitor_count == 1) || (inMonitorIndex == monitor_def.monitor_requested))) {
         // we are taking the first one and then if found the one requested
         monitor_def.x_origin = inLeftBx;
         monitor_def.y_origin = inBottomBx;
-        if (inMonitorIndex == monitor_def.monitor_id) {
+        monitor_def.h = inTopBx - inBottomBx;
+        monitor_def.w = inRightBx -inLeftBx;
+        monitor_def.monitor_id = inMonitorIndex;
+        if (inMonitorIndex == monitor_def.monitor_requested) {
             monitor_def.monitor_found = B_TRUE;
         }
         logMsg("Founded i %d l %d t %d r %d b %d", inMonitorIndex, inLeftBx,inTopBx,inRightBx, inBottomBx);
@@ -1062,10 +1166,23 @@ void inMonitorBoundsCallback(
                     
 }
 
-void initMonitorOrigin(int monitor_id) {
+void initMonitorOrigin(void) {
+    int monitor_id = 0;
+    (void) conf_get_i(bp_conf, "monitor_id",  &monitor_id);
+    monitor_id = get_ui_monitor_from_pref();
     monitor_def.monitor_found = B_FALSE; // 'clear' the found flag
     monitor_def.monitor_count = 0;
-    monitor_def.monitor_id = monitor_id; // We are looking for this id
+    monitor_def.monitor_requested = monitor_id; // We are looking for this id
+    // initialising with a default screen
+    monitor_def.x_origin = 0;
+    monitor_def.y_origin = 0;
+    XPLMGetScreenSize(&monitor_def.w, &monitor_def.h);
     XPLMGetAllMonitorBoundsGlobal(inMonitorBoundsCallback, NULL);
-    logMsg("fin XPLMGetAllMonitorBoundsGlobal");
+    logMsg("fin XPLMGetAllMonitorBoundsGlobal with monitor %d / requested %d / total %d", monitor_def.monitor_id, monitor_def.monitor_requested , monitor_def.monitor_count);
+    logMsg("fin XPLMGetAllMonitorBoundsGlobal with x %d y %d h %d w %d", monitor_def.x_origin, monitor_def.y_origin, monitor_def.h,monitor_def.w );
+
+    int winLeft, winTop, winRight, winBot;
+    XPLMGetScreenBoundsGlobal(&winLeft, &winTop, &winRight, &winBot);
+logMsg("Founded   l %d t %d r %d b %d",  winLeft,winTop,winRight, winBot);
+
 }

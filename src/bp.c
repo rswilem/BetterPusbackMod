@@ -1482,11 +1482,9 @@ bp_can_start(const char **reason) {
         return (B_FALSE);
     }
 
-    if (!ignore_doors_check && (!acf_doors_closed())) {
-        if (reason != NULL) {
-            *reason = _("Pushback not yet possible: Doors and hatches "
+    if (reason != NULL && !ignore_doors_check && (!acf_doors_closed())) {
+        *reason = _("Pushback not yet possible: Doors and hatches "
                         "not all closed.");
-        }
         return (B_FALSE);
     }
 
@@ -2456,26 +2454,28 @@ disco_win_draw(XPLMWindowID inWindowID, void *inRefcon) {
     int w, h, mx, my;
 
     UNUSED(inRefcon);
-    BPGetScreenSizeUIScaled(&w, &h, B_FALSE);
+//    BPGetScreenSizeUIScaled(&w, &h, B_FALSE);
+    h = monitor_def.h;
+    w = monitor_def.w;
     XPLMGetMouseLocationGlobal(&mx, &my);
 
     XPLMSetGraphicsState(0, 1, 0, 0, 1, 0, 0);
     if (inWindowID == bp_ls.disco_win) {
-        bool_t is_lit = (mx >= w / 2 - 1.5 * disco_buttons[0].w &&
-                         mx <= w / 2 - 0.5 * disco_buttons[0].w &&
-                         my >= h - 1.5 * disco_buttons[0].h &&
-                         my <= h - 0.5 * disco_buttons[0].h);
-        draw_icon(&disco_buttons[0], w / 2 - 1.5 * disco_buttons[0].w,
-                  h - 1.5 * disco_buttons[0].h, 1.0,
+        bool_t is_lit = (mx >= monitor_def.x_origin + w / 2 - 1.5 * disco_buttons[0].w &&
+                         mx <= monitor_def.x_origin + w / 2 - 0.5 * disco_buttons[0].w &&
+                         my >= monitor_def.y_origin + h - 1.5 * disco_buttons[0].h &&
+                         my <= monitor_def.y_origin + h - 0.5 * disco_buttons[0].h);
+        draw_icon(&disco_buttons[0], monitor_def.x_origin + w / 2 - 1.5 * disco_buttons[0].w,
+                  monitor_def.y_origin + h - 1.5 * disco_buttons[0].h, 1.0,
                   B_FALSE, is_lit);
     } else {
-        bool_t is_lit = (mx >= w / 2 + 0.5 * disco_buttons[1].w &&
-                         mx <= w / 2 + 1.5 * disco_buttons[1].w &&
-                         my >= h - 1.5 * disco_buttons[1].h &&
-                         my <= h - 0.5 * disco_buttons[1].h);
+        bool_t is_lit = (mx >= monitor_def.x_origin + w / 2 + 0.5 * disco_buttons[1].w &&
+                         mx <= monitor_def.x_origin + w / 2 + 1.5 * disco_buttons[1].w &&
+                         my >= monitor_def.y_origin + h - 1.5 * disco_buttons[1].h &&
+                         my <= monitor_def.y_origin + h - 0.5 * disco_buttons[1].h);
         ASSERT(inWindowID == bp_ls.recon_win);
-        draw_icon(&disco_buttons[1], w / 2 + 0.5 * disco_buttons[1].w,
-                  h - 1.5 * disco_buttons[1].h, 1.0,
+        draw_icon(&disco_buttons[1], monitor_def.x_origin + w / 2 + 0.5 * disco_buttons[1].w,
+                  monitor_def.y_origin + h - 1.5 * disco_buttons[1].h, 1.0,
                   B_FALSE, is_lit);
     }
 }
@@ -2568,20 +2568,23 @@ disco_intf_show(void) {
     };
     int w, h;
 
-    BPGetScreenSizeUIScaled(&w, &h, B_TRUE);
+    initMonitorOrigin();
+//    BPGetScreenSizeUIScaled(&w, &h, B_TRUE);
+    h = monitor_def.h;
+    w = monitor_def.w;
 
-    disco_ops.left = w / 2 - 1.5 * disco_buttons[0].w;
-    disco_ops.right = w / 2 - 0.5 * disco_buttons[0].w;
-    disco_ops.top = h - 0.5 * disco_buttons[0].h;
-    disco_ops.bottom = h - 1.5 * disco_buttons[0].h;
+    disco_ops.left = monitor_def.x_origin + w / 2 - 1.5 * disco_buttons[0].w;
+    disco_ops.right = monitor_def.x_origin + w / 2 - 0.5 * disco_buttons[0].w;
+    disco_ops.top = monitor_def.y_origin + h - 0.5 * disco_buttons[0].h;
+    disco_ops.bottom = monitor_def.y_origin + h - 1.5 * disco_buttons[0].h;
     bp_ls.disco_win = XPLMCreateWindowEx(&disco_ops);
     ASSERT(bp_ls.disco_win != NULL);
     XPLMBringWindowToFront(bp_ls.disco_win);
 
-    disco_ops.left = w / 2 + 0.5 * disco_buttons[1].w;
-    disco_ops.right = w / 2 + 1.5 * disco_buttons[1].w;
-    disco_ops.top = h - 0.5 * disco_buttons[1].h;
-    disco_ops.bottom = h - 1.5 * disco_buttons[1].h;
+    disco_ops.left = monitor_def.x_origin + w / 2 + 0.5 * disco_buttons[1].w;
+    disco_ops.right = monitor_def.x_origin + w / 2 + 1.5 * disco_buttons[1].w;
+    disco_ops.top = monitor_def.y_origin + h - 0.5 * disco_buttons[1].h;
+    disco_ops.bottom = monitor_def.y_origin + h - 1.5 * disco_buttons[1].h;
     bp_ls.recon_win = XPLMCreateWindowEx(&disco_ops);
     ASSERT(bp_ls.recon_win != NULL);
     XPLMBringWindowToFront(bp_ls.recon_win);
@@ -2618,29 +2621,32 @@ main_win_click(XPLMWindowID inWindowID, int x, int y, XPLMMouseStatus inMouse,
 
 static void
 main_win_draw(XPLMWindowID inWindowID, void *inRefcon) {
-    int w, h, mx, my;
+    int h, mx, my;
 
     UNUSED(inRefcon);
-    BPGetScreenSizeUIScaled(&w, &h, B_FALSE);
+//    BPGetScreenSizeUIScaled(&w, &h, B_FALSE);
+    h = monitor_def.h;
+    //w = monitor_def.w;
+
     XPLMGetMouseLocationGlobal(&mx, &my);
 
     XPLMSetGraphicsState(0, 1, 0, 0, 1, 0, 0);
     if (inWindowID == bp_ls.planner_win) {
-        bool_t is_lit = (mx >= 0 &&
-                         mx <= disco_buttons[2].w &&
-                         my >= h/2 - disco_buttons[2].h &&
-                         my <= h/2 );
-        draw_icon(&disco_buttons[2], 0,
-                  h/2 - disco_buttons[2].h, 1.0,
+        bool_t is_lit = (mx >= monitor_def.x_origin &&
+                         mx <= monitor_def.x_origin + disco_buttons[2].w &&
+                         my >= monitor_def.y_origin + h/2 - disco_buttons[2].h &&
+                         my <= monitor_def.y_origin + h/2 );
+        draw_icon(&disco_buttons[2], monitor_def.x_origin,
+                  monitor_def.y_origin + h/2 - disco_buttons[2].h, 1.0,
                   B_FALSE, is_lit);
     } else {
-        bool_t is_lit = (mx >= 0 &&
-                         mx <= disco_buttons[3].w &&
-                         my >= h/2 - 1.5 * disco_buttons[2].h - disco_buttons[3].h &&
-                         my <= h/2 - 1.5 * disco_buttons[2].h);
+        bool_t is_lit = (mx >= monitor_def.x_origin &&
+                         mx <= monitor_def.x_origin + disco_buttons[3].w &&
+                         my >= monitor_def.y_origin + h/2 - 1.5 * disco_buttons[2].h - disco_buttons[3].h &&
+                         my <= monitor_def.y_origin + h/2 - 1.5 * disco_buttons[2].h);
         ASSERT(inWindowID == bp_ls.start_pb_win);
-        draw_icon(&disco_buttons[3], 0,
-                  h/2 - 1.5 * disco_buttons[2].h - disco_buttons[3].h, 1.0,
+        draw_icon(&disco_buttons[3], monitor_def.x_origin,
+                  monitor_def.y_origin + h/2 - 1.5 * disco_buttons[2].h - disco_buttons[3].h, 1.0,
                   B_FALSE, is_lit);
     }
 }
@@ -2658,15 +2664,20 @@ main_intf_show(void) {
                 .handleMouseWheelFunc = nil_win_wheel,
                 .refcon = NULL
         };
-        int w, h;
-        initMonitorOrigin(0);
-        BPGetScreenSizeUIScaled(&w, &h, B_TRUE);
+        int h;
+        initMonitorOrigin();
+        //BPGetScreenSizeUIScaled(&w, &h, B_TRUE);
+        h = monitor_def.h;
+        //w = monitor_def.w;
+
+
+        logMsg("Orign x %d y %d",monitor_def.x_origin,monitor_def.y_origin );
 
     if (bp_ls.planner_win == NULL)  {
         load_icon(&disco_buttons[2]);
         disco_ops.left = monitor_def.x_origin ; // w / 2 - 1.5 * disco_buttons[0].w;
-        disco_ops.right = disco_buttons[2].w;
-        disco_ops.top = h/2 ; // - 0.5 * disco_buttons[0].h;
+        disco_ops.right = monitor_def.x_origin  + disco_buttons[2].w;
+        disco_ops.top = monitor_def.y_origin + h/2 ; // - 0.5 * disco_buttons[0].h;
         disco_ops.bottom = monitor_def.y_origin + h/2 - disco_buttons[2].h;
         bp_ls.planner_win = XPLMCreateWindowEx(&disco_ops);
         ASSERT(bp_ls.planner_win != NULL);
@@ -2676,8 +2687,8 @@ main_intf_show(void) {
     if (bp_ls.start_pb_win == NULL) {
         load_icon(&disco_buttons[3]);
         disco_ops.left = monitor_def.x_origin ; //w / 2 + 0.5 * disco_buttons[1].w;
-        disco_ops.right = disco_buttons[3].w;
-        disco_ops.top = h/2 - 1.5 * disco_buttons[2].h;
+        disco_ops.right = monitor_def.x_origin  + disco_buttons[3].w;
+        disco_ops.top = monitor_def.y_origin + h/2 - 1.5 * disco_buttons[2].h;
         disco_ops.bottom = monitor_def.y_origin + disco_ops.top - disco_buttons[3].h;
         bp_ls.start_pb_win = XPLMCreateWindowEx(&disco_ops);
         ASSERT(bp_ls.start_pb_win != NULL);
