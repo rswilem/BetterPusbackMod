@@ -199,11 +199,9 @@ cam_ctl(XPLMCameraPosition_t *pos, int losing_control, void *refcon)
 static void
 win_draw(XPLMWindowID inWindowID, void *inRefcon)
 {
-//	int w, h;
 
 	UNUSED(inWindowID);
 	UNUSED(inRefcon);
-//	BPGetScreenSizeUIScaled(&w, &h, B_FALSE);
 	XPLMSetWindowGeometry(win, monitor_def.x_origin, monitor_def.h, monitor_def.w, monitor_def.y_origin);
 
 	if (hintbar != NULL && microclock() - hintbar_start > HINTBAR_TIMEOUT) {
@@ -330,7 +328,6 @@ cab_view_start(void)
 		    .handleMouseWheelFunc = win_wheel,
 		    .refcon = NULL
 		};
-//		BPGetScreenSizeUIScaled(&win_ops.right, &win_ops.top, B_TRUE);
 		win_ops.left = monitor_def.x_origin;
 		win_ops.right = monitor_def.x_origin + monitor_def.w;
 		win_ops.bottom = monitor_def.y_origin;
@@ -347,12 +344,10 @@ cab_view_start(void)
 	 */
 	if (hintbar == NULL) {
 		const char *str = _("Left mouse button to reorient view");
-//		int x, y;
 		int w = XPLMMeasureString(xplmFont_Proportional,
 		    str, strlen(str));
 		XPWidgetID caption;
 
-//		BPGetScreenSizeUIScaled(&x, &y, B_TRUE);
 		hintbar = create_widget_rel((monitor_def.w - w) / 2 - 10,
 		     HINTBAR_HEIGHT * 3, B_FALSE, w + 20,
 		    HINTBAR_HEIGHT, 0, "", 1, NULL, xpWidgetClass_MainWindow);

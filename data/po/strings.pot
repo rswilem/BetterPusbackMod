@@ -206,3 +206,38 @@ msgstr ""
 
 msgid "Ignore doors and hatches check **"
 msgstr ""
+
+msgid "In case of multiple monitors configuration, BpB need to use the primary monitor\n"
+        "(the one with the x-plane menus), Bpb is able to select it automatically.\n"
+        "If not select the one that works ! (the monitor numbers are arbitrary)."
+msgstr ""
+
+msgid "User interface on monitor #"
+msgstr ""
+
+msgid "Automatic"
+msgstr ""
+
+msgid ""Monitor #0"
+msgstr ""
+
+msgid ""Monitor #1"
+msgstr ""
+
+msgid ""Monitor #2"
+msgstr ""
+
+msgid ""Monitor #3"
+msgstr ""
+
+msgid ""Monitor #4"
+msgstr ""
+
+msgid ""Monitor #5"
+msgstr ""
+
+msgid "Magic squares position **"
+msgstr ""
+
+msgid "Slide this bar to move the magic squares up or down"
+msgid ""

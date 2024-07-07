@@ -192,6 +192,8 @@ bool_t audio_sys_init(void);
 
 void main_intf(void);
 
+void main_intf_hide(void);
+
 extern bool_t late_plan_requested;
 
 #ifdef    __cplusplus

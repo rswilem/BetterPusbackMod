@@ -190,7 +190,7 @@ static void disco_intf_hide(void);
 
 static void main_intf_show(void);
 
-static void main_intf_hide(void);
+void main_intf_hide(void);
 
 static int disco_handler(XPLMCommandRef, XPLMCommandPhase, void *);
 
@@ -2454,7 +2454,6 @@ disco_win_draw(XPLMWindowID inWindowID, void *inRefcon) {
     int w, h, mx, my;
 
     UNUSED(inRefcon);
-//    BPGetScreenSizeUIScaled(&w, &h, B_FALSE);
     h = monitor_def.h;
     w = monitor_def.w;
     XPLMGetMouseLocationGlobal(&mx, &my);
@@ -2569,7 +2568,6 @@ disco_intf_show(void) {
     int w, h;
 
     initMonitorOrigin();
-//    BPGetScreenSizeUIScaled(&w, &h, B_TRUE);
     h = monitor_def.h;
     w = monitor_def.w;
 
@@ -2621,12 +2619,9 @@ main_win_click(XPLMWindowID inWindowID, int x, int y, XPLMMouseStatus inMouse,
 
 static void
 main_win_draw(XPLMWindowID inWindowID, void *inRefcon) {
-    int h, mx, my;
+    int mx, my;
 
     UNUSED(inRefcon);
-//    BPGetScreenSizeUIScaled(&w, &h, B_FALSE);
-    h = monitor_def.h;
-    //w = monitor_def.w;
 
     XPLMGetMouseLocationGlobal(&mx, &my);
 
@@ -2634,19 +2629,19 @@ main_win_draw(XPLMWindowID inWindowID, void *inRefcon) {
     if (inWindowID == bp_ls.planner_win) {
         bool_t is_lit = (mx >= monitor_def.x_origin &&
                          mx <= monitor_def.x_origin + disco_buttons[2].w &&
-                         my >= monitor_def.y_origin + h/2 - disco_buttons[2].h &&
-                         my <= monitor_def.y_origin + h/2 );
+                         my >= monitor_def.y_origin + monitor_def.magic_squares_height - disco_buttons[2].h &&
+                         my <= monitor_def.y_origin + monitor_def.magic_squares_height );
         draw_icon(&disco_buttons[2], monitor_def.x_origin,
-                  monitor_def.y_origin + h/2 - disco_buttons[2].h, 1.0,
+                  monitor_def.y_origin + monitor_def.magic_squares_height - disco_buttons[2].h, 1.0,
                   B_FALSE, is_lit);
     } else {
         bool_t is_lit = (mx >= monitor_def.x_origin &&
                          mx <= monitor_def.x_origin + disco_buttons[3].w &&
-                         my >= monitor_def.y_origin + h/2 - 1.5 * disco_buttons[2].h - disco_buttons[3].h &&
-                         my <= monitor_def.y_origin + h/2 - 1.5 * disco_buttons[2].h);
+                         my >= monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * disco_buttons[2].h - disco_buttons[3].h &&
+                         my <= monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * disco_buttons[2].h);
         ASSERT(inWindowID == bp_ls.start_pb_win);
         draw_icon(&disco_buttons[3], monitor_def.x_origin,
-                  monitor_def.y_origin + h/2 - 1.5 * disco_buttons[2].h - disco_buttons[3].h, 1.0,
+                  monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * disco_buttons[2].h - disco_buttons[3].h, 1.0,
                   B_FALSE, is_lit);
     }
 }
@@ -2664,21 +2659,15 @@ main_intf_show(void) {
                 .handleMouseWheelFunc = nil_win_wheel,
                 .refcon = NULL
         };
-        int h;
         initMonitorOrigin();
-        //BPGetScreenSizeUIScaled(&w, &h, B_TRUE);
-        h = monitor_def.h;
-        //w = monitor_def.w;
 
-
-        logMsg("Orign x %d y %d",monitor_def.x_origin,monitor_def.y_origin );
 
     if (bp_ls.planner_win == NULL)  {
         load_icon(&disco_buttons[2]);
         disco_ops.left = monitor_def.x_origin ; // w / 2 - 1.5 * disco_buttons[0].w;
         disco_ops.right = monitor_def.x_origin  + disco_buttons[2].w;
-        disco_ops.top = monitor_def.y_origin + h/2 ; // - 0.5 * disco_buttons[0].h;
-        disco_ops.bottom = monitor_def.y_origin + h/2 - disco_buttons[2].h;
+        disco_ops.top = monitor_def.y_origin + monitor_def.magic_squares_height ; // - 0.5 * disco_buttons[0].h;
+        disco_ops.bottom = monitor_def.y_origin + monitor_def.magic_squares_height - disco_buttons[2].h;
         bp_ls.planner_win = XPLMCreateWindowEx(&disco_ops);
         ASSERT(bp_ls.planner_win != NULL);
         XPLMBringWindowToFront(bp_ls.planner_win);
@@ -2688,7 +2677,7 @@ main_intf_show(void) {
         load_icon(&disco_buttons[3]);
         disco_ops.left = monitor_def.x_origin ; //w / 2 + 0.5 * disco_buttons[1].w;
         disco_ops.right = monitor_def.x_origin  + disco_buttons[3].w;
-        disco_ops.top = monitor_def.y_origin + h/2 - 1.5 * disco_buttons[2].h;
+        disco_ops.top = monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * disco_buttons[2].h;
         disco_ops.bottom = monitor_def.y_origin + disco_ops.top - disco_buttons[3].h;
         bp_ls.start_pb_win = XPLMCreateWindowEx(&disco_ops);
         ASSERT(bp_ls.start_pb_win != NULL);
@@ -2697,7 +2686,7 @@ main_intf_show(void) {
     }
 }
 
-static void
+void
 main_intf_hide(void) {
     if (bp_ls.planner_win != NULL) {
         XPLMDestroyWindow(bp_ls.planner_win);
@@ -2713,7 +2702,8 @@ main_intf_hide(void) {
 
 void
 main_intf(void) {
-    if (acf_is_airliner() && acf_on_gnd_stopped(NULL) && (start_pb_plan_enable == B_TRUE) && (start_pb_enable == B_TRUE)) {
+    if (get_pref_widget_status() // show also the magic button while in the pref window
+     || (acf_is_airliner() && acf_on_gnd_stopped(NULL) && (start_pb_plan_enable == B_TRUE) && (start_pb_enable == B_TRUE))) {
         main_intf_show();
     } else {
         main_intf_hide();

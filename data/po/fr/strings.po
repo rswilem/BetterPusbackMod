@@ -130,7 +130,7 @@ msgid ""
 "in speaks my language. Otherwise the ground crew speaks English\n"
 "with a local accent."
 msgstr ""
-"Le personnel au sol parle francais uniquement dans le pays francophones.\n"
+"Le personnel au sol parle francais uniquement dans les pays francophones.\n"
 "Sinon, Le personnel au sol parle anglais avec un accent local pour certains."
 
 msgid ""
@@ -237,3 +237,42 @@ msgid "Hides default X-Plane 11 pushback tug.\n"
 msgstr "Cache le tracteur par defaut de X-Plane 11.\n"
     "Relancer X-Plane pour que le changement prenne effet."
 
+msgid "In case of multiple monitors configuration, BpB need to use the primary monitor\n"
+        "(the one with the x-plane menus), Bpb is able to select it automatically.\n"
+        "If not select the one that works ! (the monitor numbers are arbitrary)."
+msgstr "Dans le cas d'une configuration avec plusieurs ecrans, BpB doit utiliser l'ecran principal\n"
+        "(celui avec les menus de x-plane), Bpb est capable de le selectionner automatiquement.\n"
+        "Si ce n'est pas le cas, selectionner celui qui fonctionne ! (La numerotation des ecrans est arbitraire)."
+
+msgid "User interface on monitor #"
+msgstr "Interface sur l'ecran n°"
+
+msgid "Automatic"
+msgstr "Automatique"
+
+msgid "Monitor #0"
+msgstr "Ecran n°0"
+
+msgid "Monitor #1"
+msgstr "Ecran n°1"
+
+msgid "Monitor #2"
+msgstr "Ecran n°2"
+
+msgid "Monitor #3"
+msgstr "Ecran n°3"
+
+msgid "Monitor #4"
+msgstr "Ecran n°4"
+
+msgid "Monitor #5"
+msgstr "Ecran n°5"
+
+msgid "Magic squares position **"
+msgstr "Position des raccourcis **"
+
+msgid "Slide this bar to move the magic squares up or down"
+msgstr "Glisser cette barre pour monter ou descendre les miniatures-raccourcis"
+
+msgid "Hide default X-Plane 11 tug"
+msgstr "Cache le tracteur par defaut de X-plane"

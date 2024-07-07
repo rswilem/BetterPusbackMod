@@ -46,6 +46,7 @@ typedef struct {
     int y_origin;
     int h;
     int w;
+    int magic_squares_height;
 } monitors_t;
 
 extern  monitors_t monitor_def;
@@ -64,11 +65,13 @@ bool_t conf_get_b_per_acf(char *my_key,  bool_t *value);
 
 void conf_set_b_per_acf(char *my_key,  bool_t value);
 
+bool_t conf_get_i_per_acf(char *my_key,  int *value);
+
+void conf_set_i_per_acf(char *my_key,  int value);
+
 void push_reset_fov_values(void);
 
 void pop_fov_values(void);
-
-void BPGetScreenSizeUIScaled(int *w, int *h, bool_t get_ui_scale);
 
 char * getPluginUpdateStatus(void);
 

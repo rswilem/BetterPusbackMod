@@ -376,15 +376,11 @@ move_camera(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon) {
 
 static void
 get_vp(vec4 vp) {
-///    int scr_w, scr_h;
 
     ASSERT(vp != NULL);
-        /*
-         * As fake_win is defined with 0,0 and sizes given by BPGetScreenSizeUIScaled
-         * let's do the same here. it will fix planner drawing in Xp12
-         */
-  ///      BPGetScreenSizeUIScaled(&scr_w, &scr_h, B_FALSE);
-        vp[0] = monitor_def.x_origin;
+
+
+        vp[0] =  monitor_def.x_origin;
         vp[1] =  monitor_def.y_origin;
         vp[2] =  monitor_def.w;
         vp[3] =  monitor_def.h;
@@ -848,11 +844,10 @@ fake_win_draw(XPLMWindowID inWindowID, void *inRefcon) {
     UNUSED(inWindowID);
     UNUSED(inRefcon);
 
-    //BPGetScreenSizeUIScaled(&w, &h, B_FALSE);
     h = monitor_def.h;
     w = monitor_def.w;
 
-    XPLMSetWindowGeometry(fake_win, monitor_def.x_origin, h, w, monitor_def.y_origin);
+//    XPLMSetWindowGeometry(fake_win, monitor_def.x_origin, h, w, monitor_def.y_origin);
 
     if (!XPLMIsWindowInFront(fake_win))
         XPLMBringWindowToFront(fake_win);
@@ -893,7 +888,6 @@ button_hit_check(int x, int y) {
     double scale;
     int w, h, h_buttons, h_off;
 
-//    BPGetScreenSizeUIScaled(&w, &h, B_FALSE);
     h = monitor_def.h;
     w = monitor_def.w;
 
@@ -1209,7 +1203,6 @@ bp_cam_start(void) {
 
     push_reset_fov_values();
     eye_track_debut();
-//    BPGetScreenSizeUIScaled(&fake_win_ops.right, &fake_win_ops.top, B_TRUE);
 
     initMonitorOrigin();
     fake_win_ops.left = monitor_def.x_origin;
@@ -1286,11 +1279,9 @@ bp_cam_start(void) {
 
     updateAvailable = getPluginUpdateStatus();
     if (updateAvailable != NULL) {
- //       snprintf(bottom_msg, sizeof(bottom_msg), "New version of BetterPushBack available: %s (Use SkunkCrafts Updater to update)", updateAvailable);
- //       init_bottom_msg(bottom_msg);
-    }
-        snprintf(bottom_msg, sizeof(bottom_msg), "New version of BetterPushBack available: xxxx (Use SkunkCrafts Updater to update)");
+        snprintf(bottom_msg, sizeof(bottom_msg), "New version of BetterPushBack available: %s (Use SkunkCrafts Updater to update)", updateAvailable);
         init_bottom_msg(bottom_msg);
+    }
     
     return (B_TRUE);
 }
