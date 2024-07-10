@@ -881,6 +881,8 @@ fake_win_draw(XPLMWindowID inWindowID, void *inRefcon) {
     if (bottom_msg.msg != NULL) {
         draw_bottom_msg(w,h);
     }
+
+    draw_prediction(0, 0, NULL);
 }
 
 static int
@@ -1230,8 +1232,6 @@ bp_cam_start(void) {
     cursor_hdg = dr_getf(&drs.hdg);
     XPLMControlCamera(xplm_ControlCameraForever, cam_ctl, NULL);
 
-    XPLMRegisterDrawCallback(draw_prediction, PREDICTION_DRAWING_PHASE,
-                             PREDICTION_DRAWING_PHASE_BEFORE, NULL);
     cam_lamp_inst = XPLMCreateInstance(cam_lamp_obj, cam_lamp_drefs);
 
     for (int i = 0; view_cmds[i].name != NULL; i++) {
@@ -1305,8 +1305,6 @@ bp_cam_stop(void) {
         free(seg);
     list_destroy(&pred_segs);
 
-    XPLMUnregisterDrawCallback(draw_prediction, PREDICTION_DRAWING_PHASE,
-                               PREDICTION_DRAWING_PHASE_BEFORE, NULL);
     XPLMDestroyWindow(fake_win);
 
     for (int i = 0; view_cmds[i].name != NULL; i++) {
