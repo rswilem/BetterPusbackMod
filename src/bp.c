@@ -2701,9 +2701,9 @@ main_intf_hide(void) {
 }
 
 void
-main_intf(void) {
+main_intf(bool_t force_hide) {
     if (get_pref_widget_status() // show also the magic button while in the pref window
-     || (acf_is_airliner() && acf_on_gnd_stopped(NULL) && (start_pb_plan_enable == B_TRUE) && (start_pb_enable == B_TRUE))) {
+     || (acf_is_airliner() && acf_on_gnd_stopped(NULL) && (start_pb_plan_enable == B_TRUE) && (start_pb_enable == B_TRUE) && !force_hide )) {
         main_intf_show();
     } else {
         main_intf_hide();

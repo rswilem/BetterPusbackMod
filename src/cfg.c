@@ -1251,6 +1251,10 @@ void initMonitorOrigin(void) {
     monitor_def.monitor_count = 0;
     monitor_def.monitor_requested = monitor_id; // We are looking for this id
 
+    monitor_def.x_origin = 0;
+    monitor_def.y_origin = 0;
+    XPLMGetScreenSize(&monitor_def.w, &monitor_def.h);
+    logMsg("%d monitor(s) found. id %d requested / id %d found", monitor_def.monitor_count, monitor_def.monitor_requested , monitor_def.monitor_id);
     XPLMGetAllMonitorBoundsGlobal(inMonitorBoundsCallback, NULL);
     logMsg("%d monitor(s) found. id %d requested / id %d found", monitor_def.monitor_count, monitor_def.monitor_requested , monitor_def.monitor_id);
     logMsg("id %d found with  x %d y %d h %d w %d", monitor_def.monitor_id, monitor_def.x_origin, monitor_def.y_origin, monitor_def.h,monitor_def.w );

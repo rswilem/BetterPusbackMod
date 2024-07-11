@@ -80,7 +80,7 @@ static bool_t prefs_enable, stop_pb_plan_enable,
 bool_t  start_pb_plan_enable, start_pb_enable;
 
 static bool_t pref_widget_active_status = B_FALSE;
-static bool_t hide_main_intf = B_FALSE;
+bool_t hide_main_intf = B_FALSE;
 
 bool_t get_pref_widget_status(void);
 void set_pref_widget_status(bool_t active);
@@ -618,9 +618,11 @@ status_check(float elapsed, float elapsed2, int counter, void *refcon)
     cab_cam_enable = cab_view_can_start();
     enable_menu_items();
 
-    if (!hide_main_intf) {
-        main_intf();
+    if (!conf_get_b_per_acf("hide_magic_squares", &hide_main_intf) ) {
+        hide_main_intf = B_FALSE;
     }
+
+    main_intf(hide_main_intf);
         
     // Status check only needed if we have a known system of coupling installed...
     if (!smartcopilot_present && !sharedflight_present)
@@ -934,7 +936,6 @@ bp_priv_enable(void) {
 
     XPLMRegisterFlightLoopCallback(status_check, STATUS_CHECK_INTVAL, NULL);
 
-    (void) conf_get_b_per_acf("hide_magic_squares", &hide_main_intf);
 
     /* If the user OK'd it, remove the default tug */
     (void) conf_get_b(bp_conf, "dont_hide_xp11_tug", &dont_hide_xp_tug);

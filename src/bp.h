@@ -190,7 +190,7 @@ bool_t find_nearest_airport(char icao[8]);
 
 bool_t audio_sys_init(void);
 
-void main_intf(void);
+void main_intf(bool_t);
 
 void main_intf_hide(void);
 
