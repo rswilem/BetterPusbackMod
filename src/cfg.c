@@ -79,6 +79,7 @@ static struct {
     XPWidgetID french;
     XPWidgetID german;
     XPWidgetID portuguese;
+    XPWidgetID portuguese_BR;
     XPWidgetID russian;
     XPWidgetID spanish;
     XPWidgetID italian;
@@ -244,6 +245,7 @@ buttons_update(void) {
     SET_LANG_BTN(english, "en");
     SET_LANG_BTN(french, "fr");
     SET_LANG_BTN(portuguese, "pt");
+    SET_LANG_BTN(portuguese_BR, "pt_BR");
     SET_LANG_BTN(spanish, "es");
     SET_LANG_BTN(italian, "it");
     SET_LANG_BTN(russian, "ru");
@@ -382,6 +384,8 @@ main_window_cb(XPWidgetMessage msg, XPWidgetID widget, intptr_t param1,
             conf_set_str(bp_conf, "lang", "fr");
         } else if (btn == buttons.portuguese) {
             conf_set_str(bp_conf, "lang", "pt");
+        } else if (btn == buttons.portuguese_BR) {
+            conf_set_str(bp_conf, "lang", "pt_BR");
         } else if (btn == buttons.russian) {
             conf_set_str(bp_conf, "lang", "ru");
         } else if (btn == buttons.chinese) {
@@ -627,6 +631,7 @@ create_main_window(void) {
             {"Italiano",              &buttons.italian,    NULL},
             {"Français",              &buttons.french,     NULL},
             {"Português",             &buttons.portuguese, NULL},
+            {"Português Brasil",      &buttons.portuguese_BR, NULL},
             {"Русский",               &buttons.russian,    NULL},
             {"中文",                  &buttons.chinese,    NULL},
             {NULL,                NULL,                    NULL}
