@@ -477,9 +477,9 @@ doors_refs_init(void)
 		if (fp == NULL) {
 			return;
 		}
-		logMsg("founded : X-RAAS2/BetterPushback_doors.cfg");	
+		logMsg("founded : BetterPushback_doors.cfg in plugins folder");	
 	} else {
-	logMsg("founded : Output/preferences/BetterPushback_doors.cfg");
+	logMsg("founded : BetterPushback_doors.cfg in Output/preferences folder");
 	}
 
 #define	FILTER_PARAM(param) \
