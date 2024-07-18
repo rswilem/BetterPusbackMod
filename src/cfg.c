@@ -631,7 +631,7 @@ create_main_window(void) {
             {"Italiano",              &buttons.italian,    NULL},
             {"Français",              &buttons.french,     NULL},
             {"Português",             &buttons.portuguese, NULL},
-            {"Português Brasil",      &buttons.portuguese_BR, NULL},
+            {"Português do Brasil",   &buttons.portuguese_BR, NULL},
             {"Русский",               &buttons.russian,    NULL},
             {"中文",                  &buttons.chinese,    NULL},
             {NULL,                NULL,                    NULL}

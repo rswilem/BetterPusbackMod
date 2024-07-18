@@ -10,105 +10,293 @@
 # http://www.illumos.org/license/CDDL.
 #
 # CDDL HEADER END
-
 # Copyright 2017 Saso Kiselkov. All rights reserved.
-
+# SPDX-FileCopyrightText: 2024 Marcus Gama <marcus.gama@gmail.com>
 msgid ""
-msgstr ""
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>"
+msgstr "Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-07-14 15:58+0300\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 24.05.2\n"
+""
 
+#: bp.c:1074
+#, c-format
+msgid "Pushback failure: X-Plane version too old. This plugin requires at least X-Plane %s to operate."
+msgstr ""
+
+#: bp.c:1084
+msgid "Pushback failure: error reading aircraft files from disk."
+msgstr ""
+
+#: bp.c:1149
+msgid "Pushback failure: error initialising audio messages. Please reinstall BetterPushback."
+msgstr ""
+
+#: bp.c:1162
+msgid "Pushback failure: aircraft not on ground."
+msgstr ""
+
+#: bp.c:1170
+msgid "Pushback failure: aircraft not stationary."
+msgstr ""
+
+#: bp.c:1177
+msgid "Pushback failure: gear not extended."
+msgstr ""
+
+#: bp.c:1195
+msgid "Disconnect tow + headset and switch to hand signals."
+msgstr ""
+
+#: bp.c:1197
+msgid "Reconnect tow and await further instructions."
+msgstr ""
+
+#: bp.c:1292
+msgid "Pushback advisory: you have your radio volume turned very low and may not be able to hear ground crew. Please increase your radio volume in the X-Plane sound preferences."
+msgstr ""
+
+#: bp.c:1468
+msgid "Pushback failure: aircraft is not compatible with BetterPushback."
+msgstr ""
+
+#: bp.c:1478
+msgid "Pushback failure: cannot push this aircraft with engines running. Shutdown engines first."
+msgstr ""
+
+#: bp.c:1486
+msgid "Pushback not yet possible: Doors and hatches not all closed."
+msgstr ""
+
+#: bp.c:1494
+msgid "Pushback failure: please first plan your pushback to tell me where you want to go."
+msgstr ""
+
+#: bp.c:1840
+#, c-format
+msgid "ERROR: master requested tug \"%s\", which we don't have in our in our library. Please sync your tug libraries before trying again."
+msgstr ""
+
+#: bp.c:1942
+msgid "Pushback warning: unable to remove your chocks. Remove them yourself, or else I won't be able to push your aircraft."
+msgstr ""
+
+#: bp.c:2197
+msgid "Hey! Quit blinding me with your landing lights! Turn them off!"
+msgstr ""
+
+#: bp.c:2200
+msgid "Hey! Quit blinding me with your taxi light! Turn it off!"
+msgstr ""
+
+#: bp.c:2987
+msgid "Pushback failure: your flight controls are preventing me from steering the aircraft. Unbind any buttons you have set to \"toggle nosewheel steering\"."
+msgstr ""
+
+#: bp_cam.c:1172
+msgid "Pushback failure: aircraft is incompatible with BetterPushback."
+msgstr ""
+
+#: bp_cam.c:1187
+msgid "Pushback failure: no suitable tug for your aircraft."
+msgstr ""
+
+#: bp_cam.c:1195
 msgid "Can't start planner: aircraft not stationary."
 msgstr ""
 
-msgid ""
-"Can't start planner: pushback already in progress. Please stop the pushback "
-"operation first."
+#: bp_cam.c:1200
+msgid "Can't start planner: pushback already in progress. Please stop the pushback operation first."
+msgstr ""
+
+#: cab_view.c:346
+msgid "Left mouse button to reorient view"
+msgstr ""
+
+#: cfg.c:526
+msgid "Default output device"
+msgstr ""
+
+#: cfg.c:610
+msgid "User interface on monitor #"
+msgstr ""
+
+#: cfg.c:611
+msgid "Automatic"
+msgstr ""
+
+#: cfg.c:612
+msgid "Monitor #0"
+msgstr ""
+
+#: cfg.c:613
+msgid "Monitor #1"
+msgstr ""
+
+#: cfg.c:614
+msgid "Monitor #2"
+msgstr ""
+
+#: cfg.c:615
+msgid "Monitor #3"
+msgstr ""
+
+#: cfg.c:616
+msgid "Monitor #4"
+msgstr ""
+
+#: cfg.c:617
+msgid "Monitor #5"
+msgstr ""
+
+#: cfg.c:626
+msgid "User interface"
+msgstr ""
+
+#: cfg.c:627
+msgid "X-Plane's language"
+msgstr ""
+
+#: cfg.c:640
+msgid "Ground crew audio"
+msgstr ""
+
+#: cfg.c:642
+msgid "My language only at domestic airports"
+msgstr ""
+
+#: cfg.c:646
+msgid "My language at all airports"
+msgstr ""
+
+#: cfg.c:650
+msgid "English at all airports"
+msgstr ""
+
+#: cfg.c:655
+msgid "Radio output device"
+msgstr ""
+
+#: cfg.c:658
+msgid "Sound output device"
+msgstr ""
+
+#: cfg.c:662
+msgid "Miscellaneous"
+msgstr ""
+
+#: cfg.c:664
+msgid "Auto disconnect when done **"
+msgstr ""
+
+#: cfg.c:668
+msgid "Ignore check parking brake is set **"
+msgstr ""
+
+#: cfg.c:672
+msgid "Ignore doors and hatches check **"
+msgstr ""
+
+#: cfg.c:676
+msgid "Hide the magic squares **"
+msgstr ""
+
+#: cfg.c:680
+msgid "Hide default X-Plane 11 tug"
+msgstr ""
+
+#: cfg.c:700 cfg.c:702
+msgid "BetterPushback Preferences"
+msgstr ""
+
+#: cfg.c:734
+msgid "Magic squares position **"
+msgstr ""
+
+#: cfg.c:748
+msgid "Save preferences"
+msgstr ""
+
+#: cfg.c:754
+msgid "** Settings related to the current aircraft"
+msgstr ""
+
+#: xplane.c:497
+msgid "ERROR: Unable to select pushback tug view at this time."
+msgstr ""
+
+#: xplane.c:634 xplane.c:660
+msgid "Pushback failure: smartcopilot attempted to switch master/slave or network connection lost. Stopping operation."
+msgstr ""
+
+#: xplane.c:649 xplane.c:671
+msgid "Pushback failure: Shared Flight attempted to switch pilot flying or network connection lost. Stopping operation."
+msgstr ""
+
+#: xplane.c:760 xplane.c:920
+msgid "Start pushback"
+msgstr ""
+
+#: xplane.c:762 xplane.c:922
+msgid "Stop pushback"
+msgstr ""
+
+#: xplane.c:764
+msgid "Start pushback planner"
+msgstr ""
+
+#: xplane.c:766
+msgid "Stop pushback planner"
+msgstr ""
+
+#: xplane.c:768
+msgid "Connect tug before entering pushback plan"
+msgstr ""
+
+#: xplane.c:770
+msgid "View from tug's cab."
+msgstr ""
+
+#: xplane.c:773
+msgid "Recreate scenery routes from WED files."
+msgstr ""
+
+#: xplane.c:776
+msgid "Abort pushback during coupled push"
+msgstr ""
+
+#: xplane.c:914
+msgid "Pre-plan pushback"
+msgstr ""
+
+#: xplane.c:916
+msgid "Close pushback planner"
+msgstr ""
+
+#: xplane.c:918
+msgid "Connect tug first"
+msgstr ""
+
+#: xplane.c:926
+msgid "Preferences..."
+msgstr ""
+
+#: xplane.c:924
+msgid "Tug cab view"
 msgstr ""
 
 msgid "Can't start pushback planner: please set the parking brake first."
 msgstr ""
 
-msgid ""
-"Pushback advisory: you have your radio volume turned very low and may not be "
-"able to hear ground crew. Please increase your radio volume in the X-Plane "
-"sound preferences."
-msgstr ""
-
-msgid ""
-"Pushback failure: X-Plane version too old. This plugin requires at least X-"
-"Plane %s to operate."
-msgstr ""
-
-msgid "Pushback failure: aircraft appears to not have any steerable gears."
-msgstr ""
-
-msgid ""
-"Pushback failure: aircraft has non-positive wheelbase. Sorry, tail draggers "
-"aren't supported."
-msgstr ""
-
-msgid "Pushback failure: aircraft is incompatible with BetterPushback."
-msgstr ""
-
-msgid ""
-"Pushback failure: master requested tug \"%s\", which we don't have in our in "
-"our library. Please sync your tug libraries before trying again."
-msgstr ""
-
-msgid "Pushback failure: no suitable tug for your aircraft."
-msgstr ""
-
-msgid ""
-"Pushback failure: smartcopilot attempted to switch master/slave or network "
-"connection lost. Stopping operation."
-msgstr ""
-
-msgid "Start pushback"
-msgstr ""
-
-msgid "Stop pushback"
-msgstr ""
-
-msgid "Start pushback planner"
-msgstr ""
-
-msgid "Stop pushback planner"
-msgstr ""
-
-msgid "Connect tug before entering pushback plan"
-msgstr ""
-
-msgid "Pre-plan pushback"
-msgstr ""
-
-msgid "Close pushback planner"
-msgstr ""
-
-msgid "Preferences..."
-msgstr ""
-
-msgid "BetterPushback Preferences"
-msgstr ""
-
-msgid "User interface"
-msgstr ""
-
-msgid "X-Plane's language"
-msgstr ""
-
-msgid "Ground crew audio"
-msgstr ""
-
-msgid "My language only at domestic airports"
-msgstr ""
-
-msgid "My language at all airports"
-msgstr ""
-
-msgid "English at all airports"
-msgstr ""
-
-msgid "Save preferences"
+msgid "Pushback failure: aircraft has non-positive wheelbase. Sorry, tail draggers aren't supported."
 msgstr ""
 
 msgid "Ground crew speaks my language only if the country the airport is\n"
@@ -116,8 +304,7 @@ msgid "Ground crew speaks my language only if the country the airport is\n"
 "with a local accent."
 msgstr ""
 
-msgid "Ground crew speaks my language irrespective of what country the "
-"airport is in."
+msgid "Ground crew speaks my language irrespective of what country the airport is in."
 msgstr ""
 
 msgid "Ground crew always speaks English with a local accent."
@@ -126,118 +313,37 @@ msgstr ""
 msgid "Save current preferences to disk."
 msgstr ""
 
-msgid "Disconnect tow + headset and switch to hand signals."
-msgstr ""
-
-msgid "Reconnect tow and await further instructions."
-msgstr ""
-
-msgid "Pushback failure: cannot push this aircraft with engines running. "
-"Shutdown engines first."
-msgstr ""
-
-msgid "Pushback failure: your flight controls are preventing me from steering "
-"the aircraft. Unbind any buttons you have set to\"toggle nosewheel steering\"."
-msgstr ""
-
-msgid "Left mouse button to reorient view"
-msgstr ""
-
-msgid "Tug cab view"
-msgstr ""
-
-msgid "** Settings related to the current aircraft"
-msgstr ""
-
 msgid "Hint: hover your mouse cursor over any knob to show a short description of what it does."
 msgstr ""
 
-msgid "Auto disconnect when done **"
-msgstr ""
-
-msgid "Miscellaneous"
-msgstr ""
-
-msgid "Ignore check parking brake is set **"
-msgstr ""
-
-msgid "Hide the magic squares **"
-msgstr ""
-
-msgid "Pushback not yet possible: Doors and hatches not all closed."
-msgstr ""
-
-msgid "Hide default X-Plane 11 tug"
-msgstr ""
-
-msgid "Connect tug first"
-msgstr ""
-
-msgid "Radio output device"
-msgstr ""
-
-msgid "Sound output device"
-msgstr ""
-
 msgid "Never ask and always automatically disconnect\n"
-        "the tug when the pushback operation is complete."
+"the tug when the pushback operation is complete."
 msgstr ""
 
 msgid "Never check \"set parking brake\".\n"
-    "Some aircraft stuck on this check.\n"
-    "It's on the beginning and on the end.\n"
-    "This should solve this problem for some aircrafts. (KA350 for instance)."
+"Some aircraft stuck on this check.\n"
+"It's on the beginning and on the end.\n"
+"This should solve this problem for some aircrafts. (KA350 for instance)."
 msgstr ""
 
 msgid "Hides the shortcut buttons on the left side of the screen.\n"
-   "The first button starts the planner and the second starts the push-back.";
+"The first button starts the planner and the second starts the push-back."
 msgstr ""
 
 msgid "Hides default X-Plane 11 pushback tug.\n"
-    "Restart X-Plane for this change to take effect."
+"Restart X-Plane for this change to take effect."
 msgstr ""
 
-msgid "BetterPushback is open-source software. See COPYING for "
-    "more information."
-msgstr ""    
+msgid "BetterPushback is open-source software. See COPYING for more information."
+msgstr ""
 
 msgid "Don't check the doors and hatches status before starting the push-back"
 msgstr ""
 
-msgid "Ignore doors and hatches check **"
-msgstr ""
-
 msgid "In case of multiple monitors configuration, BpB need to use the primary monitor\n"
-        "(the one with the x-plane menus), Bpb is able to select it automatically.\n"
-        "If not select the one that works ! (the monitor numbers are arbitrary)."
-msgstr ""
-
-msgid "User interface on monitor #"
-msgstr ""
-
-msgid "Automatic"
-msgstr ""
-
-msgid ""Monitor #0"
-msgstr ""
-
-msgid ""Monitor #1"
-msgstr ""
-
-msgid ""Monitor #2"
-msgstr ""
-
-msgid ""Monitor #3"
-msgstr ""
-
-msgid ""Monitor #4"
-msgstr ""
-
-msgid ""Monitor #5"
-msgstr ""
-
-msgid "Magic squares position **"
+"(the one with the x-plane menus), Bpb is able to select it automatically.\n"
+"If not select the one that works ! (the monitor numbers are arbitrary)."
 msgstr ""
 
 msgid "Slide this bar to move the magic squares up or down"
-msgid ""
+msgstr ""

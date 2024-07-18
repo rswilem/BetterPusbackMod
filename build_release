@@ -125,6 +125,7 @@ function install_tug_files() {
 }
 
 function install_po_files() {
+	xgettext --keyword=_ --language=C  -j --no-location -i -o data/po/strings.pot src/*.c
 	FILES=( $( find data/po -iname '*.po' ) )
 	for FILE in ${FILES[@]}; do
 		install_xtra_file "$FILE" ""
