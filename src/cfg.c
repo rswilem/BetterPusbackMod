@@ -201,7 +201,7 @@ const char *hide_magic_squares_tooltip =
         "Hides the shortcut buttons on the left side of the screen.\n"
         "The first button starts the planner and the second starts the push-back.";
 const char *ignore_doors_check_tooltip =
-        "Don't check the doors and hatches status before starting the push-back";
+        "Don't check the doors/GPU/ASU status before starting the push-back";
 
 const char *monitor_tooltip =
         "In case of multiple monitors configuration, BpB need to use the primary monitor\n"
@@ -669,7 +669,7 @@ create_main_window(void) {
                     &buttons.ignore_set_park_brake, ignore_park_brake_tooltip
             },
             {
-             _("Ignore doors and hatches check **"),
+             _("Ignore doors/GPU/ASU check **"),
                     &buttons.ignore_doors_check, ignore_doors_check_tooltip
             },
             {

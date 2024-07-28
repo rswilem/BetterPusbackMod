@@ -113,6 +113,7 @@ function install_icon_files() {
 	done
 	install_xtra_file "data/icons/en/planner.png" ""
 	install_xtra_file "data/icons/en/push-back.png" ""
+	install_xtra_file "data/icons/en/conn_first_mb.png" ""
 }
 
 function install_tug_files() {

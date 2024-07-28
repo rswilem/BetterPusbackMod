@@ -166,6 +166,7 @@ static struct {
     bool_t      info_valid;
 	int		    nb_doors;
 	char	    dr[MAX_DOOR][64];
+	bool_t	    dr_neg[MAX_DOOR];
 } doors_info = {0};
 
 bp_state_t bp = {0};
@@ -203,11 +204,12 @@ static const acf_info_t incompatible_acf[] = {
 };
 
 static XPLMCommandRef disco_cmd = NULL, recon_cmd = NULL;
-static button_t disco_buttons[4] = {
+static button_t disco_buttons[5] = {
         {.filename = "disconnect.png", .vk = -1, .tex = 0, .tex_data = NULL},
         {.filename = "reconnect.png", .vk = -1, .tex = 0, .tex_data = NULL},
         {.filename = "planner.png", .vk = -1, .tex = 0, .tex_data = NULL},
         {.filename = "push-back.png", .vk = -1, .tex = 0, .tex_data = NULL},
+        {.filename = "conn_first_mb.png", .vk = -1, .tex = 0, .tex_data = NULL},
 };
 
 /*
@@ -409,7 +411,8 @@ brakes_set(bool_t flag) {
  *	door	737u/doors/L1
  *	door	737u/doors/L2
  *  door	@737u/doors/cargos     <-- @ indicate here that this dataref returns an array
- *
+ *  door!	laminar/B738/gpu_available     <-- ! indicates here that a value below 0.1 is considered as open or active
+
  * These keywords have the following meanings:
  *	icao (required): Denotes the start of an aircraft block and must be
  *		followed by a 4-letter ICAO aircraft type identifier (e.g.
@@ -423,11 +426,12 @@ brakes_set(bool_t flag) {
  *		string argument.
  *	acf	(optional): When specified, checks if the currently loaded
  *		aircraft's ACF filename matches the string argument.
- *	door (required): the dataref of 1 door. you may provide multiple 
+ *	door or door! (required): the dataref of 1 door. you may provide multiple 
  *	    door block as necessary ( maximum 20 per aircraft )
  *		format can be 737u/doors/L1 or @737u/doorsarray in case of an array
- *      if the value of the door dataref is below 0.1, the door is considered as closed
- */
+ *      with door tag,  if the value of the door dataref is below 0.1, the door/GPU/ASU is considered as closed or inactive
+ *      with door! tag, if the value of the door/GPU/ASU dataref is below 0.1, the door/GPU/ASU is considered as open or active
+*/
 static void
 doors_refs_init(void)
 {
@@ -535,7 +539,7 @@ doors_refs_init(void)
 			FILTER_PARAM(acf);
 		} else if (strcmp(buf, "author") == 0) {
 			FILTER_PARAM(author);
-		} else if (strcmp(buf, "door") == 0) {
+		} else if ( (strcmp(buf, "door") == 0) || (strcmp(buf, "door!") == 0) ) {
 			if ((!doors_info.info_valid) || (doors_info.nb_doors >= MAX_DOOR -1) )
 				continue;
     		if (fscanf(fp, "%64s", doors_info.dr[doors_info.nb_doors]) != 1) { 
@@ -543,6 +547,7 @@ doors_refs_init(void)
 		    	    "string following \"door\"."); 
 			    goto errout; 
 		        } else {
+                    doors_info.dr_neg[doors_info.nb_doors] = (strcmp(buf, "door!") == 0);
                     doors_info.nb_doors++;
                 }
 		}  else if (!skip) {
@@ -606,6 +611,7 @@ acf_doors_closed(void) {
         } else {
             result = dr_door_check(doors_info.dr[i]);
         }
+        result = doors_info.dr_neg[i] ? !result : result;
         if (!result) 
             break;
     }
@@ -1484,7 +1490,7 @@ bp_can_start(const char **reason) {
 
     if (reason != NULL && !ignore_doors_check && (!acf_doors_closed())) {
         *reason = _("Pushback not yet possible: Doors and hatches "
-                        "not all closed.");
+                        "not all closed or GPU or ASU still connected.");
         return (B_FALSE);
     }
 
@@ -2611,8 +2617,10 @@ main_win_click(XPLMWindowID inWindowID, int x, int y, XPLMMouseStatus inMouse,
         return (1);
     if (inWindowID == bp_ls.planner_win) {
         XPLMCommandOnce(start_cam);
-    } else if (inWindowID == bp_ls.start_pb_win)
+    } else if (inWindowID == bp_ls.start_pb_win) {
         XPLMCommandOnce(start_pb);
+    } else if (inWindowID == bp_ls.conn_tug_first)
+        XPLMCommandOnce(conn_first);
 
     return (1);
 }
@@ -2634,21 +2642,34 @@ main_win_draw(XPLMWindowID inWindowID, void *inRefcon) {
         draw_icon(&disco_buttons[2], monitor_def.x_origin,
                   monitor_def.y_origin + monitor_def.magic_squares_height - disco_buttons[2].h, 1.0,
                   B_FALSE, is_lit);
-    } else {
+    } 
+
+    if (inWindowID == bp_ls.conn_tug_first) {
+        bool_t is_lit = (mx >= monitor_def.x_origin &&
+                         mx <= monitor_def.x_origin + disco_buttons[4].w &&
+                         my >= monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * disco_buttons[4].h - disco_buttons[4].h &&
+                         my <= monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * disco_buttons[4].h);
+        ASSERT(inWindowID == bp_ls.conn_tug_first);
+        draw_icon(&disco_buttons[4], monitor_def.x_origin,
+                  monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * disco_buttons[4].h - disco_buttons[4].h, 1.0,
+                  B_FALSE, is_lit);
+    }
+
+    if (inWindowID == bp_ls.start_pb_win) {
         bool_t is_lit = (mx >= monitor_def.x_origin &&
                          mx <= monitor_def.x_origin + disco_buttons[3].w &&
-                         my >= monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * disco_buttons[2].h - disco_buttons[3].h &&
-                         my <= monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * disco_buttons[2].h);
+                         my >= monitor_def.y_origin + monitor_def.magic_squares_height - 3 * disco_buttons[2].h - disco_buttons[3].h &&
+                         my <= monitor_def.y_origin + monitor_def.magic_squares_height - 3 * disco_buttons[2].h);
         ASSERT(inWindowID == bp_ls.start_pb_win);
         draw_icon(&disco_buttons[3], monitor_def.x_origin,
-                  monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * disco_buttons[2].h - disco_buttons[3].h, 1.0,
+                  monitor_def.y_origin + monitor_def.magic_squares_height - 3 * disco_buttons[2].h - disco_buttons[3].h, 1.0,
                   B_FALSE, is_lit);
     }
 }
 
 static void
 main_intf_show(void) {
-    if ((bp_ls.planner_win == NULL) || (bp_ls.start_pb_win == NULL)) {
+    if ((bp_ls.planner_win == NULL) || (bp_ls.start_pb_win == NULL) || (bp_ls.conn_tug_first == NULL) ) {
         XPLMCreateWindow_t disco_ops = {
                 .structSize = sizeof(XPLMCreateWindow_t),
                 .left = 0, .top = 0, .right = 0, .bottom = 0, .visible = 1,
@@ -2673,11 +2694,21 @@ main_intf_show(void) {
         XPLMBringWindowToFront(bp_ls.planner_win);
     }
 
+    if (bp_ls.conn_tug_first == NULL) {
+        load_icon(&disco_buttons[4]);
+        disco_ops.left = monitor_def.x_origin ; //w / 2 + 0.5 * disco_buttons[1].w;
+        disco_ops.right = monitor_def.x_origin  + disco_buttons[3].w;
+        disco_ops.top = monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * disco_buttons[2].h;
+        disco_ops.bottom = monitor_def.y_origin + disco_ops.top - disco_buttons[3].h;
+        bp_ls.conn_tug_first = XPLMCreateWindowEx(&disco_ops);
+        ASSERT(bp_ls.conn_tug_first != NULL);
+        XPLMBringWindowToFront(bp_ls.conn_tug_first);
+    }
     if (bp_ls.start_pb_win == NULL) {
         load_icon(&disco_buttons[3]);
         disco_ops.left = monitor_def.x_origin ; //w / 2 + 0.5 * disco_buttons[1].w;
         disco_ops.right = monitor_def.x_origin  + disco_buttons[3].w;
-        disco_ops.top = monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * disco_buttons[2].h;
+        disco_ops.top = monitor_def.y_origin + monitor_def.magic_squares_height - 3 * disco_buttons[2].h;
         disco_ops.bottom = monitor_def.y_origin + disco_ops.top - disco_buttons[3].h;
         bp_ls.start_pb_win = XPLMCreateWindowEx(&disco_ops);
         ASSERT(bp_ls.start_pb_win != NULL);
@@ -2698,12 +2729,18 @@ main_intf_hide(void) {
         unload_icon(&disco_buttons[3]);
         bp_ls.start_pb_win = NULL;
     }
+    if (bp_ls.conn_tug_first != NULL) {
+        XPLMDestroyWindow(bp_ls.conn_tug_first);
+        unload_icon(&disco_buttons[4]);
+        bp_ls.conn_tug_first = NULL;
+    }
 }
 
 void
 main_intf(bool_t force_hide) {
     if (get_pref_widget_status() // show also the magic button while in the pref window
-     || (acf_is_airliner() && acf_on_gnd_stopped(NULL) && (start_pb_plan_enable == B_TRUE) && (start_pb_enable == B_TRUE) && !force_hide )) {
+//     || (acf_is_airliner() && acf_on_gnd_stopped(NULL) && (start_pb_plan_enable == B_TRUE) && (start_pb_enable == B_TRUE) && !force_hide )) {
+     || (acf_is_airliner() && acf_on_gnd_stopped(NULL) && (start_pb_enable == B_TRUE) && !force_hide )) {
         main_intf_show();
     } else {
         main_intf_hide();

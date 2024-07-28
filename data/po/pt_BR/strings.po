@@ -91,10 +91,10 @@ msgstr ""
 "Desligue os motores primeiro."
 
 #: bp.c:1486
-msgid "Pushback not yet possible: Doors and hatches not all closed."
+msgid "Pushback not yet possible: Doors and hatches not all closed or GPU or ASU still connected."
 msgstr ""
-"Pushback ainda não é possível: Nem todas as portas e escotilhas estão "
-"fechadas."
+"Pushback ainda não é possível: Nem todas as portas e escotilhas estão fechadas ou a GPU ou ASU ainda
+está conectada."
 
 #: bp.c:1494
 msgid ""
@@ -245,8 +245,8 @@ msgid "Ignore check parking brake is set **"
 msgstr "Ignorar verificação do freio de estacionamento **"
 
 #: cfg.c:672
-msgid "Ignore doors and hatches check **"
-msgstr "Ignorar verificação de portas e escotilhas **"
+msgid "Ignore doors/GPU/ASU check **"
+msgstr "Ignorar verificação de portas/GPU/ASU **"
 
 #: cfg.c:676
 msgid "Hide the magic squares **"
@@ -423,9 +423,9 @@ msgstr ""
 "informações."
 
 msgid ""
-"Don't check the doors and hatches status before starting the push-back"
+"Don't check the doors/GPU/ASU status before starting the push-back"
 msgstr ""
-"Nao verifica a situacao das portas e escotilhas antes de iniciar o "
+"Nao verifica a situacao das portas/GPU/ASU antes de iniciar o "
 "pushback"
 
 msgid ""

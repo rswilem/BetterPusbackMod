@@ -66,8 +66,8 @@ enum {
 
 static bool_t inited = B_FALSE;
 
-XPLMCommandRef start_pb,  start_cam;
-static XPLMCommandRef  stop_pb, stop_cam, conn_first;
+XPLMCommandRef start_pb,  start_cam, conn_first;
+static XPLMCommandRef  stop_pb, stop_cam;
 static XPLMCommandRef cab_cam, recreate_routes;
 static XPLMCommandRef   abort_push;
 static XPLMMenuID root_menu;
@@ -348,8 +348,8 @@ stop_pb_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon) {
     if (!slave_mode) {
         /* Reset the menu back */
         late_plan_requested = B_FALSE;
-        start_pb_enable = B_FALSE;
-        conn_first_enable = B_FALSE;
+        start_pb_enable = B_TRUE;
+        conn_first_enable = B_TRUE;
         prefs_enable = B_TRUE;
         enable_menu_items();
     }
@@ -384,7 +384,7 @@ start_cam_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon) {
     start_pb_plan_enable = B_FALSE;
     stop_pb_plan_enable = B_TRUE;
     start_pb_enable = B_FALSE;
-    conn_first_enable = B_FALSE;
+    conn_first_enable = B_TRUE;
     stop_pb_enable = B_FALSE;
     enable_menu_items();
     return (1);
@@ -555,7 +555,7 @@ bp_reconnect_notify(void) {
     start_pb_plan_enable = B_FALSE;
     stop_pb_plan_enable = B_TRUE;
     start_pb_enable = B_FALSE;
-    conn_first_enable = B_FALSE;
+    conn_first_enable = B_TRUE;
     stop_pb_enable = B_TRUE;
     enable_menu_items();
 }

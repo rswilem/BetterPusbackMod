@@ -67,7 +67,7 @@ msgid   "Pushback failure: cannot push this aircraft with engines running. "
 msgstr  ""
 
 #: src/bp.c:1486
-msgid   "Pushback not yet possible: Doors and hatches not all closed."
+msgid   "Pushback not yet possible: Doors and hatches not all closed or GPU or ASU still connected."
 msgstr  ""
 
 #: src/bp.c:1494
@@ -202,7 +202,7 @@ msgid   "Ignore check parking brake is set **"
 msgstr  ""
 
 #: src/cfg.c:672
-msgid   "Ignore doors and hatches check **"
+msgid   "Ignore doors/GPU/ASU check **"
 msgstr  ""
 
 #: src/cfg.c:676
@@ -345,7 +345,7 @@ msgid   "BetterPushback is open-source software. See COPYING for more "
         "information."
 msgstr  ""
 
-msgid   "Don't check the doors and hatches status before starting the push-"
+msgid   "Don't check the doors/GPU/ASU status before starting the push-"
         "back"
 msgstr  ""
 

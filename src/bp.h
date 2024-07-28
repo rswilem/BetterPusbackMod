@@ -153,6 +153,7 @@ typedef struct {
     XPLMWindowID recon_win;
     XPLMWindowID planner_win;
     XPLMWindowID start_pb_win;
+    XPLMWindowID conn_tug_first;
     tug_t *tug;
     acf_outline_t *outline;    /* size & outline of aircraft shape */
 } bp_long_state_t;

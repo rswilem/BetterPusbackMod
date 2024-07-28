@@ -223,14 +223,14 @@ msgstr ""
 "Astuce: placez votre curseur sur n'importe quel bouton pour afficher une "
 "description."
 
-msgid "Don't check the doors and hatches status before starting the push-back"
-msgstr "Ne verifie pas l'etat des portes avant de commencer le repoussage"
+msgid "Don't check the doors/GPU/ASU status before starting the push-back"
+msgstr "Ne verifie pas l'etat des portes/GPU/ASU avant de commencer le repoussage"
 
-msgid "Ignore doors and hatches check **"
-msgstr "Ignorer le contrôle des portes **"
+msgid "Ignore doors/GPU/ASU check **"
+msgstr "Ignorer le contrôle des portes/GPU/ASU **"
 
-msgid "Pushback not yet possible: Doors and hatches not all closed."
-msgstr "Repoussage pas encore possible: Toutes les portes ne sont pas fermées."
+msgid "Pushback not yet possible: Doors and hatches not all closed or GPU or ASU still connected."
+msgstr "Repoussage pas encore possible: Toutes les portes ne sont pas fermées ou le GPU ou le ASU est encore connecté."
 
 msgid "Hides default X-Plane 11 pushback tug.\n"
     "Restart X-Plane for this change to take effect."
