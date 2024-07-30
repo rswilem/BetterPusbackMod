@@ -204,12 +204,17 @@ static const acf_info_t incompatible_acf[] = {
 };
 
 static XPLMCommandRef disco_cmd = NULL, recon_cmd = NULL;
-static button_t disco_buttons[5] = {
+static button_t disco_buttons[] = {
         {.filename = "disconnect.png", .vk = -1, .tex = 0, .tex_data = NULL},
         {.filename = "reconnect.png", .vk = -1, .tex = 0, .tex_data = NULL},
+        {.filename = NULL},
+};
+
+static button_t magic_buttons[] = {
         {.filename = "planner.png", .vk = -1, .tex = 0, .tex_data = NULL},
-        {.filename = "push-back.png", .vk = -1, .tex = 0, .tex_data = NULL},
         {.filename = "conn_first_mb.png", .vk = -1, .tex = 0, .tex_data = NULL},
+        {.filename = "push-back.png", .vk = -1, .tex = 0, .tex_data = NULL},
+        {.filename = NULL},
 };
 
 /*
@@ -2607,20 +2612,54 @@ disco_intf_hide(void) {
 }
 
 static int
-main_win_click(XPLMWindowID inWindowID, int x, int y, XPLMMouseStatus inMouse,
+magic_buttons_hit_check(int mx, int my) {
+    bool_t is_hit;
+    int max_x = 0;
+
+    for (int i = 0; magic_buttons[i].filename != NULL; i++) {
+        max_x = MAX(max_x, magic_buttons[i].w);
+    }    
+    // pre-check only on x axis
+    is_hit = (mx >= monitor_def.x_origin && mx <= monitor_def.x_origin + max_x);
+
+    if (is_hit) {
+        for (int i = 0; magic_buttons[i].filename != NULL; i++) {
+            is_hit = (mx >= monitor_def.x_origin && mx <= monitor_def.x_origin + magic_buttons[i].w &&
+                            my >= monitor_def.y_origin + monitor_def.magic_squares_height - i * 1.5 * magic_buttons[i].h - magic_buttons[i].h &&
+                            my <= monitor_def.y_origin + monitor_def.magic_squares_height - i * 1.5 * magic_buttons[i].h);
+            if (is_hit) {
+                return i;
+            }    
+        }
+    }
+    return -1;
+}
+
+static int
+main_win_click(XPLMWindowID inWindowID, int mx, int my, XPLMMouseStatus inMouse,
                 void *inRefcon) {
-    UNUSED(x);
-    UNUSED(y);
+    int button_hit = magic_buttons_hit_check( mx,  my);
+
+    UNUSED(inWindowID);
     UNUSED(inRefcon);
 
     if (inMouse != xplm_MouseUp)
         return (1);
-    if (inWindowID == bp_ls.planner_win) {
+
+    if (button_hit == 0 ) {
         XPLMCommandOnce(start_cam);
-    } else if (inWindowID == bp_ls.start_pb_win) {
-        XPLMCommandOnce(start_pb);
-    } else if (inWindowID == bp_ls.conn_tug_first)
+        return (1);
+    }
+    
+    if (button_hit == 1) {
         XPLMCommandOnce(conn_first);
+        return (1);
+    }    
+    
+    if (button_hit == 2) {
+        XPLMCommandOnce(start_pb);
+        return (1);
+    }    
 
     return (1);
 }
@@ -2628,49 +2667,33 @@ main_win_click(XPLMWindowID inWindowID, int x, int y, XPLMMouseStatus inMouse,
 static void
 main_win_draw(XPLMWindowID inWindowID, void *inRefcon) {
     int mx, my;
+    int button_hit;
 
+    UNUSED(inWindowID);
     UNUSED(inRefcon);
 
+
     XPLMGetMouseLocationGlobal(&mx, &my);
+    button_hit = magic_buttons_hit_check( mx,  my);
 
     XPLMSetGraphicsState(0, 1, 0, 0, 1, 0, 0);
-    if (inWindowID == bp_ls.planner_win) {
-        bool_t is_lit = (mx >= monitor_def.x_origin &&
-                         mx <= monitor_def.x_origin + disco_buttons[2].w &&
-                         my >= monitor_def.y_origin + monitor_def.magic_squares_height - disco_buttons[2].h &&
-                         my <= monitor_def.y_origin + monitor_def.magic_squares_height );
-        draw_icon(&disco_buttons[2], monitor_def.x_origin,
-                  monitor_def.y_origin + monitor_def.magic_squares_height - disco_buttons[2].h, 1.0,
-                  B_FALSE, is_lit);
-    } 
+    draw_icon(&magic_buttons[0], monitor_def.x_origin,
+                monitor_def.y_origin + monitor_def.magic_squares_height - magic_buttons[0].h, 1.0,
+                B_FALSE, button_hit == 0);
+ 
+    draw_icon(&magic_buttons[1], monitor_def.x_origin,
+                monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * magic_buttons[0].h - magic_buttons[0].h, 1.0,
+                B_FALSE, button_hit == 1);
 
-    if (inWindowID == bp_ls.conn_tug_first) {
-        bool_t is_lit = (mx >= monitor_def.x_origin &&
-                         mx <= monitor_def.x_origin + disco_buttons[4].w &&
-                         my >= monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * disco_buttons[4].h - disco_buttons[4].h &&
-                         my <= monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * disco_buttons[4].h);
-        ASSERT(inWindowID == bp_ls.conn_tug_first);
-        draw_icon(&disco_buttons[4], monitor_def.x_origin,
-                  monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * disco_buttons[4].h - disco_buttons[4].h, 1.0,
-                  B_FALSE, is_lit);
-    }
-
-    if (inWindowID == bp_ls.start_pb_win) {
-        bool_t is_lit = (mx >= monitor_def.x_origin &&
-                         mx <= monitor_def.x_origin + disco_buttons[3].w &&
-                         my >= monitor_def.y_origin + monitor_def.magic_squares_height - 3 * disco_buttons[2].h - disco_buttons[3].h &&
-                         my <= monitor_def.y_origin + monitor_def.magic_squares_height - 3 * disco_buttons[2].h);
-        ASSERT(inWindowID == bp_ls.start_pb_win);
-        draw_icon(&disco_buttons[3], monitor_def.x_origin,
-                  monitor_def.y_origin + monitor_def.magic_squares_height - 3 * disco_buttons[2].h - disco_buttons[3].h, 1.0,
-                  B_FALSE, is_lit);
-    }
+    draw_icon(&magic_buttons[2], monitor_def.x_origin,
+                monitor_def.y_origin + monitor_def.magic_squares_height - 3 * magic_buttons[0].h - magic_buttons[0].h, 1.0,
+                B_FALSE, button_hit == 2);
 }
 
 static void
 main_intf_show(void) {
     if ((bp_ls.planner_win == NULL) || (bp_ls.start_pb_win == NULL) || (bp_ls.conn_tug_first == NULL) ) {
-        XPLMCreateWindow_t disco_ops = {
+        XPLMCreateWindow_t magic_ops = {
                 .structSize = sizeof(XPLMCreateWindow_t),
                 .left = 0, .top = 0, .right = 0, .bottom = 0, .visible = 1,
                 .drawWindowFunc = main_win_draw,
@@ -2683,37 +2706,37 @@ main_intf_show(void) {
         initMonitorOrigin();
 
 
-    if (bp_ls.planner_win == NULL)  {
-        load_icon(&disco_buttons[2]);
-        disco_ops.left = monitor_def.x_origin ; // w / 2 - 1.5 * disco_buttons[0].w;
-        disco_ops.right = monitor_def.x_origin  + disco_buttons[2].w;
-        disco_ops.top = monitor_def.y_origin + monitor_def.magic_squares_height ; // - 0.5 * disco_buttons[0].h;
-        disco_ops.bottom = monitor_def.y_origin + monitor_def.magic_squares_height - disco_buttons[2].h;
-        bp_ls.planner_win = XPLMCreateWindowEx(&disco_ops);
-        ASSERT(bp_ls.planner_win != NULL);
-        XPLMBringWindowToFront(bp_ls.planner_win);
-    }
+        if (bp_ls.planner_win == NULL)  {
+            load_icon(&magic_buttons[0]);
+            magic_ops.left = monitor_def.x_origin ;
+            magic_ops.right = magic_ops.left + magic_buttons[0].w;
+            magic_ops.top = monitor_def.y_origin + monitor_def.magic_squares_height ; // - 0.5 * disco_buttons[0].h;
+            magic_ops.bottom = magic_ops.top - magic_buttons[0].h;
+            bp_ls.planner_win = XPLMCreateWindowEx(&magic_ops);
+            ASSERT(bp_ls.planner_win != NULL);
+            XPLMBringWindowToFront(bp_ls.planner_win);
+        }
 
-    if (bp_ls.conn_tug_first == NULL) {
-        load_icon(&disco_buttons[4]);
-        disco_ops.left = monitor_def.x_origin ; //w / 2 + 0.5 * disco_buttons[1].w;
-        disco_ops.right = monitor_def.x_origin  + disco_buttons[3].w;
-        disco_ops.top = monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * disco_buttons[2].h;
-        disco_ops.bottom = monitor_def.y_origin + disco_ops.top - disco_buttons[3].h;
-        bp_ls.conn_tug_first = XPLMCreateWindowEx(&disco_ops);
-        ASSERT(bp_ls.conn_tug_first != NULL);
-        XPLMBringWindowToFront(bp_ls.conn_tug_first);
-    }
-    if (bp_ls.start_pb_win == NULL) {
-        load_icon(&disco_buttons[3]);
-        disco_ops.left = monitor_def.x_origin ; //w / 2 + 0.5 * disco_buttons[1].w;
-        disco_ops.right = monitor_def.x_origin  + disco_buttons[3].w;
-        disco_ops.top = monitor_def.y_origin + monitor_def.magic_squares_height - 3 * disco_buttons[2].h;
-        disco_ops.bottom = monitor_def.y_origin + disco_ops.top - disco_buttons[3].h;
-        bp_ls.start_pb_win = XPLMCreateWindowEx(&disco_ops);
-        ASSERT(bp_ls.start_pb_win != NULL);
-        XPLMBringWindowToFront(bp_ls.start_pb_win);
-    }
+        if (bp_ls.conn_tug_first == NULL) {
+            load_icon(&magic_buttons[1]);
+            magic_ops.left = monitor_def.x_origin ;
+            magic_ops.right = magic_ops.left + magic_buttons[1].w;
+            magic_ops.top = monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * magic_buttons[1].h;
+            magic_ops.bottom =  magic_ops.top - magic_buttons[1].h;
+            bp_ls.conn_tug_first = XPLMCreateWindowEx(&magic_ops);
+            ASSERT(bp_ls.conn_tug_first != NULL);
+            XPLMBringWindowToFront(bp_ls.conn_tug_first);
+        }
+        if (bp_ls.start_pb_win == NULL) {
+            load_icon(&magic_buttons[2]);
+            magic_ops.left = monitor_def.x_origin ;
+            magic_ops.right = magic_ops.left + magic_buttons[2].w;
+            magic_ops.top = monitor_def.y_origin + monitor_def.magic_squares_height - 3 * magic_buttons[2].h;
+            magic_ops.bottom =  magic_ops.top - magic_buttons[2].h;
+            bp_ls.start_pb_win = XPLMCreateWindowEx(&magic_ops);
+            ASSERT(bp_ls.start_pb_win != NULL);
+            XPLMBringWindowToFront(bp_ls.start_pb_win);
+        }
     }
 }
 
@@ -2721,17 +2744,17 @@ void
 main_intf_hide(void) {
     if (bp_ls.planner_win != NULL) {
         XPLMDestroyWindow(bp_ls.planner_win);
-        unload_icon(&disco_buttons[2]);
+        unload_icon(&magic_buttons[0]);
         bp_ls.planner_win = NULL;
     }
     if (bp_ls.start_pb_win != NULL) {
         XPLMDestroyWindow(bp_ls.start_pb_win);
-        unload_icon(&disco_buttons[3]);
+        unload_icon(&magic_buttons[1]);
         bp_ls.start_pb_win = NULL;
     }
     if (bp_ls.conn_tug_first != NULL) {
         XPLMDestroyWindow(bp_ls.conn_tug_first);
-        unload_icon(&disco_buttons[4]);
+        unload_icon(&magic_buttons[2]);
         bp_ls.conn_tug_first = NULL;
     }
 }
