@@ -93,7 +93,7 @@ msgstr ""
 #: bp.c:98
 msgid "Some doors are still opened or the GPU or the ASU are still connected. I'm waiting for all of them closed and disconnected then I will proceed."
 msgstr ""
-"Algumas portas ainda estão abertas ou a GPU ou a ASU ainda estão conectadas. Estou esperando todas elas fechadas e desconectadas, então prosseguirei."
+"Algumas portas ainda estão abertas ou a GPU ou a ASU ainda estão conectadas. Estou esperando que todas elas estejam fechadas e desconectadas, então prosseguirei."
 
 #: bp.c:1494
 msgid ""
