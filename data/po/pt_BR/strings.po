@@ -90,11 +90,10 @@ msgstr ""
 "Falha do Pushback: não é possível rebocar com os motores funcionando. "
 "Desligue os motores primeiro."
 
-#: bp.c:1486
-msgid "Pushback not yet possible: Doors and hatches not all closed or GPU or ASU still connected."
+#: bp.c:98
+msgid "Some doors are still opened or the GPU or the ASU are still connected. I'm waiting for all of them closed and disconnected then I will proceed."
 msgstr ""
-"Pushback ainda não é possível: Nem todas as portas e escotilhas estão fechadas ou a GPU ou ASU ainda
-está conectada."
+"Algumas portas ainda estão abertas ou a GPU ou a ASU ainda estão conectadas. Estou esperando todas elas fechadas e desconectadas, então prosseguirei."
 
 #: bp.c:1494
 msgid ""

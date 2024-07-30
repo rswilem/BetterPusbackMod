@@ -66,8 +66,8 @@ msgid   "Pushback failure: cannot push this aircraft with engines running. "
         "Shutdown engines first."
 msgstr  ""
 
-#: src/bp.c:1486
-msgid   "Pushback not yet possible: Doors and hatches not all closed or GPU or ASU still connected."
+#: src/bp.c:98
+msgid   "Some doors are still opened or the GPU or the ASU are still connected. I'm waiting for all of them closed and disconnected then I will proceed."
 msgstr  ""
 
 #: src/bp.c:1494

@@ -38,6 +38,7 @@ typedef enum {
     PB_STEP_TUG_LOAD,
     PB_STEP_START,
     PB_STEP_DRIVING_UP_CLOSE,
+    PB_STEP_WAITING_FOR_DOORS,
     PB_STEP_OPENING_CRADLE,
     PB_STEP_WAITING_FOR_PBRAKE,
     PB_STEP_DRIVING_UP_CONNECT,
@@ -181,7 +182,7 @@ void bp_delete_all_segs(void);
 
 bool_t acf_is_compatible(void);
 
-bool_t acf_doors_closed(void);
+bool_t acf_doors_closed(bool_t);
 
 bool_t acf_is_airliner(void);
 

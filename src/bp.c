@@ -95,6 +95,9 @@
 #define    MIN_RADIO_VOLUME_THRESH    0.1
 #define    MIN_STEP_TIME        0.001    /* minimum simulation step in secs */
 
+#define    MSG_DOORS_GPU "Some doors are still opened or the GPU or the ASU are still connected. I'm waiting for all of them closed and disconnected then I will proceed."
+
+
 /*
  * When stopping the operation, tug and aircraft steering deflections must
  * be below these thresholds before we let the aircraft come to a complete
@@ -606,8 +609,17 @@ dr_door_check_vf32(char *dr) {
 }
 
 bool_t
-acf_doors_closed(void) {
+acf_doors_closed(bool_t with_cfg_flag) {
     bool_t result = B_TRUE;
+
+    if (with_cfg_flag) {
+        bool_t ignore_doors_check = B_FALSE;
+        (void) conf_get_b_per_acf("ignore_doors_check", &ignore_doors_check);
+        if (ignore_doors_check) {
+            return result;
+        }
+    }
+
     doors_refs_init();
     
     for (int i = 0 ; i< doors_info.nb_doors ; i++) {
@@ -1470,10 +1482,6 @@ draw_tugs(void) {
 bool_t
 bp_can_start(const char **reason) {
     seg_t *seg;
-    bool_t ignore_doors_check = B_FALSE;
-
-    (void) conf_get_b_per_acf("ignore_doors_check", &ignore_doors_check);
-
     if (!acf_is_compatible()) {
         if (reason != NULL)
             *reason = _("Pushback failure: aircraft is not "
@@ -1493,11 +1501,7 @@ bp_can_start(const char **reason) {
         return (B_FALSE);
     }
 
-    if (reason != NULL && !ignore_doors_check && (!acf_doors_closed())) {
-        *reason = _("Pushback not yet possible: Doors and hatches "
-                        "not all closed or GPU or ASU still connected.");
-        return (B_FALSE);
-    }
+
 
     seg = list_head(&bp.segs);
     if (seg == NULL && !late_plan_requested && !slave_mode) {
@@ -2195,6 +2199,16 @@ pb_step_connected(void) {
         bp.step_start_t = bp.cur_t;
         bp.last_voice_t = bp.cur_t;
     }
+}
+
+
+static void
+pb_step_waiting_for_doors(void) {
+    if (!acf_doors_closed(B_TRUE)) {
+        XPLMSpeakString(_(MSG_DOORS_GPU));
+    } 
+    bp.step++;
+    bp.step_start_t = bp.cur_t;
 }
 
 static void
@@ -3137,27 +3151,32 @@ bp_run(float elapsed, float elapsed2, int counter, void *refcon) {
         case PB_STEP_DRIVING_UP_CLOSE:
             pb_step_driving_up_close();
             break;
+        case PB_STEP_WAITING_FOR_DOORS:
+            pb_step_waiting_for_doors();
+            break;
         case PB_STEP_OPENING_CRADLE: {
-            double d_t = bp.cur_t - bp.step_start_t;
+            if (acf_doors_closed(B_TRUE)) {
+                double d_t = bp.cur_t - bp.step_start_t;
 
-            tug_set_lift_in_transit(B_TRUE);
-            tug_set_lift_pos(1 - d_t / PB_CRADLE_DELAY);
-            tug_set_tire_sense_pos(bp_ls.tug, d_t / PB_CRADLE_DELAY);
-            if (d_t >= PB_CRADLE_DELAY) {
-                tug_set_lift_in_transit(B_FALSE);
-                tug_set_cradle_beeper_on(bp_ls.tug, B_FALSE);
-                prop_single_adjust();
-            }
-            if (d_t >= PB_CRADLE_DELAY + STATE_TRANS_DELAY) {
-                if (!bp.reconnect) {
-                    if (pbrake_is_set())
-                        msg_play(MSG_RDY2CONN_NOPARK);
-                    else
-                        msg_play(MSG_RDY2CONN);
-                    bp.last_voice_t = bp.cur_t;
+                tug_set_lift_in_transit(B_TRUE);
+                tug_set_lift_pos(1 - d_t / PB_CRADLE_DELAY);
+                tug_set_tire_sense_pos(bp_ls.tug, d_t / PB_CRADLE_DELAY);
+                if (d_t >= PB_CRADLE_DELAY) {
+                    tug_set_lift_in_transit(B_FALSE);
+                    tug_set_cradle_beeper_on(bp_ls.tug, B_FALSE);
+                    prop_single_adjust();
                 }
-                bp.step++;
-                bp.step_start_t = bp.cur_t;
+                if (d_t >= PB_CRADLE_DELAY + STATE_TRANS_DELAY) {
+                    if (!bp.reconnect) {
+                        if (pbrake_is_set())
+                            msg_play(MSG_RDY2CONN_NOPARK);
+                        else
+                            msg_play(MSG_RDY2CONN);
+                        bp.last_voice_t = bp.cur_t;
+                    }
+                    bp.step++;
+                    bp.step_start_t = bp.cur_t;
+                }
             }
             break;
         }

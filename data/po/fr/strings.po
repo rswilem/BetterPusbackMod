@@ -229,8 +229,8 @@ msgstr "Ne verifie pas l'etat des portes/GPU/ASU avant de commencer le repoussag
 msgid "Ignore doors/GPU/ASU check **"
 msgstr "Ignorer le contrôle des portes/GPU/ASU **"
 
-msgid "Pushback not yet possible: Doors and hatches not all closed or GPU or ASU still connected."
-msgstr "Repoussage pas encore possible: Toutes les portes ne sont pas fermées ou le GPU ou le ASU est encore connecté."
+msgid "Some doors are still opened or the GPU or the ASU are still connected. I'm waiting for all of them closed and disconnected then I will proceed."
+msgstr "Des portes sont encore ouvertes ou le GPU ou l'ASU sont toujours connectés. J'attends qu'ils soient tous fermés et déconnectés pour continuer."
 
 msgid "Hides default X-Plane 11 pushback tug.\n"
     "Restart X-Plane for this change to take effect."

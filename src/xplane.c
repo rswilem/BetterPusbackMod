@@ -467,8 +467,10 @@ conn_first_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon) {
         bp_delete_all_segs();
     }
 
-    if (!bp_start())
+    if (!bp_start()) {
+        late_plan_requested = B_FALSE;
         return (1);
+    }
 
     if (!slave_mode) {
         start_pb_plan_enable = B_FALSE;
