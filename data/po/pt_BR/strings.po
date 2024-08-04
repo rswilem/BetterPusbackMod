@@ -444,3 +444,83 @@ msgstr ""
 msgid "Slide this bar to move the magic squares up or down"
 msgstr ""
 "Deslize a barra para mover os quadrados magicos para cima ou para baixo"
+
+#: src/bp.c:2185
+msgid   "Waiting for the parking brakes release"
+msgstr  "Esperando pela liberação do freio de estacionamento"
+
+#: src/bp.c:2330 src/bp.c:3252 src/bp.c:3256 src/bp.c:3257
+msgid   "Waiting for the parking brakes set"
+msgstr  "Esperando pelo acionamento do freio de estacionamento"
+
+#: src/bp.c:3212 src/bp.c:3216 src/bp.c:3217
+msgid   "Push-back called"
+msgstr  "Rebocador chamado"
+
+#: src/bp.c:3216 src/bp.c:3220 src/bp.c:3221
+msgid   "Driving to the aircraft"
+msgstr  "Dirigindo para a aeronave"
+
+#: src/bp.c:3220 src/bp.c:3224 src/bp.c:3228 src/bp.c:3225 src/bp.c:3229
+msgid   "Waiting for doors/GPU/ASU closed/disconnected"
+msgstr  "Esperando que as portas/GPU/ASU sejam fechadas/desconectadas"
+
+#: src/bp.c:3226 src/bp.c:3230 src/bp.c:3231
+msgid   "Opening the cradle"
+msgstr  "Abrindo o berço"
+
+#: src/bp.c:3256 src/bp.c:3260 src/bp.c:3261
+msgid   "Connecting to the aircraft"
+msgstr  "Conectando à aeronave"
+
+#: src/bp.c:3266 src/bp.c:3270 src/bp.c:3271
+msgid   "Connected to the aircraft"
+msgstr  "Conectado à aeronave"
+
+#: src/bp.c:3270 src/bp.c:3274 src/bp.c:3275
+msgid   "Push-back started"
+msgstr  "Pushback iniciado"
+
+#: src/bp.c:3295 src/bp.c:3299 src/bp.c:3300
+msgid   "Push-back in progress"
+msgstr  "Pushback em progresso"
+
+#: src/bp.c:3299 src/bp.c:3303 src/bp.c:3304
+msgid   "Push-back stopping"
+msgstr  "Pushback parando"
+
+#: src/bp.c:3303 src/bp.c:3307 src/bp.c:3308
+msgid   "Push-back stopped"
+msgstr  "Pushback parado"
+
+#: src/bp.c:3307 src/bp.c:3311 src/bp.c:3312
+msgid   "Lowering the nose"
+msgstr  "Abaixando o nariz"
+
+#: src/bp.c:3311 src/bp.c:3315 src/bp.c:3316
+msgid   "Ungrabbing the nose"
+msgstr  "Soltando o nariz"
+
+#: src/bp.c:3315 src/bp.c:3319 src/bp.c:3320
+msgid   "Waiting the OK to disconnect"
+msgstr  "Esperando o OK para desconectar"
+
+#: src/bp.c:3319 src/bp.c:3323 src/bp.c:3324
+msgid   "Disconnecting the tug away from the aircraft"
+msgstr  "Desconectando o rebocador da aeronave"
+
+#: src/bp.c:3360 src/bp.c:3364 src/bp.c:3365
+msgid   "Closing the cradle"
+msgstr  "Fechando o berço"
+
+#: src/bp.c:3364 src/bp.c:3368 src/bp.c:3372 src/bp.c:3369 src/bp.c:3373
+msgid   "Moving to the side of the aircraft"
+msgstr  "Movendo para o lado da aeronave"
+
+#: src/bp.c:3375 src/bp.c:3379 src/bp.c:3380
+msgid   "Showing the pin and the clear signal"
+msgstr  "Mostrando o pino e o sinal de liberado"
+
+#: src/bp.c:3379 src/bp.c:3383 src/bp.c:3384
+msgid   "Driving the tug away back to his station"
+msgstr  "Dirigindo o rebocador de volta para sua estação"

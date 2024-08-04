@@ -98,7 +98,7 @@
 #define    MIN_STEP_TIME        0.001    /* minimum simulation step in secs */
 
 #define    MSG_DOORS_GPU "Some doors are still opened or the GPU or the ASU are still connected. I'm waiting for all of them closed and disconnected then I will proceed."
-#define	HINTBAR_HEIGHT	20
+#define	   HINTBAR_HEIGHT	20
 
 /*
  * When stopping the operation, tug and aircraft steering deflections must
@@ -223,7 +223,7 @@ static button_t magic_buttons[] = {
         {.filename = "planner.png", .vk = -1, .tex = 0, .tex_data = NULL},
         {.filename = "conn_first_mb.png", .vk = -1, .tex = 0, .tex_data = NULL},
         {.filename = "push-back.png", .vk = -1, .tex = 0, .tex_data = NULL},
-        {.filename = "planner.png", .vk = -1, .tex = 0, .tex_data = NULL},
+        {.filename = "status.png", .vk = -1, .tex = 0, .tex_data = NULL},
         {.filename = NULL},
 };
 
@@ -627,7 +627,6 @@ acf_doors_closed(bool_t with_cfg_flag) {
         }
     }
 
-    doors_refs_init();
     
     for (int i = 0 ; i< doors_info.nb_doors ; i++) {
         if (doors_info.dr[i][0] == '@') {
@@ -1433,6 +1432,8 @@ bp_init(void) {
     conf_get_b_per_acf("ignore_park_brake", &cfg_ignore_park_break);
 
 
+    doors_refs_init();
+    
     acf_override_file  = mkpathname(bp_xpdir, bp_plugindir, "objects", "override", my_acf, NULL);
     if (file_exists(acf_override_file, NULL)) {
         logMsg(BP_INFO_LOG "acf override file found in %s : using it  ", acf_override_file);
@@ -2180,6 +2181,7 @@ pb_step_connected(void) {
          * after the message is done and the parking brake is released.
          */
         bp.step_start_t = bp.cur_t;
+        bp_hint_status_str = _("Waiting for the parking brakes release");
     } else if (bp.cur_t - bp.step_start_t >= STATE_TRANS_DELAY) {
         if (!slave_mode) {
             seg_t *seg = list_head(&bp.segs);
@@ -2324,6 +2326,7 @@ pb_step_stopped(void) {
          * when the parking brake is set.
          */
         bp.step_start_t = bp.cur_t;
+        bp_hint_status_str = _("Waiting for the parking brakes set");
     } else if (bp.cur_t - bp.step_start_t >= STATE_TRANS_DELAY &&
                bp.cur_t - bp.last_voice_t >= msg_dur(MSG_OP_COMPLETE) +
                                              STATE_TRANS_DELAY) {
@@ -2678,7 +2681,11 @@ main_win_click(XPLMWindowID inWindowID, int mx, int my, XPLMMouseStatus inMouse,
     }    
     
     if (button_hit == 2) {
-        XPLMCommandOnce(start_pb);
+        if (!bp_started) {
+            XPLMCommandOnce(start_pb);
+        } else {
+           // Not sure to do it here//  XPLMCommandOnce(stop_pb);
+        }
         return (1);
     }    
 
@@ -2733,31 +2740,38 @@ main_win_draw(XPLMWindowID inWindowID, void *inRefcon) {
     button_hit = magic_buttons_hit_check( mx,  my);
 
     XPLMSetGraphicsState(0, 1, 0, 0, 1, 0, 0);
-    if (start_pb_enable == B_TRUE) {
-        draw_icon(&magic_buttons[0], monitor_def.x_origin,
-                    monitor_def.y_origin + monitor_def.magic_squares_height - magic_buttons[0].h, 1.0,
-                    B_FALSE, button_hit == 0);
+    if (!bp_cam_is_running()) {
+        if (!bp_started) {
+            draw_icon(&magic_buttons[0], monitor_def.x_origin,
+                        monitor_def.y_origin + monitor_def.magic_squares_height - magic_buttons[0].h, 1.0,
+                        B_FALSE, button_hit == 0);
+        
+            draw_icon(&magic_buttons[1], monitor_def.x_origin,
+                        monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * magic_buttons[0].h - magic_buttons[0].h, 1.0,
+                        B_FALSE, button_hit == 1);
+        }
     
-        draw_icon(&magic_buttons[1], monitor_def.x_origin,
-                    monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * magic_buttons[0].h - magic_buttons[0].h, 1.0,
-                    B_FALSE, button_hit == 1);
-    }
-    int pos_x = monitor_def.x_origin;
-    int pos_y = monitor_def.y_origin + monitor_def.magic_squares_height - 3 * magic_buttons[0].h - magic_buttons[0].h;
-    button_t *button3 = (start_pb_enable == B_TRUE) ? &magic_buttons[2] : &magic_buttons[3];
-    draw_icon(button3, pos_x,
-                pos_y, 1.0,
-                B_FALSE, button_hit == 2);
-    
-    if ( button_hit == 2) {
-        show_bp_status(pos_x,pos_y);
-    } else {
-        hide_bp_status();
+        int pos_x = monitor_def.x_origin;
+        int pos_y = monitor_def.y_origin + monitor_def.magic_squares_height - 3 * magic_buttons[0].h - magic_buttons[0].h;
+        button_t *button3 = (!bp_started) ? &magic_buttons[2] : &magic_buttons[3];
+
+        draw_icon(button3, pos_x,
+                    pos_y, 1.0,
+                    B_FALSE, button_hit == 2);
+        
+        if (( button_hit == 2) && bp_started ){
+            show_bp_status(pos_x,pos_y);
+        } else {
+            hide_bp_status();
+        }
     }
 }
 
 static void
 main_intf_show(void) {
+    if ((bp_ls.planner_win == NULL) && (bp_ls.start_pb_win == NULL) && (bp_ls.conn_tug_first == NULL) ) {
+        initMonitorOrigin();
+    }
     if ((bp_ls.planner_win == NULL) || (bp_ls.start_pb_win == NULL) || (bp_ls.conn_tug_first == NULL) ) {
         XPLMCreateWindow_t magic_ops = {
                 .structSize = sizeof(XPLMCreateWindow_t),
@@ -2769,14 +2783,13 @@ main_intf_show(void) {
                 .handleMouseWheelFunc = nil_win_wheel,
                 .refcon = NULL
         };
-        initMonitorOrigin();
 
-        if (start_pb_enable == B_TRUE) {
+        if (!bp_started) {
             if (bp_ls.planner_win == NULL)  {
                 load_icon(&magic_buttons[0]);
                 magic_ops.left = monitor_def.x_origin ;
                 magic_ops.right = magic_ops.left + magic_buttons[0].w;
-                magic_ops.top = monitor_def.y_origin + monitor_def.magic_squares_height ; // - 0.5 * disco_buttons[0].h;
+                magic_ops.top = monitor_def.y_origin + monitor_def.magic_squares_height ;
                 magic_ops.bottom = magic_ops.top - magic_buttons[0].h;
                 bp_ls.planner_win = XPLMCreateWindowEx(&magic_ops);
                 ASSERT(bp_ls.planner_win != NULL);
@@ -2831,7 +2844,7 @@ main_intf_hide(void) {
 void
 main_intf(bool_t force_hide) {
     if (get_pref_widget_status() // show also the magic button while in the pref window
-     || (acf_is_airliner() && acf_on_gnd_stopped(NULL) && !force_hide )) {
+     || bp_started || (acf_is_airliner() && acf_on_gnd_stopped(NULL) && !force_hide )) {
         main_intf_show();
     } else {
         main_intf_hide();
@@ -3207,7 +3220,7 @@ bp_run(float elapsed, float elapsed2, int counter, void *refcon) {
             pb_step_start();
             break;
         case PB_STEP_DRIVING_UP_CLOSE:
-            bp_hint_status_str = _("Driving to the plane");
+            bp_hint_status_str = _("Driving to the aircraft");
             pb_step_driving_up_close();
             break;
         case PB_STEP_WAITING_FOR_DOORS:
@@ -3215,6 +3228,7 @@ bp_run(float elapsed, float elapsed2, int counter, void *refcon) {
             pb_step_waiting_for_doors();
             break;
         case PB_STEP_OPENING_CRADLE: {
+            bp_hint_status_str = _("Waiting for doors/GPU/ASU closed/disconnected");
             if (acf_doors_closed(B_TRUE)) {
                 bp_hint_status_str = _("Opening the cradle");
                 double d_t = bp.cur_t - bp.step_start_t;
@@ -3242,11 +3256,11 @@ bp_run(float elapsed, float elapsed2, int counter, void *refcon) {
             break;
         }
         case PB_STEP_WAITING_FOR_PBRAKE:
-            bp_hint_status_str = _("Waiting for the parking brakes release");
+            bp_hint_status_str = _("Waiting for the parking brakes set");
             pb_step_waiting_for_pbrake();
             break;
         case PB_STEP_DRIVING_UP_CONNECT:
-            bp_hint_status_str = _("Connecting to the plane");
+            bp_hint_status_str = _("Connecting to the aircraft");
             pb_step_driving_up_connect();
             break;
         case PB_STEP_GRABBING:
@@ -3256,7 +3270,7 @@ bp_run(float elapsed, float elapsed2, int counter, void *refcon) {
             pb_step_lift();
             break;
         case PB_STEP_CONNECTED:
-            bp_hint_status_str = _("Connected to the plane");
+            bp_hint_status_str = _("Connected to the aircraft");
             pb_step_connected();
             break;
         case PB_STEP_STARTING:

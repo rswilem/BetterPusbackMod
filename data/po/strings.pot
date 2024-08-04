@@ -7,7 +7,7 @@
 msgid   ""
 msgstr  "Project-Id-Version: PACKAGE VERSION\n"
         "Report-Msgid-Bugs-To: \n"
-        "POT-Creation-Date: 2024-07-18 07:11+0300\n"
+        "POT-Creation-Date: 2024-08-04 07:12+0300\n"
         "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
         "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
         "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,85 +16,87 @@ msgstr  "Project-Id-Version: PACKAGE VERSION\n"
         "Content-Type: text/plain; charset=UTF-8\n"
         "Content-Transfer-Encoding: 8bit\n"
 
-#: src/bp.c:1074
+#: src/bp.c:1074 src/bp.c:1104 src/bp.c:1103
 #, c-format
 msgid   "Pushback failure: X-Plane version too old. This plugin requires at "
         "least X-Plane %s to operate."
 msgstr  ""
 
-#: src/bp.c:1084
+#: src/bp.c:1084 src/bp.c:1114 src/bp.c:1113
 msgid   "Pushback failure: error reading aircraft files from disk."
 msgstr  ""
 
-#: src/bp.c:1149
+#: src/bp.c:1149 src/bp.c:1179 src/bp.c:1178
 msgid   "Pushback failure: error initialising audio messages. Please "
         "reinstall BetterPushback."
 msgstr  ""
 
-#: src/bp.c:1162
+#: src/bp.c:1162 src/bp.c:1192 src/bp.c:1191
 msgid   "Pushback failure: aircraft not on ground."
 msgstr  ""
 
-#: src/bp.c:1170
+#: src/bp.c:1170 src/bp.c:1200 src/bp.c:1199
 msgid   "Pushback failure: aircraft not stationary."
 msgstr  ""
 
-#: src/bp.c:1177
+#: src/bp.c:1177 src/bp.c:1207 src/bp.c:1206
 msgid   "Pushback failure: gear not extended."
 msgstr  ""
 
-#: src/bp.c:1195
+#: src/bp.c:1195 src/bp.c:1225 src/bp.c:1224
 msgid   "Disconnect tow + headset and switch to hand signals."
 msgstr  ""
 
-#: src/bp.c:1197
+#: src/bp.c:1197 src/bp.c:1227 src/bp.c:1226
 msgid   "Reconnect tow and await further instructions."
 msgstr  ""
 
-#: src/bp.c:1292
+#: src/bp.c:1292 src/bp.c:1322 src/bp.c:1321
 msgid   "Pushback advisory: you have your radio volume turned very low and "
         "may not be able to hear ground crew. Please increase your radio "
         "volume in the X-Plane sound preferences."
 msgstr  ""
 
-#: src/bp.c:1468
+#: src/bp.c:1468 src/bp.c:1496 src/bp.c:1495
 msgid   "Pushback failure: aircraft is not compatible with BetterPushback."
 msgstr  ""
 
-#: src/bp.c:1478
+#: src/bp.c:1478 src/bp.c:1506 src/bp.c:1505
 msgid   "Pushback failure: cannot push this aircraft with engines running. "
         "Shutdown engines first."
 msgstr  ""
 
 #: src/bp.c:98
-msgid   "Some doors are still opened or the GPU or the ASU are still connected. I'm waiting for all of them closed and disconnected then I will proceed."
+msgid   "Some doors are still opened or the GPU or the ASU are still "
+        "connected. I'm waiting for all of them closed and disconnected then "
+        "I will proceed."
 msgstr  ""
 
-#: src/bp.c:1494
+#: src/bp.c:1494 src/bp.c:1518 src/bp.c:1517
 msgid   "Pushback failure: please first plan your pushback to tell me where "
         "you want to go."
 msgstr  ""
 
-#: src/bp.c:1840
+#: src/bp.c:1840 src/bp.c:1864 src/bp.c:1863
 #, c-format
 msgid   "ERROR: master requested tug \"%s\", which we don't have in our in "
         "our library. Please sync your tug libraries before trying again."
 msgstr  ""
 
-#: src/bp.c:1942
+#: src/bp.c:1942 src/bp.c:1966 src/bp.c:1965
 msgid   "Pushback warning: unable to remove your chocks. Remove them "
         "yourself, or else I won't be able to push your aircraft."
 msgstr  ""
 
-#: src/bp.c:2197
+#: src/bp.c:2197 src/bp.c:2232 src/bp.c:2231
 msgid   "Hey! Quit blinding me with your landing lights! Turn them off!"
 msgstr  ""
 
-#: src/bp.c:2200
+#: src/bp.c:2200 src/bp.c:2235 src/bp.c:2234
 msgid   "Hey! Quit blinding me with your taxi light! Turn it off!"
 msgstr  ""
 
-#: src/bp.c:2987
+#: src/bp.c:2987 src/bp.c:3122 src/bp.c:3126 src/bp.c:3127 src/bp.c:3129
 msgid   "Pushback failure: your flight controls are preventing me from "
         "steering the aircraft. Unbind any buttons you have set to \"toggle "
         "nosewheel steering\"."
@@ -229,69 +231,69 @@ msgstr  ""
 msgid   "** Settings related to the current aircraft"
 msgstr  ""
 
-#: src/xplane.c:497
+#: src/xplane.c:497 src/xplane.c:499
 msgid   "ERROR: Unable to select pushback tug view at this time."
 msgstr  ""
 
-#: src/xplane.c:634 src/xplane.c:660
+#: src/xplane.c:634 src/xplane.c:660 src/xplane.c:636 src/xplane.c:662
 msgid   "Pushback failure: smartcopilot attempted to switch master/slave or "
         "network connection lost. Stopping operation."
 msgstr  ""
 
-#: src/xplane.c:649 src/xplane.c:671
+#: src/xplane.c:649 src/xplane.c:671 src/xplane.c:651 src/xplane.c:673
 msgid   "Pushback failure: Shared Flight attempted to switch pilot flying or "
         "network connection lost. Stopping operation."
 msgstr  ""
 
-#: src/xplane.c:760 src/xplane.c:920
+#: src/xplane.c:760 src/xplane.c:920 src/xplane.c:762 src/xplane.c:922
 msgid   "Start pushback"
 msgstr  ""
 
-#: src/xplane.c:762 src/xplane.c:922
+#: src/xplane.c:762 src/xplane.c:922 src/xplane.c:764 src/xplane.c:924
 msgid   "Stop pushback"
 msgstr  ""
 
-#: src/xplane.c:764
+#: src/xplane.c:764 src/xplane.c:766
 msgid   "Start pushback planner"
 msgstr  ""
 
-#: src/xplane.c:766
+#: src/xplane.c:766 src/xplane.c:768
 msgid   "Stop pushback planner"
 msgstr  ""
 
-#: src/xplane.c:768
+#: src/xplane.c:768 src/xplane.c:770
 msgid   "Connect tug before entering pushback plan"
 msgstr  ""
 
-#: src/xplane.c:770
+#: src/xplane.c:770 src/xplane.c:772
 msgid   "View from tug's cab."
 msgstr  ""
 
-#: src/xplane.c:773
+#: src/xplane.c:773 src/xplane.c:775
 msgid   "Recreate scenery routes from WED files."
 msgstr  ""
 
-#: src/xplane.c:776
+#: src/xplane.c:776 src/xplane.c:778
 msgid   "Abort pushback during coupled push"
 msgstr  ""
 
-#: src/xplane.c:914
+#: src/xplane.c:914 src/xplane.c:916
 msgid   "Pre-plan pushback"
 msgstr  ""
 
-#: src/xplane.c:916
+#: src/xplane.c:916 src/xplane.c:918
 msgid   "Close pushback planner"
 msgstr  ""
 
-#: src/xplane.c:918
+#: src/xplane.c:918 src/xplane.c:920
 msgid   "Connect tug first"
 msgstr  ""
 
-#: src/xplane.c:926
+#: src/xplane.c:926 src/xplane.c:928
 msgid   "Preferences..."
 msgstr  ""
 
-#: src/xplane.c:924
+#: src/xplane.c:924 src/xplane.c:926
 msgid   "Tug cab view"
 msgstr  ""
 
@@ -345,8 +347,7 @@ msgid   "BetterPushback is open-source software. See COPYING for more "
         "information."
 msgstr  ""
 
-msgid   "Don't check the doors/GPU/ASU status before starting the push-"
-        "back"
+msgid   "Don't check the doors/GPU/ASU status before starting the push-back"
 msgstr  ""
 
 msgid   "In case of multiple monitors configuration, BpB need to use the "
@@ -358,4 +359,87 @@ msgid   "In case of multiple monitors configuration, BpB need to use the "
 msgstr  ""
 
 msgid   "Slide this bar to move the magic squares up or down"
+msgstr  ""
+
+#: src/bp.c:2185 src/bp.c:2184
+msgid   "Waiting for the parking brakes release"
+msgstr  ""
+
+#: src/bp.c:2330 src/bp.c:3252 src/bp.c:3256 src/bp.c:3257 src/bp.c:2329
+#: src/bp.c:3259
+msgid   "Waiting for the parking brakes set"
+msgstr  ""
+
+#: src/bp.c:3212 src/bp.c:3216 src/bp.c:3217 src/bp.c:3219
+msgid   "Push-back called"
+msgstr  ""
+
+#: src/bp.c:3216 src/bp.c:3220 src/bp.c:3221 src/bp.c:3223
+msgid   "Driving to the aircraft"
+msgstr  ""
+
+#: src/bp.c:3220 src/bp.c:3224 src/bp.c:3228 src/bp.c:3225 src/bp.c:3229
+#: src/bp.c:3227 src/bp.c:3231
+msgid   "Waiting for doors/GPU/ASU closed/disconnected"
+msgstr  ""
+
+#: src/bp.c:3226 src/bp.c:3230 src/bp.c:3231 src/bp.c:3233
+msgid   "Opening the cradle"
+msgstr  ""
+
+#: src/bp.c:3256 src/bp.c:3260 src/bp.c:3261 src/bp.c:3263
+msgid   "Connecting to the aircraft"
+msgstr  ""
+
+#: src/bp.c:3266 src/bp.c:3270 src/bp.c:3271 src/bp.c:3273
+msgid   "Connected to the aircraft"
+msgstr  ""
+
+#: src/bp.c:3270 src/bp.c:3274 src/bp.c:3275 src/bp.c:3277
+msgid   "Push-back started"
+msgstr  ""
+
+#: src/bp.c:3295 src/bp.c:3299 src/bp.c:3300 src/bp.c:3302
+msgid   "Push-back in progress"
+msgstr  ""
+
+#: src/bp.c:3299 src/bp.c:3303 src/bp.c:3304 src/bp.c:3306
+msgid   "Push-back stopping"
+msgstr  ""
+
+#: src/bp.c:3303 src/bp.c:3307 src/bp.c:3308 src/bp.c:3310
+msgid   "Push-back stopped"
+msgstr  ""
+
+#: src/bp.c:3307 src/bp.c:3311 src/bp.c:3312 src/bp.c:3314
+msgid   "Lowering the nose"
+msgstr  ""
+
+#: src/bp.c:3311 src/bp.c:3315 src/bp.c:3316 src/bp.c:3318
+msgid   "Ungrabbing the nose"
+msgstr  ""
+
+#: src/bp.c:3315 src/bp.c:3319 src/bp.c:3320 src/bp.c:3322
+msgid   "Waiting the OK to disconnect"
+msgstr  ""
+
+#: src/bp.c:3319 src/bp.c:3323 src/bp.c:3324 src/bp.c:3326
+msgid   "Disconnecting the tug away from the aircraft"
+msgstr  ""
+
+#: src/bp.c:3360 src/bp.c:3364 src/bp.c:3365 src/bp.c:3367
+msgid   "Closing the cradle"
+msgstr  ""
+
+#: src/bp.c:3364 src/bp.c:3368 src/bp.c:3372 src/bp.c:3369 src/bp.c:3373
+#: src/bp.c:3371 src/bp.c:3375
+msgid   "Moving to the side of the aircraft"
+msgstr  ""
+
+#: src/bp.c:3375 src/bp.c:3379 src/bp.c:3380 src/bp.c:3382
+msgid   "Showing the pin and the clear signal"
+msgstr  ""
+
+#: src/bp.c:3379 src/bp.c:3383 src/bp.c:3384 src/bp.c:3386
+msgid   "Driving the tug away back to his station"
 msgstr  ""

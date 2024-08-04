@@ -66,8 +66,8 @@ enum {
 
 static bool_t inited = B_FALSE;
 
-XPLMCommandRef start_pb,  start_cam, conn_first;
-static XPLMCommandRef  stop_pb, stop_cam;
+XPLMCommandRef start_pb,  start_cam, conn_first, stop_pb;
+static XPLMCommandRef  stop_cam;
 static XPLMCommandRef cab_cam, recreate_routes;
 static XPLMCommandRef   abort_push;
 static XPLMMenuID root_menu;
