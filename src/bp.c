@@ -2742,25 +2742,31 @@ main_win_draw(XPLMWindowID inWindowID, void *inRefcon) {
     XPLMSetGraphicsState(0, 1, 0, 0, 1, 0, 0);
     if (!bp_cam_is_running()) {
         if (!bp_started) {
+            if (bp_ls.planner_win != NULL)  {
             draw_icon(&magic_buttons[0], monitor_def.x_origin,
                         monitor_def.y_origin + monitor_def.magic_squares_height - magic_buttons[0].h, 1.0,
                         B_FALSE, button_hit == 0);
-        
+            }
+            if (bp_ls.conn_tug_first != NULL)  {
             draw_icon(&magic_buttons[1], monitor_def.x_origin,
                         monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * magic_buttons[0].h - magic_buttons[0].h, 1.0,
                         B_FALSE, button_hit == 1);
+            }            
         }
     
         int pos_x = monitor_def.x_origin;
         int pos_y = monitor_def.y_origin + monitor_def.magic_squares_height - 3 * magic_buttons[0].h - magic_buttons[0].h;
         button_t *button3 = (!bp_started) ? &magic_buttons[2] : &magic_buttons[3];
 
-        draw_icon(button3, pos_x,
-                    pos_y, 1.0,
-                    B_FALSE, button_hit == 2);
-        
+        if (bp_ls.start_pb_win != NULL)  {
+            draw_icon(button3, pos_x,
+                        pos_y, 1.0,
+                        B_FALSE, button_hit == 2);
+        }
         if (( button_hit == 2) && bp_started ){
-            show_bp_status(pos_x,pos_y);
+            if (bp_ls.start_pb_win != NULL)  {
+                show_bp_status(pos_x,pos_y);
+            }
         } else {
             hide_bp_status();
         }
@@ -2844,7 +2850,7 @@ main_intf_hide(void) {
 void
 main_intf(bool_t force_hide) {
     if (get_pref_widget_status() // show also the magic button while in the pref window
-     || bp_started || (acf_is_airliner() && acf_on_gnd_stopped(NULL) && !force_hide )) {
+     || (( bp_started || (acf_is_airliner() && acf_on_gnd_stopped(NULL))) && !force_hide) ) {
         main_intf_show();
     } else {
         main_intf_hide();
