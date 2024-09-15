@@ -524,3 +524,25 @@ msgstr  "Mostrando o pino e o sinal de liberado"
 #: src/bp.c:3379 src/bp.c:3383 src/bp.c:3384
 msgid   "Driving the tug away back to his station"
 msgstr  "Dirigindo o rebocador de volta para sua estação"
+
+
+#: src/bp.c:3277 src/bp.c:2153
+msgid   "Connected to the aircraft, waiting for clearance"
+msgstr  "Conectado à aeronave, esperando pela liberação"
+
+#: src/bp.c:3279 src/bp.c:3298 src/bp.c:3295 src/bp.c:3304
+msgid   "Lifting the aircraft"
+msgstr  "Levantando a aeronave"
+
+#: src/bp.c:3275 src/bp.c:3294 src/bp.c:3291 src/bp.c:3300
+msgid   "Grabbing the aircraft"
+msgstr  "Conectando a aeronave"
+
+#: src/cfg.c:677
+msgid   "Always connect the tug first"
+msgstr  "Sempre conectar o rebocador primeiro"
+
+msgid "The push process is always halted when the tug is at the nose of the aircraft\n"
+       "The process will proceed by triggering again the 'start pushback' command."
+msgstr "O processo de reboque e sempre interrompido quando o rebocador esta no nariz da aeronave\n"
+        "O processo continuara apos acionar novamente o comando 'iniciar pushback'."

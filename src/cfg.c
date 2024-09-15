@@ -95,6 +95,7 @@ static struct {
     XPWidgetID hide_xp11_tug;
     XPWidgetID hide_magic_squares;
     XPWidgetID show_dev_menu;
+    XPWidgetID always_connect_tug_first;
 
     size_t num_radio_boxes;
     XPWidgetID *radio_boxes;
@@ -189,6 +190,9 @@ const char *save_prefs_tooltip = "Save current preferences to disk.";
 const char *disco_when_done_tooltip =
         "Never ask and always automatically disconnect\n"
         "the tug when the pushback operation is complete.";
+const char *always_connect_tug_first_tooltip =
+        "The push process is always halted when the tug is at the nose of the aircraft\n"
+        "The process will proceed by triggering again the 'start pushback' command.";
 const char *ignore_park_brake_tooltip =
         "Never check \"set parking brake\".\n"
         "Some aircraft stuck on this check.\n"
@@ -220,6 +224,7 @@ buttons_update(void) {
     bool_t ignore_doors_check = B_FALSE;
     bool_t hide_magic_squares = B_FALSE;
     bool_t show_dev_menu = B_FALSE;
+    bool_t always_connect_tug_first = B_FALSE;
     int monitor_id = MONITOR_AUTO;
     int magic_squares_height = 50 ;
     const char *radio_dev = "", *sound_dev = "";
@@ -232,6 +237,7 @@ buttons_update(void) {
     (void) conf_get_b_per_acf("disco_when_done", &disco_when_done);
     (void) conf_get_b_per_acf("ignore_park_brake", &ignore_park_brake);
     (void) conf_get_b_per_acf("ignore_doors_check", &ignore_doors_check);
+    (void) conf_get_b(bp_conf,"always_connect_tug_first", &always_connect_tug_first);
 
     (void) conf_get_str(bp_conf, "radio_device", &radio_dev);
     (void) conf_get_str(bp_conf, "sound_device", &sound_dev);
@@ -268,6 +274,9 @@ buttons_update(void) {
                         xpProperty_ButtonState, ignore_doors_check);
     XPSetWidgetProperty(buttons.hide_magic_squares,
                         xpProperty_ButtonState, hide_magic_squares);
+    XPSetWidgetProperty(buttons.always_connect_tug_first,
+                        xpProperty_ButtonState, always_connect_tug_first);
+                        
     XPSetWidgetProperty(buttons.show_dev_menu, xpProperty_ButtonState,
                         show_dev_menu);
     XPSetWidgetProperty(buttons.monitorAuto, 
@@ -409,6 +418,10 @@ main_window_cb(XPWidgetMessage msg, XPWidgetID widget, intptr_t param1,
         } else if (btn == buttons.show_dev_menu) {
             conf_set_b(bp_conf, "show_dev_menu",
                        XPGetWidgetProperty(buttons.show_dev_menu,
+                                           xpProperty_ButtonState, NULL));
+        } else if (btn == buttons.always_connect_tug_first) {
+            conf_set_b(bp_conf, "always_connect_tug_first",
+                       XPGetWidgetProperty(buttons.always_connect_tug_first,
                                            xpProperty_ButtonState, NULL));
         } else if (bp_xp_ver >= 11000 && btn == buttons.hide_xp11_tug) {
             conf_set_b(bp_conf, "dont_hide_xp11_tug",
@@ -658,8 +671,12 @@ create_main_window(void) {
     checkbox_t *sound_out = sound_checkboxes_init(_("Sound output device"),
                                                   &buttons.sound_devs, &buttons.num_sound_devs,
                                                   &buttons.sound_boxes, &buttons.num_sound_boxes);
-    checkbox_t other[7] = {
+    checkbox_t other[8] = {
             {_("Miscellaneous"), NULL, NULL},
+            {
+             _("Always connect the tug first"),
+                    &buttons.always_connect_tug_first,       always_connect_tug_first_tooltip
+            },
             {
              _("Auto disconnect when done **"),
                     &buttons.disco_when_done,       disco_when_done_tooltip
@@ -730,7 +747,7 @@ create_main_window(void) {
 
 
 	scrollbars.magic_squares_height = layout_scroll_control(main_win, tts,
-	    &main_win_scrollbar_cbs, MARGIN + col1_width + MARGIN, main_window_height - 90 - (MAIN_WINDOW_SPACE + 10) - 0.5* BUTTON_HEIGHT
+	    &main_win_scrollbar_cbs, MARGIN + col1_width + MARGIN, main_window_height - 80 - (MAIN_WINDOW_SPACE + 10) - 0.5* BUTTON_HEIGHT
             , _("Magic squares position **"), 10, 80, 10,
 	    B_FALSE, 1.0, "%", NULL, _(magic_squares_height_tooltip));
 

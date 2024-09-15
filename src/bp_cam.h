@@ -36,6 +36,7 @@ typedef struct {
     GLuint tex;        /* OpenGL texture object */
     GLbyte *tex_data;    /* RGBA texture data */
     int w, h;        /* button width & height in pixels */
+    XPLMWindowID wind_id;   /* win id */
 } button_t;
 
 typedef struct {

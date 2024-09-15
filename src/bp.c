@@ -220,10 +220,10 @@ static button_t disco_buttons[] = {
 };
 
 static button_t magic_buttons[] = {
-        {.filename = "planner.png", .vk = -1, .tex = 0, .tex_data = NULL},
-        {.filename = "conn_first_mb.png", .vk = -1, .tex = 0, .tex_data = NULL},
-        {.filename = "push-back.png", .vk = -1, .tex = 0, .tex_data = NULL},
-        {.filename = "status.png", .vk = -1, .tex = 0, .tex_data = NULL},
+        {.filename = "planner.png", .vk = -1, .tex = 0, .tex_data = NULL, .wind_id = NULL},
+        {.filename = "conn_first_mb.png", .vk = -1, .tex = 0, .tex_data = NULL, .wind_id = NULL},
+        {.filename = "push-back.png", .vk = -1, .tex = 0, .tex_data = NULL, .wind_id = NULL},
+        {.filename = "status.png", .vk = -1, .tex = 0, .tex_data = NULL, .wind_id = NULL},
         {.filename = NULL},
 };
 
@@ -2149,8 +2149,10 @@ pb_step_lift(void) {
              * far as we can go without segments. Also wait
              * for the camera to stop.
              */
-            if (!late_plan_end_cond())
+            if (!late_plan_end_cond()) {
+                bp_hint_status_str = _("Connected to the aircraft, waiting for clearance");
                 return;
+            }
             late_plan_requested = B_FALSE;
             /*
              * We normally save the route during bp_start,
@@ -2640,20 +2642,24 @@ magic_buttons_hit_check(int mx, int my) {
     bool_t is_hit;
     int max_x = 0;
 
-    for (int i = 0; magic_buttons[i].filename != NULL; i++) {
-        max_x = MAX(max_x, magic_buttons[i].w);
-    }    
-    // pre-check only on x axis
-    is_hit = (mx >= monitor_def.x_origin && mx <= monitor_def.x_origin + max_x);
-
-    if (is_hit) {
+    if (!bp_cam_is_running()) {
         for (int i = 0; magic_buttons[i].filename != NULL; i++) {
-            is_hit = (mx >= monitor_def.x_origin && mx <= monitor_def.x_origin + magic_buttons[i].w &&
-                            my >= monitor_def.y_origin + monitor_def.magic_squares_height - i * 1.5 * magic_buttons[i].h - magic_buttons[i].h &&
-                            my <= monitor_def.y_origin + monitor_def.magic_squares_height - i * 1.5 * magic_buttons[i].h);
-            if (is_hit) {
-                return i;
-            }    
+            max_x = MAX(max_x, magic_buttons[i].w);
+        }    
+        // pre-check only on x axis
+        is_hit = (mx >= monitor_def.x_origin && mx <= monitor_def.x_origin + max_x);
+
+        if (is_hit) {
+            for (int i = 0; magic_buttons[i].filename != NULL; i++) {
+                if (magic_buttons[i].wind_id != NULL) {
+                    is_hit = (mx >= monitor_def.x_origin && mx <= monitor_def.x_origin + magic_buttons[i].w &&
+                                    my >= monitor_def.y_origin + monitor_def.magic_squares_height - i * 1.5 * magic_buttons[i].h - magic_buttons[i].h &&
+                                    my <= monitor_def.y_origin + monitor_def.magic_squares_height - i * 1.5 * magic_buttons[i].h);
+                    if (is_hit) {
+                        return i;
+                    }
+                }    
+            }
         }
     }
     return -1;
@@ -2681,11 +2687,7 @@ main_win_click(XPLMWindowID inWindowID, int mx, int my, XPLMMouseStatus inMouse,
     }    
     
     if (button_hit == 2) {
-        if (!bp_started) {
-            XPLMCommandOnce(start_pb);
-        } else {
-           // Not sure to do it here//  XPLMCommandOnce(stop_pb);
-        }
+        XPLMCommandOnce(start_pb);
         return (1);
     }    
 
@@ -2741,44 +2743,45 @@ main_win_draw(XPLMWindowID inWindowID, void *inRefcon) {
 
     XPLMSetGraphicsState(0, 1, 0, 0, 1, 0, 0);
     if (!bp_cam_is_running()) {
-        if (!bp_started) {
-            if (bp_ls.planner_win != NULL)  {
-            draw_icon(&magic_buttons[0], monitor_def.x_origin,
-                        monitor_def.y_origin + monitor_def.magic_squares_height - magic_buttons[0].h, 1.0,
-                        B_FALSE, button_hit == 0);
-            }
-            if (bp_ls.conn_tug_first != NULL)  {
-            draw_icon(&magic_buttons[1], monitor_def.x_origin,
-                        monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * magic_buttons[0].h - magic_buttons[0].h, 1.0,
-                        B_FALSE, button_hit == 1);
-            }            
+        if (magic_buttons[0].wind_id != NULL)  {
+        draw_icon(&magic_buttons[0], monitor_def.x_origin,
+                    monitor_def.y_origin + monitor_def.magic_squares_height - magic_buttons[0].h, 1.0,
+                    B_FALSE, button_hit == 0);
         }
-    
-        int pos_x = monitor_def.x_origin;
-        int pos_y = monitor_def.y_origin + monitor_def.magic_squares_height - 3 * magic_buttons[0].h - magic_buttons[0].h;
-        button_t *button3 = (!bp_started) ? &magic_buttons[2] : &magic_buttons[3];
-
-        if (bp_ls.start_pb_win != NULL)  {
-            draw_icon(button3, pos_x,
-                        pos_y, 1.0,
+        if (magic_buttons[1].wind_id  != NULL)  {
+        draw_icon(&magic_buttons[1], monitor_def.x_origin,
+                    monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * magic_buttons[0].h - magic_buttons[0].h, 1.0,
+                    B_FALSE, button_hit == 1);
+        }            
+        if (magic_buttons[2].wind_id  != NULL)  {
+             draw_icon(&magic_buttons[2], monitor_def.x_origin,
+                        monitor_def.y_origin + monitor_def.magic_squares_height - 3 * magic_buttons[0].h - magic_buttons[0].h, 1.0,
                         B_FALSE, button_hit == 2);
         }
-        if (( button_hit == 2) && bp_started ){
-            if (bp_ls.start_pb_win != NULL)  {
+
+        int pos_x = monitor_def.x_origin;
+        int pos_y = monitor_def.y_origin + monitor_def.magic_squares_height - 4.5 * magic_buttons[3].h - magic_buttons[3].h;
+        if (magic_buttons[3].wind_id  != NULL)  {
+            draw_icon(&magic_buttons[3], pos_x,pos_y, 1.0,
+                        B_FALSE, button_hit == 3);
+            if (button_hit == 3) {
                 show_bp_status(pos_x,pos_y);
+            } else {
+                hide_bp_status();
             }
-        } else {
-            hide_bp_status();
         }
     }
 }
 
 static void
 main_intf_show(void) {
-    if ((bp_ls.planner_win == NULL) && (bp_ls.start_pb_win == NULL) && (bp_ls.conn_tug_first == NULL) ) {
+    bool_t always_connect_tug_first = B_FALSE;
+    (void) conf_get_b(bp_conf,"always_connect_tug_first", &always_connect_tug_first);
+
+    if ((bp_ls.planner_win == NULL) && (bp_ls.start_pb_win == NULL) && (bp_ls.conn_tug_first == NULL) && (bp_ls.pb_status_win == NULL) ) {
         initMonitorOrigin();
     }
-    if ((bp_ls.planner_win == NULL) || (bp_ls.start_pb_win == NULL) || (bp_ls.conn_tug_first == NULL) ) {
+    if ((bp_ls.planner_win == NULL) || (bp_ls.start_pb_win == NULL) || (bp_ls.conn_tug_first == NULL) || (bp_ls.pb_status_win == NULL) ) {
         XPLMCreateWindow_t magic_ops = {
                 .structSize = sizeof(XPLMCreateWindow_t),
                 .left = 0, .top = 0, .right = 0, .bottom = 0, .visible = 1,
@@ -2790,32 +2793,31 @@ main_intf_show(void) {
                 .refcon = NULL
         };
 
-        if (!bp_started) {
-            if (bp_ls.planner_win == NULL)  {
-                load_icon(&magic_buttons[0]);
-                magic_ops.left = monitor_def.x_origin ;
-                magic_ops.right = magic_ops.left + magic_buttons[0].w;
-                magic_ops.top = monitor_def.y_origin + monitor_def.magic_squares_height ;
-                magic_ops.bottom = magic_ops.top - magic_buttons[0].h;
-                bp_ls.planner_win = XPLMCreateWindowEx(&magic_ops);
-                ASSERT(bp_ls.planner_win != NULL);
-                XPLMBringWindowToFront(bp_ls.planner_win);
-            }
-
-            if (bp_ls.conn_tug_first == NULL) {
-                load_icon(&magic_buttons[1]);
-                magic_ops.left = monitor_def.x_origin ;
-                magic_ops.right = magic_ops.left + magic_buttons[1].w;
-                magic_ops.top = monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * magic_buttons[1].h;
-                magic_ops.bottom =  magic_ops.top - magic_buttons[1].h;
-                bp_ls.conn_tug_first = XPLMCreateWindowEx(&magic_ops);
-                ASSERT(bp_ls.conn_tug_first != NULL);
-                XPLMBringWindowToFront(bp_ls.conn_tug_first);
-            }
+        if (bp_ls.planner_win == NULL)  {
+            load_icon(&magic_buttons[0]);
+            magic_ops.left = monitor_def.x_origin ;
+            magic_ops.right = magic_ops.left + magic_buttons[0].w;
+            magic_ops.top = monitor_def.y_origin + monitor_def.magic_squares_height ;
+            magic_ops.bottom = magic_ops.top - magic_buttons[0].h;
+            bp_ls.planner_win = XPLMCreateWindowEx(&magic_ops);
+            ASSERT(bp_ls.planner_win != NULL);
+            XPLMBringWindowToFront(bp_ls.planner_win);
         }
-        if (bp_ls.start_pb_win == NULL) {
+
+        if (bp_ls.conn_tug_first == NULL) {
+            load_icon(&magic_buttons[1]);
+            magic_ops.left = monitor_def.x_origin ;
+            magic_ops.right = magic_ops.left + magic_buttons[1].w;
+            magic_ops.top = monitor_def.y_origin + monitor_def.magic_squares_height - 1.5 * magic_buttons[1].h;
+            magic_ops.bottom =  magic_ops.top - magic_buttons[1].h;
+            bp_ls.conn_tug_first = XPLMCreateWindowEx(&magic_ops);
+            ASSERT(bp_ls.conn_tug_first != NULL);
+            XPLMBringWindowToFront(bp_ls.conn_tug_first);
+        }
+
+
+        if  (bp_ls.start_pb_win == NULL) {
             load_icon(&magic_buttons[2]);
-            load_icon(&magic_buttons[3]);
             magic_ops.left = monitor_def.x_origin ;
             magic_ops.right = magic_ops.left + magic_buttons[2].w;
             magic_ops.top = monitor_def.y_origin + monitor_def.magic_squares_height - 3 * magic_buttons[2].h;
@@ -2824,7 +2826,22 @@ main_intf_show(void) {
             ASSERT(bp_ls.start_pb_win != NULL);
             XPLMBringWindowToFront(bp_ls.start_pb_win);
         }
+
+        if (bp_ls.pb_status_win == NULL) {
+            load_icon(&magic_buttons[3]);
+            magic_ops.left = monitor_def.x_origin ;
+            magic_ops.right = magic_ops.left + magic_buttons[3].w;
+            magic_ops.top = monitor_def.y_origin + monitor_def.magic_squares_height - 4.5 * magic_buttons[3].h;
+            magic_ops.bottom =  magic_ops.top - magic_buttons[3].h;
+            bp_ls.pb_status_win = XPLMCreateWindowEx(&magic_ops);
+            ASSERT(bp_ls.pb_status_win != NULL);
+            XPLMBringWindowToFront(bp_ls.pb_status_win);
+        }
     }
+    magic_buttons[0].wind_id = (!bp_started && !always_connect_tug_first) ? bp_ls.planner_win : NULL;
+    magic_buttons[1].wind_id = (!bp_started && !always_connect_tug_first) ? bp_ls.conn_tug_first : NULL;
+    magic_buttons[2].wind_id =  !bp_started  || ( ( bp.step == PB_STEP_LIFTING) && late_plan_requested) ? bp_ls.start_pb_win : NULL;
+    magic_buttons[3].wind_id = bp_started ? bp_ls.pb_status_win : NULL;
 }
 
 void
@@ -2832,17 +2849,25 @@ main_intf_hide(void) {
     if (bp_ls.planner_win != NULL) {
         XPLMDestroyWindow(bp_ls.planner_win);
         unload_icon(&magic_buttons[0]);
+        magic_buttons[0].wind_id = NULL;
         bp_ls.planner_win = NULL;
     }
     if (bp_ls.start_pb_win != NULL) {
         XPLMDestroyWindow(bp_ls.start_pb_win);
         unload_icon(&magic_buttons[2]);
-        unload_icon(&magic_buttons[3]);
+        magic_buttons[2].wind_id = NULL;
         bp_ls.start_pb_win = NULL;
+    }
+    if (bp_ls.pb_status_win != NULL) {
+        XPLMDestroyWindow(bp_ls.pb_status_win);
+        unload_icon(&magic_buttons[3]);
+        magic_buttons[3].wind_id = NULL;
+        bp_ls.pb_status_win = NULL;
     }
     if (bp_ls.conn_tug_first != NULL) {
         XPLMDestroyWindow(bp_ls.conn_tug_first);
         unload_icon(&magic_buttons[1]);
+        magic_buttons[1].wind_id = NULL;
         bp_ls.conn_tug_first = NULL;
     }
 }
@@ -3270,9 +3295,11 @@ bp_run(float elapsed, float elapsed2, int counter, void *refcon) {
             pb_step_driving_up_connect();
             break;
         case PB_STEP_GRABBING:
+            bp_hint_status_str = _("Grabbing the aircraft");
             pb_step_grab();
             break;
         case PB_STEP_LIFTING:
+            bp_hint_status_str = _("Lifting the aircraft");
             pb_step_lift();
             break;
         case PB_STEP_CONNECTED:

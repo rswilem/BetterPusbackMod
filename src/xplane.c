@@ -283,7 +283,7 @@ enable_menu_items() {
 }
 
 static int
-start_pb_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon) {
+start_pb_handler_(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon) {
     UNUSED(cmd);
     UNUSED(refcon);
 
@@ -330,6 +330,17 @@ start_pb_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon) {
     return (1);
 }
 
+static int
+start_pb_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon) {
+    bool_t always_connect_tug_first = B_FALSE;
+    (void) conf_get_b(bp_conf, "always_connect_tug_first", &always_connect_tug_first);
+
+    if (always_connect_tug_first && !bp_started ) {
+        return conn_first_handler(cmd, phase, refcon);
+    } else {
+        return start_pb_handler_(cmd, phase, refcon);
+    }
+}    
 static int
 stop_pb_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon) {
     UNUSED(cmd);
@@ -972,12 +983,13 @@ bp_priv_disable(void) {
 
     XPLMUnregisterCommandHandler(start_pb, start_pb_handler, 1, NULL);
     XPLMUnregisterCommandHandler(stop_pb, stop_pb_handler, 1, NULL);
-    XPLMUnregisterCommandHandler(start_cam, start_pb_handler, 1, NULL);
-    XPLMUnregisterCommandHandler(stop_cam, stop_pb_handler, 1, NULL);
+    XPLMUnregisterCommandHandler(start_cam, start_cam_handler, 1, NULL);
+    XPLMUnregisterCommandHandler(stop_cam, stop_cam_handler, 1, NULL);
     XPLMUnregisterCommandHandler(conn_first, conn_first_handler, 1, NULL);
     XPLMUnregisterCommandHandler(cab_cam, cab_cam_handler, 1, NULL);
     XPLMUnregisterCommandHandler(recreate_routes, recreate_routes_handler,
                                  1, NULL);
+    XPLMUnregisterCommandHandler(abort_push, abort_push_handler, 1, NULL);
 
     bp_fini();
     tug_glob_fini();
