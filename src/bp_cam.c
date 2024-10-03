@@ -111,6 +111,7 @@ static bool_t saved_real_wx;
 static XPLMObjectRef cam_lamp_obj = NULL;
 static XPLMInstanceRef cam_lamp_inst = NULL;
 static const char *cam_lamp_drefs[] = {NULL};
+bool_t bp_plan_callback_is_alive = B_FALSE;
 
 static int key_sniffer(char inChar, XPLMKeyFlags inFlags, char inVirtualKey,
                        void *refcon);
@@ -193,7 +194,7 @@ static button_t buttons[] = {
         {.filename = NULL}
 };
 static int button_hit = -1, button_lit = -1;
-static bool_t cam_inited = B_FALSE;
+bool_t cam_inited = B_FALSE;
 
 static struct {
 	char		*msg;
@@ -431,6 +432,8 @@ cam_ctl(XPLMCameraPosition_t *pos, int losing_control, void *refcon) {
     int n;
 
     UNUSED(refcon);
+
+    bp_plan_callback_is_alive = B_TRUE;
 
     if (pos == NULL || losing_control || !cam_inited)
         return (0);

@@ -631,6 +631,19 @@ status_check(float elapsed, float elapsed2, int counter, void *refcon)
     cab_cam_enable = cab_view_can_start();
     enable_menu_items();
 
+    if( !g_callback_is_alive && !cab_cam_enable ) {
+        cab_view_stop();
+    }
+    g_callback_is_alive = B_FALSE;
+
+
+    if( !bp_plan_callback_is_alive && cam_inited ) {
+        XPLMCommandOnce(XPLMFindCommand("BetterPushback/stop_planner"));
+    }
+    bp_plan_callback_is_alive = B_FALSE;
+
+
+
     if (!conf_get_b_per_acf("hide_magic_squares", &hide_main_intf) ) {
         hide_main_intf = B_FALSE;
     }

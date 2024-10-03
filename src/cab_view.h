@@ -25,6 +25,8 @@
 extern "C" {
 #endif
 
+extern bool_t g_callback_is_alive;
+
 void cab_view_init(void);
 
 void cab_view_fini(void);
