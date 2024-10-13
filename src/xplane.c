@@ -903,7 +903,7 @@ bp_priv_enable(void) {
     bool_t dont_hide_xp_tug = B_FALSE;
 
     ASSERT(!inited);
-
+    XPLMEnableFeature("XPLM_USE_NATIVE_WIDGET_WINDOWS", 1);
     /*
      * Reinit translations & config to allow switching languages on
      * the fly.
@@ -936,18 +936,20 @@ bp_priv_enable(void) {
     root_menu = XPLMCreateMenu("Better Pushback", XPLMFindPluginsMenu(),
                                plugins_menu_item, menu_cb, NULL);
 
-    start_pb_plan_menu_item = XPLMAppendMenuItem(root_menu,
-                                                 _("Pre-plan pushback"), start_cam, 1);
-    stop_pb_plan_menu_item = XPLMAppendMenuItem(root_menu,
-                                                _("Close pushback planner"), stop_cam, 1);
-    conn_first_menu_item = XPLMAppendMenuItem(root_menu,
-                                           _("Connect tug first"), conn_first, 1);
-    start_pb_menu_item = XPLMAppendMenuItem(root_menu,
-                                            _("Start pushback"), start_pb, 1);
-    stop_pb_menu_item = XPLMAppendMenuItem(root_menu,
-                                           _("Stop pushback"), stop_pb, 1);
-    cab_cam_menu_item = XPLMAppendMenuItem(root_menu,
-                                           _("Tug cab view"), cab_cam, 1);
+    start_pb_plan_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
+                                                 _("Pre-plan pushback"), start_cam);
+    stop_pb_plan_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
+                                                _("Close pushback planner"), stop_cam);
+    conn_first_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
+                                           _("Connect tug first"), conn_first);
+    start_pb_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
+                                            _("Start pushback"), start_pb);
+    stop_pb_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
+                                           _("Stop pushback"), stop_pb);
+    cab_cam_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
+                                           _("Tug cab view"), cab_cam);
+
+    XPLMAppendMenuSeparator(root_menu);
     prefs_menu_item = XPLMAppendMenuItem(root_menu,
                                          _("Preferences..."), &prefs_menu_item, 1);
 

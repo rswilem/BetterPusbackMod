@@ -87,6 +87,9 @@ typedef enum {
     ANIM_CLEAR_SIGNAL,
     ANIM_LIFT_IN_TRANSIT,
     ANIM_BEACON_FLASH,
+    ANIM_TUG_POS_X,
+    ANIM_TUG_POS_Y,
+    ANIM_TUG_POS_Z,
     TUG_NUM_ANIMS
 } anim_t;
 
@@ -166,7 +169,10 @@ static anim_info_t anim[TUG_NUM_ANIMS] = {
         {.name = "bp/anim/winch_on"},
         {.name = "bp/anim/clear_signal"},
         {.name = "bp/anim/lift_in_transit"},
-        {.name = "bp/anim/beacon_flash"}
+        {.name = "bp/anim/beacon_flash"},
+        {.name = "bp/anim/tug_pos_x"},
+        {.name = "bp/anim/tug_pos_y"},
+        {.name = "bp/anim/tug_pos_z"}
 };
 
 static const char *tug_dr_list[TUG_NUM_ANIMS + 1] = {
@@ -186,6 +192,9 @@ static const char *tug_dr_list[TUG_NUM_ANIMS + 1] = {
         "bp/anim/clear_signal",
         "bp/anim/lift_in_transit",
         "bp/anim/beacon_flash",
+        "bp/anim/tug_pos_x",
+        "bp/anim/tug_pos_y",
+        "bp/anim/tug_pos_z",
         NULL
 };
 
@@ -1579,6 +1588,10 @@ tug_draw(tug_t *tug, double cur_t) {
     return ;
     }                             
 
+    anim[ANIM_TUG_POS_X].value = tug->pos.pos.x;
+    anim[ANIM_TUG_POS_Y].value = info.locationY;
+    anim[ANIM_TUG_POS_Z].value = -tug->pos.pos.y;
+    
     pos = VECT3(tug->pos.pos.x, info.locationY, -tug->pos.pos.y);
     norm = VECT3(info.normalX, info.normalY, info.normalZ);
     pos = vect3_add(pos, vect3_set_abs(norm, tug->info->height));
