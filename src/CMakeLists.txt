@@ -17,6 +17,8 @@ cmake_minimum_required(VERSION 3.0)
 
 project(bp)
 
+set(CMAKE_CXX_STANDARD 11)
+
 # Platform-specific variables
 if(APPLE)
 	set(PLAT_SHORT "mac64")
@@ -34,6 +36,14 @@ else()
 	set(PLAT_ONLY "linux")
 	set(PLUGIN_BIN_OUTDIR "lin_x64")
 endif()
+
+# Set include directories used by our code and dependencies.
+include_directories("${CMAKE_SOURCE_DIR}/")
+include_directories("${CMAKE_SOURCE_DIR}/imgui")
+include_directories("${CMAKE_SOURCE_DIR}/imgui/misc/cpp")
+include_directories("${CMAKE_SOURCE_DIR}/imgui/misc/freetype")
+include_directories("${CMAKE_SOURCE_DIR}/ImgWindow")
+include_directories("${CMAKE_SOURCE_DIR}/Font")
 
 # Build path setup
 file(GLOB LIBACFUTILS "../../libacfutils")
@@ -53,8 +63,8 @@ file(GLOB OPENSSL_PREFIX "${LIBACFUTILS}/ssl/openssl-${PLAT_LONG}")
 file(GLOB ICONV_PREFIX "${LIBACFUTILS}/libiconv/libiconv-${PLAT_LONG}")
 file(GLOB CURL_PREFIX "${LIBACFUTILS}/curl/libcurl-${PLAT_LONG}")
 
-file(GLOB SRC *.c)
-file(GLOB HDR *.h)
+file(GLOB SRC *.cpp *.c  "imgui/*.cpp" "imgui/misc/cpp/*.cpp"  "imgui/misc/freetype/*.cpp"   "ImgWindow/*.cpp")
+file(GLOB HDR "*.h" "imgui/*.h" "imgui/misc/cpp/*.h" "imgui/misc/freetype/*.h"  "ImgWindow/*.h"  "Font/*.h")
 
 set(ALL_SRC ${SRC} ${HDR})
 list(SORT ALL_SRC)
@@ -87,6 +97,8 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror --std=c99 \
     -Wno-unused-local-typedefs -fvisibility=hidden")
 if(APPLE)
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -arch x86_64 -arch arm64 \
+	    -Wno-deprecated")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -arch x86_64 -arch arm64 \
 	    -Wno-deprecated")
 endif()
 

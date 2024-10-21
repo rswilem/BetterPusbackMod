@@ -81,4 +81,5 @@ void initMonitorOrigin(void);
 }
 #endif
 
+
 #endif    /* _CFG_H_ */
