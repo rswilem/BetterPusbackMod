@@ -500,14 +500,14 @@ void SettingsWindow::buildInterface() {
 
     ImGui::TableNextRow();
     ImGui::TableNextColumn();
-    ImGui::Text("");
+    ImGui::Text(" ");
 
     ImGui::TableNextRow();
     ImGui::TableNextColumn();
     ImVec2 rowMin = ImGui::GetItemRectMin();
     ImGui::Text("%s", _("Settings related to the current aircraft"));
     ImGui::TableNextColumn();
-    ImGui::Text("");
+    ImGui::Text(" ");
     // Draw bottom border for the first row
     // ImVec2 rowMin = ImGui::GetItemRectMin();
     ImVec2 rowMax = ImGui::GetItemRectMax();
@@ -578,7 +578,7 @@ void SettingsWindow::buildInterface() {
 
     ImGui::TableNextRow();
     ImGui::TableNextColumn();
-    ImGui::Text("");
+    ImGui::Text(" ");
     ImGui::TableNextRow();
 
     ImGui::TableNextColumn();
@@ -586,7 +586,7 @@ void SettingsWindow::buildInterface() {
     ImGui::Text("%s", _("Miscellaneous"));
     ImGui::TableNextColumn();
 
-    ImGui::Text("");
+    ImGui::Text(" ");
     rowMax = ImGui::GetItemRectMax();
     // Draw bottom border for the first row
     //   rowMin = ImGui::GetItemRectMin();
@@ -626,7 +626,7 @@ void SettingsWindow::buildInterface() {
 
     ImGui::TableNextRow();
     ImGui::TableNextColumn();
-    ImGui::Text("");
+    ImGui::Text(" ");
     ImGui::TableNextRow();
 
     ImGui::TableNextColumn();
@@ -634,7 +634,7 @@ void SettingsWindow::buildInterface() {
     ImGui::Text("%s", _("Audio settings"));
     ImGui::TableNextColumn();
 
-    ImGui::Text("");
+    ImGui::Text(" ");
     rowMax = ImGui::GetItemRectMax();
     // Draw bottom border for the first row
     //   rowMin = ImGui::GetItemRectMin();
@@ -663,7 +663,7 @@ void SettingsWindow::buildInterface() {
 
     ImGui::TableNextRow();
     ImGui::TableNextColumn();
-    ImGui::Text("");
+    ImGui::Text(" ");
     ImGui::TableNextRow();
     ImGui::TableNextRow();
     ImGui::TableNextColumn();
@@ -683,7 +683,7 @@ void SettingsWindow::buildInterface() {
     ImGui::EndTable();
   }
 
-  ImGui::Text("");
+  ImGui::Text(" ");
   if (save_disabled) {
     ImGui::BeginDisabled();
     ImGui::PushStyleVar(ImGuiStyleVar_Alpha,
@@ -703,7 +703,7 @@ void SettingsWindow::buildInterface() {
     set_pref_widget_status(B_FALSE);
   }
 
-  ImGui::Text("");
+  ImGui::Text(" ");
 
   CenterText(_(COPYRIGHT1));
   if (for_credit > 4) {
@@ -965,7 +965,35 @@ void set_fov_values_impl(fov_t *values) {
     dr_setf(&drs.fov_v_ratio, values->fov_v_ratio);
 }
 
+#define BUFFER_SIZE 1024
+
 int get_ui_monitor_from_pref(void) {
+    char *path = mkpathname(CONF_DIRS, XP_PREF_WINDOWS, NULL);
+    const char *key = "monitor/0/m_monitor";
+    int monit_id = 0;
+    FILE *fp = fopen(path, "rb");
+    char line[BUFFER_SIZE];
+    int line_num;
+
+    UNUSED(line_num);
+
+    if (fp != NULL) {
+        while (fgets(line, BUFFER_SIZE, fp) != NULL) { // fgets reads a line
+            char *search = strstr(line, key);
+            if (search != NULL) {
+                monit_id = atoi(search + strlen(key));
+                logMsg("monit id %d found in the prf file", monit_id);
+                break;
+            }
+        }
+        fclose(fp);
+    }
+
+    free(path);
+    return monit_id;
+}
+
+int get_ui_monitor_from_pref2(void) {
   char *path = mkpathname(CONF_DIRS, XP_PREF_WINDOWS, NULL);
   const char *key = "monitor/0/m_monitor";
   int monit_id = 0;
@@ -976,7 +1004,7 @@ int get_ui_monitor_from_pref(void) {
   int line_num;
 
   UNUSED(line_num);
-
+/*
   if (fp != NULL) {
     for (line_num = 1; getline(&line, &cap, fp) > 0; line_num++) {
       search = strstr(line, key);
@@ -989,7 +1017,7 @@ int get_ui_monitor_from_pref(void) {
     free(line);
     fclose(fp);
   }
-
+*/
   free(path);
   return (monit_id);
 }
