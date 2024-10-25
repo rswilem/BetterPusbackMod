@@ -143,17 +143,17 @@ msgstr "Desconectar rebocador + headset e switch no sinal com a mão."
 msgid "Reconnect tow and await further instructions."
 msgstr "Reconectar rebocador e aguardar instruções."
 
-msgid "** Settings related to the current aircraft"
-msgstr "** Configurações relacionadas à aeronave atual"
+msgid "Settings related to the current aircraft"
+msgstr "Configurações relacionadas à aeronave atual"
 
-msgid "Hint: hover your mouse cursor over any knob to show a short description of what it does."
-msgstr "Dica: passe o cursor do mouse sobre qualquer botão para mostrar uma descrição."
+msgid "Hint: hover your mouse cursor over any label to show a short description of what it does."
+msgstr "Dica: passe o cursor do mouse sobre qualquer etiqueta para mostrar uma breve descrição de sua função."
 
-msgid "Auto disconnect when done **"
-msgstr "Desconexão automática quando terminar **"
+msgid "Auto disconnect when done"
+msgstr "Desconexão automática quando terminar"
 
 msgid "Miscellaneous"
 msgstr "Diversas"
 
-msgid "Ignore check parking brake is set **"
-msgstr "Ignorar verificação de estacionamento **"
+msgid "Ignore check parking brake is set"
+msgstr "Ignorar verificação de estacionamento"

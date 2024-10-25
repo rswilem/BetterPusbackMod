@@ -631,11 +631,16 @@ status_check(float elapsed, float elapsed2, int counter, void *refcon)
     cab_cam_enable = cab_view_can_start();
     enable_menu_items();
 
-    if( !g_callback_is_alive && !cab_cam_enable ) {
+    if( !tug_view_callback_is_alive && !cab_cam_enable ) {
         cab_view_stop();
     }
-    g_callback_is_alive = B_FALSE;
+    tug_view_callback_is_alive = B_FALSE;
 
+
+    if ((!setup_view_callback_is_alive) && (get_pref_widget_status())) {
+        set_pref_widget_status(B_FALSE);
+    }
+    setup_view_callback_is_alive = B_FALSE;
 
     if( !bp_plan_callback_is_alive && cam_inited ) {
         XPLMCommandOnce(XPLMFindCommand("BetterPushback/stop_planner"));

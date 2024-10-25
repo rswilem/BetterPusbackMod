@@ -236,20 +236,20 @@ msgid "Miscellaneous"
 msgstr "Diversos"
 
 #: cfg.c:664
-msgid "Auto disconnect when done **"
-msgstr "Desconexão automática quando terminar **"
+msgid "Auto disconnect when done"
+msgstr "Desconexão automática quando terminar"
 
 #: cfg.c:668
-msgid "Ignore check parking brake is set **"
-msgstr "Ignorar verificação do freio de estacionamento **"
+msgid "Ignore check parking brake is set"
+msgstr "Ignorar verificação do freio de estacionamento"
 
 #: cfg.c:672
-msgid "Ignore doors/GPU/ASU check **"
-msgstr "Ignorar verificação de portas/GPU/ASU **"
+msgid "Ignore doors/GPU/ASU check"
+msgstr "Ignorar verificação de portas/GPU/ASU"
 
 #: cfg.c:676
-msgid "Hide the magic squares **"
-msgstr "Ocultar os quadrados mágicos **"
+msgid "Hide the magic squares"
+msgstr "Ocultar os quadrados mágicos"
 
 #: cfg.c:680
 msgid "Hide default X-Plane 11 tug"
@@ -260,16 +260,16 @@ msgid "BetterPushback Preferences"
 msgstr "Preferências do BetterPushback"
 
 #: cfg.c:734
-msgid "Magic squares position **"
-msgstr "Posição quadrados mágicos **"
+msgid "Magic squares position"
+msgstr "Posição quadrados mágicos"
 
 #: cfg.c:748
 msgid "Save preferences"
 msgstr "Salvar preferências"
 
 #: cfg.c:754
-msgid "** Settings related to the current aircraft"
-msgstr "** Configurações relacionadas à aeronave atual"
+msgid "Settings related to the current aircraft"
+msgstr "Configurações relacionadas à aeronave atual"
 
 #: xplane.c:497
 msgid "ERROR: Unable to select pushback tug view at this time."
@@ -362,7 +362,7 @@ msgid ""
 msgstr ""
 "Equipe de solo fala meu idioma somente se o pais\n"
 "do aeroporto fala meu idioma. Caso contrario a equipe\n"
-"de solo fala ingles com o sotaque local."
+"de solo fala inglês com o sotaque local."
 
 msgid ""
 "Ground crew speaks my language irrespective of what country the airport "
@@ -370,24 +370,21 @@ msgid ""
 msgstr "Equipe de solo fala meu idioma independente do pais do aeroporto."
 
 msgid "Ground crew always speaks English with a local accent."
-msgstr "Equipe de solo sempre fala ingles com o sotaque local."
+msgstr "Equipe de solo sempre fala inglês com o sotaque local."
 
 msgid "Save current preferences to disk."
 msgstr "Salvar preferencias no disco."
 
-msgid ""
-"Hint: hover your mouse cursor over any knob to show a short description "
-"of what it does."
-msgstr ""
-"Dica: passe o cursor do mouse sobre qualquer botao para mostrar uma breve "
-"descricao do que ele faz."
+msgid "Hint: hover your mouse cursor over any label to show a short description of what it does."
+msgstr "Dica: passe o cursor do mouse sobre qualquer etiqueta para mostrar uma breve descrição do que ela faz."
+
 
 msgid ""
 "Never ask and always automatically disconnect\n"
 "the tug when the pushback operation is complete."
 msgstr ""
 "Nunca pedir e sempre desconectar automaticamente\n"
-"o rebocador quando a operacao de pushback terminar."
+"o rebocador quando a operação de pushback terminar."
 
 msgid ""
 "Never check \"set parking brake\".\n"
@@ -405,26 +402,26 @@ msgid ""
 "Hides the shortcut buttons on the left side of the screen.\n"
 "The first button starts the planner and the second starts the push-back."
 msgstr ""
-"Oculta os botoes de atalho no lado esquerdo da tela.\n"
-"O primeiro botao inicia o planejador e o segundo inicia o pushback."
+"Oculta os botões de atalho no lado esquerdo da tela.\n"
+"O primeiro botão inicia o planejador e o segundo inicia o pushback."
 
 msgid ""
 "Hides default X-Plane 11 pushback tug.\n"
 "Restart X-Plane for this change to take effect."
 msgstr ""
-"Oculta o rebocador padrao do X-Plane 11.\n"
-"Reinicie o X-Plane para esta mudanca ter efeito."
+"Oculta o rebocador padrão do X-Plane 11.\n"
+"Reinicie o X-Plane para esta mudança ter efeito."
 
 msgid ""
 "BetterPushback is open-source software. See COPYING for more information."
 msgstr ""
-"BetterPushback e um software de codigo aberto. Veja COPYING para mais "
+"BetterPushback e um software de código aberto. Veja COPYING para mais "
 "informações."
 
 msgid ""
 "Don't check the doors/GPU/ASU status before starting the push-back"
 msgstr ""
-"Nao verifica a situacao das portas/GPU/ASU antes de iniciar o "
+"Não verifica a situação das portas/GPU/ASU antes de iniciar o "
 "pushback"
 
 msgid ""
@@ -434,16 +431,16 @@ msgid ""
 "automatically.\n"
 "If not select the one that works ! (the monitor numbers are arbitrary)."
 msgstr ""
-"No caso de configuracao com multiplos monitores, o BpB precisa usar o "
-"monitor primario \n"
+"No caso de configuração com múltiplos monitores, o BpB precisa usar o "
+"monitor primário \n"
 "(aquele que possui os menus do X-Plane). O BpB e capaz de selecioná-lo "
 "automaticamente.\n"
-"Caso contrario, selecione o que funciona! (os numeros dos monitores são "
+"Caso contrario, selecione o que funciona! (os números dos monitores são "
 "arbitrarios)."
 
 msgid "Slide this bar to move the magic squares up or down"
 msgstr ""
-"Deslize a barra para mover os quadrados magicos para cima ou para baixo"
+"Deslize a barra para mover os quadrados mágicos para cima ou para baixo"
 
 #: src/bp.c:2185
 msgid   "Waiting for the parking brakes release"

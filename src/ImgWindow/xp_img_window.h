@@ -29,6 +29,7 @@
 #include "ImgWindow.h"
 //#include "data_ref_access.h"
 #include <XPLMUtilities.h>
+#include <XPLMDataAccess.h>
 
 #define WND_STANDARD_FONT "Resources/fonts/DejaVuSans.ttf"
 #define CN_WND_STANDARD_FONT "Resources/fonts/NotoSansCJK-SC-Regular.otf"
@@ -220,7 +221,10 @@ public:
     /// The style this window operates in
     const WndStyle wndStyle;
     /// Return whether VR is enabled or not
-    const bool IsVREnabled() const { return  mIsVREnabled; }
+    const bool IsVREnabled() const { 
+        XPLMDataRef		gVrEnabledRef= XPLMFindDataRef(mIsVREnabled);
+        return  XPLMGetDatai(gVrEnabledRef);
+      }
 
 protected:
     // Helpers for window mode changes, which should not happen during drawing,
@@ -262,7 +266,7 @@ protected:
         void* inRefcon);
 
 protected:
-    char * mIsVREnabled;
+    const char * mIsVREnabled;
 };
 
 bool XPImgWindowInit();

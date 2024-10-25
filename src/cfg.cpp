@@ -28,19 +28,22 @@
 
 #include <acfutils/assert.h>
 #include <acfutils/dr.h>
-#include <acfutils/helpers.h>
+// #include <acfutils/helpers.h>
 #include <acfutils/intl.h>
-#include <acfutils/wav.h>
-#include <acfutils/widget.h>
+// #include <acfutils/wav.h>
+// #include <acfutils/widget.h>
 
 #include "bp.h"
 #include "cfg.h"
 #include "msg.h"
 #include "xplane.h"
 
+#include "xp_img_window.h"
+
 #define GITURL                                                                 \
   "https://api.github.com/repos/olivierbutler/BetterPusbackMod/releases/"      \
   "latest"
+
 #define DL_TIMEOUT 5L /* seconds */
 #define MAX_VERSION_BF_SIZE 32000
 
@@ -51,98 +54,31 @@
 conf_t *bp_conf = NULL;
 
 static bool_t inited = B_FALSE;
-static XPWidgetID main_win = NULL;
+static bool_t gui_inited = B_FALSE;
+bool_t setup_view_callback_is_alive = B_FALSE;
 
-#define MARGIN 30
 
-#define BUTTON_HEIGHT 22
-#define BUTTON_WIDTH 200
-#define CHECKBOX_SIZE 20
-#define MIN_BOX_HEIGHT 45
+#define MAIN_WINDOW_W 800
+#define MAIN_WINDOW_H 650
+
+#define ROUNDED 8.0f
+#define TOOLTIP_BG_COLOR ImVec4(0.2f, 0.3f, 0.8f, 1.0f)
+#define LINE_COLOR IM_COL32(255, 255, 255, 255)
+#define LINE_THICKNESS 1.0f
+#define BUTTON_DISABLED 0.5f
 
 #define MONITOR_AUTO -1
-#define TEXT_FIELD_WIDTH 300
-#define TEXT_FIELD_HEIGHT 20
-
-#define MAIN_WINDOW_HEIGHT (MARGIN + 16 * BUTTON_HEIGHT + MARGIN)
 
 #define COPYRIGHT1                                                             \
   "BetterPushback " BP_PLUGIN_VERSION                                          \
-  "       © 2017-2014 S.Kiselkov, Robwell, Obutler. All rights reserved."
+  "       © 2017-2024 S.Kiselkov, Robwell, O.Butler. All rights reserved."
 #define COPYRIGHT2                                                             \
-  "BetterPushback is open-source software. See COPYING for "                   \
-  "more information."
+  "BetterPushback is open-source software. See COPYING for more information."
 
 /* Warning this is used on PO Translation as ID */
 #define TOOLTIP_HINT                                                           \
-  "Hint: hover your mouse cursor over any knob to "                            \
-  "show a short description of what it does."
+  "Hint: hover your mouse cursor over any label to show a short description of what it does."
 
-static struct {
-  XPWidgetID chinese;
-  XPWidgetID english;
-  XPWidgetID french;
-  XPWidgetID german;
-  XPWidgetID portuguese;
-  XPWidgetID portuguese_BR;
-  XPWidgetID russian;
-  XPWidgetID spanish;
-  XPWidgetID italian;
-  XPWidgetID xplang;
-
-  XPWidgetID lang_pref_match_real;
-  XPWidgetID lang_pref_native;
-  XPWidgetID lang_pref_match_english;
-
-  XPWidgetID disco_when_done;
-  XPWidgetID ignore_set_park_brake;
-  XPWidgetID ignore_doors_check;
-  XPWidgetID hide_xp11_tug;
-  XPWidgetID hide_magic_squares;
-  XPWidgetID show_dev_menu;
-  XPWidgetID always_connect_tug_first;
-
-  size_t num_radio_boxes;
-  XPWidgetID *radio_boxes;
-  size_t num_radio_devs;
-  char **radio_devs;
-
-  size_t num_sound_boxes;
-  XPWidgetID *sound_boxes;
-  size_t num_sound_devs;
-  char **sound_devs;
-
-  XPWidgetID monitorAuto;
-  XPWidgetID monitor0;
-  XPWidgetID monitor1;
-  XPWidgetID monitor2;
-  XPWidgetID monitor3;
-  XPWidgetID monitor4;
-  XPWidgetID monitor5;
-
-  XPWidgetID save_cfg;
-} buttons;
-
-static list_t main_win_scrollbar_cbs;
-
-static struct {
-  XPWidgetID magic_squares_height;
-} scrollbars;
-
-typedef struct {
-  XPWidgetID scrollbar;
-  XPWidgetID numeric_caption;
-  double display_multiplier;
-  const char *suffix;
-  void (*formatter)(int value, char buf[32]);
-  list_node_t node;
-} scrollbar_cb_t;
-
-typedef struct {
-  const char *string;
-  XPWidgetID *widget;
-  const char *tooltip;
-} checkbox_t;
 
 static fov_t fov_values = {0};
 static struct {
@@ -175,17 +111,18 @@ void set_fov_values_impl(fov_t *values);
 
 void fetchGitVersion(void);
 
-static int main_window_cb(XPWidgetMessage msg, XPWidgetID widget,
-                          intptr_t param1, intptr_t param2);
-
-const char *match_real_tooltip =
+const char *crew_language_tooltip =
+    "My language only at domestic airports:\n"
     "Ground crew speaks my language only if the country the airport is\n"
     "in speaks my language. Otherwise the ground crew speaks English\n"
+    "with a local accent.\n\n"
+    "My language at all airports:\n"
+    "Ground crew speaks my language irrespective "
+    "of what country the airport is in.\n\n"
+    "English at all airports:\n"
+    "Ground crew always speaks English "
     "with a local accent.";
-const char *native_tooltip = "Ground crew speaks my language irrespective "
-                             "of what country the airport is in.";
-const char *match_english_tooltip = "Ground crew always speaks English "
-                                    "with a local accent.";
+
 const char *dev_menu_tooltip = "Show the developer menu options.";
 const char *save_prefs_tooltip = "Save current preferences to disk.";
 const char *disco_when_done_tooltip =
@@ -220,564 +157,580 @@ const char *monitor_tooltip =
 const char *magic_squares_height_tooltip =
     "Slide this bar to move the magic squares up or down";
 
-static void buttons_update(void) {
-  const char *lang = "XX";
+typedef struct {
+  const char *string;
+  bool use_chinese;
+  const char *value;
+} comboList_t_;
+
+typedef struct {
+  comboList_t_ *combo_list;
+  int list_size;
+  const char *name;
+  int selected;
+} comboList_t;
+
+comboList_t_ language_list_[] = {{_("X-Plane's language"), B_FALSE, "xp_l"},
+                                 {"Deutsch", B_FALSE, "de"},
+                                 {"English", B_FALSE, "en"},
+                                 {"Español", B_FALSE, "es"},
+                                 {"Italiano", B_FALSE, "it"},
+                                 {"Français", B_FALSE, "fr"},
+                                 {"Português", B_FALSE, "pt"},
+                                 {"Português do Brasil", B_FALSE, "pt_BR"},
+                                 {"Русский", B_FALSE, "ru"},
+                                 {"中文", B_TRUE, "cn"}};
+
+comboList_t language_list = {language_list_, IM_ARRAYSIZE(language_list_),
+                             "##lang_list", 0};
+
+comboList_t_ crew_lang_list_[] = {
+    {"My language only at domestic airports", B_FALSE, "0"},
+    {"My language at all airports", B_FALSE, "1"},
+    {"English at all airports", B_FALSE, "2"}};
+
+comboList_t crew_lang_list = {crew_lang_list_, IM_ARRAYSIZE(crew_lang_list_),
+                              "##crew_lang_list", 0};
+
+#define MAX_MONITOR_COUNT 7
+comboList_t_ monitor_list_[MAX_MONITOR_COUNT] = {
+    {"Automatic", B_FALSE, "0"},  {"Monitor #0", B_FALSE, "1"},
+    {"Monitor #1", B_FALSE, "1"}, {"Monitor #2", B_FALSE, "1"},
+    {"Monitor #3", B_FALSE, "1"}, {"Monitor #4", B_FALSE, "1"},
+    {"Monitor #5", B_FALSE, "2"}};
+
+comboList_t monitor_list = {monitor_list_, 0, "##monitor_list", 0};
+
+comboList_t_ *radio_device_list_ = nullptr;
+comboList_t radio_device_list = {radio_device_list_, 0, "##radio_device_list",
+                                 0};
+
+comboList_t_ *sound_device_list_ = nullptr;
+comboList_t sound_device_list = {sound_device_list_, 0, "##sound_device_list",
+                                 0};
+
+class SettingsWindow : public XPImgWindow {
+public:
+  SettingsWindow(WndMode _mode = WND_MODE_FLOAT_CENTERED);
+  void CenterText(const char *text);
+  bool CenterButton(const char *text);
+  void Tooltip(const char *tip);
+  bool_t comboList(comboList_t *list);
+  bool_t save_disabled;
+
+  ~SettingsWindow() {
+    free(radio_device_list.combo_list);
+    free(sound_device_list.combo_list);
+  }
+
+  bool_t getIsDestroy(void) { return is_destroy; }
+
+private:
+  const char *lang;
+  bool_t is_chinese;
   lang_pref_t lang_pref;
-  bool_t disco_when_done = B_FALSE;
-  bool_t ignore_park_brake = B_FALSE;
-  bool_t ignore_doors_check = B_FALSE;
-  bool_t hide_magic_squares = B_FALSE;
-  bool_t show_dev_menu = B_FALSE;
-  bool_t always_connect_tug_first = B_FALSE;
-  int monitor_id = MONITOR_AUTO;
-  int magic_squares_height = 50;
-  const char *radio_dev = "", *sound_dev = "";
+  bool_t disco_when_done;
+  bool_t ignore_park_brake;
+  bool_t ignore_doors_check;
+  bool_t hide_magic_squares;
+  bool_t dont_hide;
+  bool_t always_connect_tug_first;
+  bool_t xp11_only;
+  bool_t is_destroy;
+  int monitor_id;
+  int for_credit;
+  int magic_squares_height;
+  const char *radio_dev, *sound_dev;
+  void LoadConfig(void);
+  void sound_comboList_init(comboList_t *list);
 
-  (void)conf_get_str(bp_conf, "lang", &lang);
+protected:
+  void buildInterface() override;
+};
 
-  (void)conf_get_i(bp_conf, "monitor_id", &monitor_id);
-  (void)conf_get_i_per_acf((char *)"magic_squares_height",
-                           &magic_squares_height);
+SettingsWindow::SettingsWindow(WndMode _mode)
+    : XPImgWindow(_mode, WND_STYLE_SOLID,
+                  WndRect(0, MAIN_WINDOW_W, MAIN_WINDOW_H, 0)),
+      is_destroy(B_FALSE), for_credit(0), save_disabled(B_FALSE) {
+  SetWindowTitle(_("BetterPushback Preferences"));
+  SetWindowResizingLimits(MAIN_WINDOW_W, MAIN_WINDOW_H, MAIN_WINDOW_W,
+                          MAIN_WINDOW_H);
+  LoadConfig();
+}
 
+void SettingsWindow::LoadConfig(void) {
+
+  lang = "XX";
+  language_list.selected = 0;
+  is_chinese = B_FALSE;
+
+  if (conf_get_str(bp_conf, "lang", &lang)) {
+    for (int i = 0; i < language_list.list_size; i++) {
+      if ((strcmp(lang, language_list.combo_list[i].value) == 0)) {
+        language_list.selected = i;
+        break;
+      }
+    }
+    is_chinese = (strcmp(lang, "cn") == 0);
+  }
+
+  lang_pref = LANG_PREF_MATCH_REAL;
+  conf_get_i(bp_conf, "lang_pref", (int *)&lang_pref);
+  crew_lang_list.selected = lang_pref;
+
+  disco_when_done = B_FALSE;
   (void)conf_get_b_per_acf((char *)"disco_when_done", &disco_when_done);
+
+  ignore_park_brake = B_FALSE;
   (void)conf_get_b_per_acf((char *)"ignore_park_brake", &ignore_park_brake);
+
+  ignore_doors_check = B_FALSE;
   (void)conf_get_b_per_acf((char *)"ignore_doors_check", &ignore_doors_check);
+
+  hide_magic_squares = B_FALSE;
+  (void)conf_get_b_per_acf((char *)"hide_magic_squares", &hide_magic_squares);
+
+  xp11_only = (bp_xp_ver >= 11000 && bp_xp_ver < 12000);
+  dont_hide = B_FALSE;
+  (void)conf_get_b(bp_conf, "dont_hide_xp11_tug", &dont_hide);
+
+  always_connect_tug_first = B_FALSE;
   (void)conf_get_b(bp_conf, "always_connect_tug_first",
                    &always_connect_tug_first);
 
-  (void)conf_get_str(bp_conf, "radio_device", &radio_dev);
-  (void)conf_get_str(bp_conf, "sound_device", &sound_dev);
-  (void)conf_get_b_per_acf((char *)"hide_magic_squares", &hide_magic_squares);
+  initMonitorOrigin();
 
-#define SET_LANG_BTN(btn, l)                                                   \
-  (XPSetWidgetProperty(buttons.btn, xpProperty_ButtonState,                    \
-                       strcmp(lang, l) == 0))
-  SET_LANG_BTN(chinese, "cn");
-  SET_LANG_BTN(german, "de");
-  SET_LANG_BTN(english, "en");
-  SET_LANG_BTN(french, "fr");
-  SET_LANG_BTN(portuguese, "pt");
-  SET_LANG_BTN(portuguese_BR, "pt_BR");
-  SET_LANG_BTN(spanish, "es");
-  SET_LANG_BTN(italian, "it");
-  SET_LANG_BTN(russian, "ru");
-  SET_LANG_BTN(xplang, "XX");
-#undef SET_LANG_BTN
-
-  if (!conf_get_i(bp_conf, "lang_pref", (int *)&lang_pref))
-    lang_pref = LANG_PREF_MATCH_REAL;
-  XPSetWidgetProperty(buttons.lang_pref_match_real, xpProperty_ButtonState,
-                      lang_pref == LANG_PREF_MATCH_REAL);
-  XPSetWidgetProperty(buttons.lang_pref_native, xpProperty_ButtonState,
-                      lang_pref == LANG_PREF_NATIVE);
-  XPSetWidgetProperty(buttons.lang_pref_match_english, xpProperty_ButtonState,
-                      lang_pref == LANG_PREF_MATCH_ENGLISH);
-  XPSetWidgetProperty(buttons.disco_when_done, xpProperty_ButtonState,
-                      disco_when_done);
-  XPSetWidgetProperty(buttons.ignore_set_park_brake, xpProperty_ButtonState,
-                      ignore_park_brake);
-  XPSetWidgetProperty(buttons.ignore_doors_check, xpProperty_ButtonState,
-                      ignore_doors_check);
-  XPSetWidgetProperty(buttons.hide_magic_squares, xpProperty_ButtonState,
-                      hide_magic_squares);
-  XPSetWidgetProperty(buttons.always_connect_tug_first, xpProperty_ButtonState,
-                      always_connect_tug_first);
-
-  XPSetWidgetProperty(buttons.show_dev_menu, xpProperty_ButtonState,
-                      show_dev_menu);
-  XPSetWidgetProperty(buttons.monitorAuto, xpProperty_ButtonState,
-                      monitor_id == MONITOR_AUTO);
-  XPSetWidgetProperty(buttons.monitor0, xpProperty_ButtonState,
-                      monitor_id == 0);
-  XPSetWidgetProperty(buttons.monitor1, xpProperty_ButtonState,
-                      monitor_id == 1);
-  XPSetWidgetProperty(buttons.monitor2, xpProperty_ButtonState,
-                      monitor_id == 2);
-  XPSetWidgetProperty(buttons.monitor3, xpProperty_ButtonState,
-                      monitor_id == 3);
-  XPSetWidgetProperty(buttons.monitor4, xpProperty_ButtonState,
-                      monitor_id == 4);
-  XPSetWidgetProperty(buttons.monitor5, xpProperty_ButtonState,
-                      monitor_id == 5);
-
-  // X-Plane 12 doesn't support this feature
-  if (bp_xp_ver >= 11000 && bp_xp_ver < 12000) {
-    bool_t dont_hide = B_FALSE;
-    (void)conf_get_b(bp_conf, "dont_hide_xp11_tug", &dont_hide);
-    XPSetWidgetProperty(buttons.hide_xp11_tug, xpProperty_ButtonState,
-                        !dont_hide);
+  monitor_list.list_size =
+      monitor_def.monitor_count <= 1 ? 0 : monitor_def.monitor_count + 1;
+  monitor_list.selected = 0;
+  monitor_id = MONITOR_AUTO;
+  (void)conf_get_i(bp_conf, "monitor_id", &monitor_id);
+  if (monitor_id > MONITOR_AUTO) {
+    monitor_list.selected = monitor_id + 1;
+  }
+  if (monitor_list.selected > MAX_MONITOR_COUNT) {
+    monitor_list.selected = 0;
   }
 
-  XPSetWidgetProperty(buttons.radio_boxes[0], xpProperty_ButtonState,
-                      *radio_dev == 0);
-  for (size_t i = 0; i < buttons.num_radio_devs; i++) {
-    XPSetWidgetProperty(buttons.radio_boxes[i + 1], xpProperty_ButtonState,
-                        strcmp(radio_dev, buttons.radio_devs[i]) == 0);
-  }
+  magic_squares_height = 50;
+  (void)conf_get_i_per_acf((char *)"magic_squares_height",
+                           &magic_squares_height);
 
-  XPSetWidgetProperty(buttons.sound_boxes[0], xpProperty_ButtonState,
-                      *sound_dev == 0);
-  for (size_t i = 0; i < buttons.num_sound_devs; i++) {
-    XPSetWidgetProperty(buttons.sound_boxes[i + 1], xpProperty_ButtonState,
-                        strcmp(sound_dev, buttons.sound_devs[i]) == 0);
-  }
-
-#define UPDATE_SCROLLBAR(field, multiplier)                                    \
-  do {                                                                         \
-    XPSetWidgetProperty(scrollbars.field, xpProperty_ScrollBarSliderPosition,  \
-                        field *multiplier);                                    \
-    main_window_cb(xpMsg_ScrollBarSliderPositionChanged, main_win,             \
-                   (intptr_t)scrollbars.field, 0);                             \
-  } while (0)
-
-  UPDATE_SCROLLBAR(magic_squares_height, 1);
-}
-
-static int main_window_cb(XPWidgetMessage msg, XPWidgetID widget,
-                          intptr_t param1, intptr_t param2) {
-  XPWidgetID btn = (XPWidgetID)param1;
-
-  UNUSED(param2);
-
-  if (msg == xpMessage_CloseButtonPushed && widget == main_win) {
-    set_pref_widget_status(B_FALSE);
-    XPHideWidget(main_win);
-    return (1);
-  } else if (msg == xpMsg_ScrollBarSliderPositionChanged) {
-    XPWidgetID scrollbar = (XPWidgetID)param1;
-
-    for (scrollbar_cb_t *scb =
-             (scrollbar_cb_t *)list_head(&main_win_scrollbar_cbs);
-         scb != NULL;
-         scb = (scrollbar_cb_t *)list_next(&main_win_scrollbar_cbs, scb)) {
-      char buf[32];
-
-      if (scrollbar != scb->scrollbar)
-        continue;
-      if (scb->formatter != NULL) {
-        scb->formatter(XPGetWidgetProperty(
-                           scrollbar, xpProperty_ScrollBarSliderPosition, NULL),
-                       buf);
-      } else {
-        double val = XPGetWidgetProperty(
-                         scrollbar, xpProperty_ScrollBarSliderPosition, NULL) *
-                     scb->display_multiplier;
-        conf_set_i_per_acf((char *)"magic_squares_height", (int)val);
-        main_intf_hide();
-        if (scb->suffix != NULL)
-          snprintf(buf, sizeof(buf), "%g %s", val, scb->suffix);
-        else
-          snprintf(buf, sizeof(buf), "%g", val);
-      }
-      XPSetWidgetDescriptor(scb->numeric_caption, buf);
-      break;
-    }
-  } else if (msg == xpMsg_PushButtonPressed) {
-    if (btn == buttons.save_cfg && !bp_started) {
-      (void)bp_conf_save();
-      bp_sched_reload();
-      set_pref_widget_status(B_FALSE);
-    }
-    return (0);
-  } else if (msg == xpMsg_ButtonStateChanged) {
-    if (btn == buttons.xplang) {
-      conf_set_str(bp_conf, "lang", NULL);
-    } else if (btn == buttons.german) {
-      conf_set_str(bp_conf, "lang", "de");
-    } else if (btn == buttons.english) {
-      conf_set_str(bp_conf, "lang", "en");
-    } else if (btn == buttons.spanish) {
-      conf_set_str(bp_conf, "lang", "es");
-    } else if (btn == buttons.italian) {
-      conf_set_str(bp_conf, "lang", "it");
-    } else if (btn == buttons.french) {
-      conf_set_str(bp_conf, "lang", "fr");
-    } else if (btn == buttons.portuguese) {
-      conf_set_str(bp_conf, "lang", "pt");
-    } else if (btn == buttons.portuguese_BR) {
-      conf_set_str(bp_conf, "lang", "pt_BR");
-    } else if (btn == buttons.russian) {
-      conf_set_str(bp_conf, "lang", "ru");
-    } else if (btn == buttons.chinese) {
-      conf_set_str(bp_conf, "lang", "cn");
-    } else if (btn == buttons.lang_pref_match_real) {
-      conf_set_i(bp_conf, "lang_pref", LANG_PREF_MATCH_REAL);
-    } else if (btn == buttons.lang_pref_native) {
-      conf_set_i(bp_conf, "lang_pref", LANG_PREF_NATIVE);
-    } else if (btn == buttons.lang_pref_match_english) {
-      conf_set_i(bp_conf, "lang_pref", LANG_PREF_MATCH_ENGLISH);
-    } else if (btn == buttons.disco_when_done) {
-      conf_set_b_per_acf((char *)"disco_when_done",
-                         XPGetWidgetProperty(buttons.disco_when_done,
-                                             xpProperty_ButtonState, NULL));
-    } else if (btn == buttons.ignore_set_park_brake) {
-      conf_set_b_per_acf((char *)"ignore_park_brake",
-                         XPGetWidgetProperty(buttons.ignore_set_park_brake,
-                                             xpProperty_ButtonState, NULL));
-    } else if (btn == buttons.ignore_doors_check) {
-      conf_set_b_per_acf((char *)"ignore_doors_check",
-                         XPGetWidgetProperty(buttons.ignore_doors_check,
-                                             xpProperty_ButtonState, NULL));
-    } else if (btn == buttons.show_dev_menu) {
-      conf_set_b(bp_conf, "show_dev_menu",
-                 XPGetWidgetProperty(buttons.show_dev_menu,
-                                     xpProperty_ButtonState, NULL));
-    } else if (btn == buttons.always_connect_tug_first) {
-      conf_set_b(bp_conf, "always_connect_tug_first",
-                 XPGetWidgetProperty(buttons.always_connect_tug_first,
-                                     xpProperty_ButtonState, NULL));
-    } else if (bp_xp_ver >= 11000 && btn == buttons.hide_xp11_tug) {
-      conf_set_b(bp_conf, "dont_hide_xp11_tug",
-                 !XPGetWidgetProperty(buttons.hide_xp11_tug,
-                                      xpProperty_ButtonState, NULL));
-    } else if (btn == buttons.hide_magic_squares) {
-      conf_set_b_per_acf((char *)"hide_magic_squares",
-                         XPGetWidgetProperty(buttons.hide_magic_squares,
-                                             xpProperty_ButtonState, NULL));
-    } else if (btn == buttons.monitorAuto) {
-      conf_set_i(bp_conf, "monitor_id", MONITOR_AUTO);
-    } else if (btn == buttons.monitor0) {
-      conf_set_i(bp_conf, "monitor_id", 0);
-    } else if (btn == buttons.monitor1) {
-      conf_set_i(bp_conf, "monitor_id", 1);
-    } else if (btn == buttons.monitor2) {
-      conf_set_i(bp_conf, "monitor_id", 2);
-    } else if (btn == buttons.monitor3) {
-      conf_set_i(bp_conf, "monitor_id", 3);
-    } else if (btn == buttons.monitor4) {
-      conf_set_i(bp_conf, "monitor_id", 4);
-    } else if (btn == buttons.monitor5) {
-      conf_set_i(bp_conf, "monitor_id", 5);
-    }
-
-    for (size_t i = 1; i < buttons.num_radio_boxes; i++) {
-      if (btn == buttons.radio_boxes[i]) {
-        conf_set_str(bp_conf, "radio_device", buttons.radio_devs[i - 1]);
+  radio_dev = "";
+  sound_comboList_init(&radio_device_list);
+  radio_device_list.selected = 0;
+  if (conf_get_str(bp_conf, "radio_device", &radio_dev)) {
+    for (int i = 0; i < radio_device_list.list_size; i++) {
+      if ((strcmp(radio_dev, radio_device_list.combo_list[i].value) == 0)) {
+        radio_device_list.selected = i;
         break;
       }
     }
-    if (btn == buttons.radio_boxes[0])
-      conf_set_str(bp_conf, "radio_device", NULL);
-    for (size_t i = 1; i < buttons.num_sound_boxes; i++) {
-      if (btn == buttons.sound_boxes[i]) {
-        conf_set_str(bp_conf, "sound_device", buttons.sound_devs[i - 1]);
+  }
+
+  sound_dev = "";
+  sound_comboList_init(&sound_device_list);
+  sound_device_list.selected = 0;
+  if (conf_get_str(bp_conf, "sound_device", &sound_dev)) {
+    for (int i = 0; i < sound_device_list.list_size; i++) {
+      if ((strcmp(sound_dev, sound_device_list.combo_list[i].value) == 0)) {
+        sound_device_list.selected = i;
         break;
       }
     }
-    if (btn == buttons.sound_boxes[0])
-      conf_set_str(bp_conf, "sound_device", NULL);
-    buttons_update();
-  }
-
-  return (0);
-}
-
-static int measure_checkboxes_width(checkbox_t *checkboxes) {
-  int width = 0;
-  for (int i = 0; checkboxes[i].string != NULL; i++) {
-    int w = XPLMMeasureString(xplmFont_Proportional, checkboxes[i].string,
-                              strlen(checkboxes[i].string));
-    width = MAX(width, w);
-  }
-  return (width + CHECKBOX_SIZE);
-}
-
-static void layout_checkboxes(checkbox_t *checkboxes, int x, int y,
-                              tooltip_set_t *tts) {
-  int width = measure_checkboxes_width(checkboxes);
-  int n;
-
-  for (n = 0; checkboxes[n].string != NULL; n++)
-    ;
-
-  (void)create_widget_rel(x, y, B_FALSE, width, BUTTON_HEIGHT, 1,
-                          checkboxes[0].string, 0, main_win,
-                          xpWidgetClass_Caption);
-  y += BUTTON_HEIGHT;
-
-  (void)create_widget_rel(x, y, B_FALSE, width + 7,
-                          MAX((n - 1) * BUTTON_HEIGHT, MIN_BOX_HEIGHT), 1, "",
-                          0, main_win, xpWidgetClass_SubWindow);
-
-  for (int i = 1; i < n; i++) {
-    int off_x = x;
-    if (checkboxes[i].widget != NULL) {
-      *checkboxes[i].widget =
-          create_widget_rel(x, y + 2, B_FALSE, CHECKBOX_SIZE, CHECKBOX_SIZE, 1,
-                            "", 0, main_win, xpWidgetClass_Button);
-      XPSetWidgetProperty(*checkboxes[i].widget, xpProperty_ButtonType,
-                          xpRadioButton);
-      XPSetWidgetProperty(*checkboxes[i].widget, xpProperty_ButtonBehavior,
-                          xpButtonBehaviorCheckBox);
-      off_x += CHECKBOX_SIZE;
-    }
-    (void)create_widget_rel(off_x, y, B_FALSE, width - (off_x - x),
-                            BUTTON_HEIGHT, 1, checkboxes[i].string, 0, main_win,
-                            xpWidgetClass_Caption);
-    if (checkboxes[i].tooltip != NULL) {
-      tooltip_new(tts, x, y, CHECKBOX_SIZE + width, BUTTON_HEIGHT,
-                  _(checkboxes[i].tooltip));
-    }
-    y += BUTTON_HEIGHT;
   }
 }
 
-static checkbox_t *sound_checkboxes_init(const char *name, char ***devs_p,
-                                         size_t *num_devs_p, XPWidgetID **boxes,
-                                         size_t *num_boxes) {
+void SettingsWindow::sound_comboList_init(comboList_t *list) {
   size_t num_devs;
   char **devs = openal_list_output_devs(&num_devs);
-  checkbox_t *cb;
 
-  *devs_p = devs;
-  *num_devs_p = num_devs;
+  list->combo_list =
+      (comboList_t_ *)safe_calloc(num_devs + 1, sizeof(comboList_t_));
+  list->list_size = num_devs + 1;
+  list->combo_list[0].string = strdup(_("Default output device"));
+  list->combo_list[0].use_chinese = B_FALSE;
+  list->combo_list[0].value = list->combo_list[0].string;
 
-  *num_boxes = num_devs + 1;
-  *boxes = (XPWidgetID *)safe_calloc(*num_boxes, sizeof(XPWidgetID));
-  cb = (checkbox_t *)safe_calloc((*num_boxes) + 2, sizeof(*cb));
-
-  cb[0].string = strdup(name);
-  cb[1].string = strdup(_("Default output device"));
-  cb[1].widget = *boxes;
-  for (size_t i = 1; i < *num_boxes; i++) {
+  for (size_t i = 1; i < (num_devs + 1); i++) {
     if (strlen(devs[i - 1]) > 30) {
       const char *dev = devs[i - 1];
       char chkbx_name[40] = {0};
       strncat(chkbx_name, dev, 22);
       strcat(chkbx_name, "...");
       strcat(chkbx_name, &dev[strlen(dev) - 8]);
-      cb[i + 1].string = strdup(chkbx_name);
+      list->combo_list[i].string = strdup(chkbx_name);
     } else {
-      cb[i + 1].string = strdup(devs[i - 1]);
+      list->combo_list[i].string = strdup(devs[i - 1]);
     }
-    cb[i + 1].widget = (*boxes) + i;
+    list->combo_list[i].use_chinese = B_FALSE;
+    list->combo_list[i].value = list->combo_list[i].string;
   }
-
-  return (cb);
 }
 
-static void free_checkboxes(checkbox_t *boxes) {
-  for (checkbox_t *b = boxes; b->string != NULL; b++) {
-    free((char *)b->string);
-    free((char *)b->tooltip);
-  }
-  free(boxes);
-}
-
-static XPWidgetID layout_scroll_control(
-    XPWidgetID window, tooltip_set_t *tts, list_t *cbs_list, int x, int y,
-    const char *label, int minval, int maxval, int pagestep, bool_t slider,
-    double display_multiplier, const char *suffix,
-    void (*formatter)(int val, char buf[32]), const char *tooltip) {
-  XPWidgetID widget;
-  XPWidgetID caption;
-  scrollbar_cb_t *scb = (scrollbar_cb_t *)malloc(sizeof(*scb));
-  char buf[32];
-
-  (void)create_widget_rel(x, y, B_FALSE, TEXT_FIELD_WIDTH * 0.6,
-                          TEXT_FIELD_HEIGHT - 5, 1, label, 0, window,
-                          xpWidgetClass_Caption);
-
-  widget = create_widget_rel(x + TEXT_FIELD_WIDTH * 0.6, y + 3, B_FALSE,
-                             TEXT_FIELD_WIDTH * 0.35, TEXT_FIELD_HEIGHT - 5, 1,
-                             "", 0, window, xpWidgetClass_ScrollBar);
-  XPSetWidgetProperty(widget, xpProperty_ScrollBarType,
-                      slider ? xpScrollBarTypeSlider
-                             : xpScrollBarTypeScrollBar);
-  XPSetWidgetProperty(widget, xpProperty_Enabled, 1);
-  XPSetWidgetProperty(widget, xpProperty_ScrollBarMin, minval);
-  XPSetWidgetProperty(widget, xpProperty_ScrollBarMax, maxval);
-  XPSetWidgetProperty(widget, xpProperty_ScrollBarPageAmount, pagestep);
-
-  snprintf(buf, sizeof(buf), "%d", minval);
-  caption = create_widget_rel(x + TEXT_FIELD_WIDTH * 0.95, y, B_FALSE,
-                              TEXT_FIELD_WIDTH * 0.05, TEXT_FIELD_HEIGHT - 5, 1,
-                              buf, 0, window, xpWidgetClass_Caption);
-
-  scb->scrollbar = widget;
-  scb->display_multiplier = display_multiplier;
-  scb->numeric_caption = caption;
-  scb->suffix = suffix;
-  scb->formatter = formatter;
-  list_insert_tail(cbs_list, scb);
-
-  if (tooltip != NULL)
-    tooltip_new(tts, x, y, TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT, tooltip);
-
-  return (widget);
-}
-
-static void create_main_window(void) {
-  tooltip_set_t *tts;
-  int col1_width, col2_width, col3_width, col4_width;
-  int main_window_width, l;
-  char *prefs_title;
-  size_t main_window_height = MAIN_WINDOW_HEIGHT;
-
-  initMonitorOrigin();
-
-  checkbox_t monitors[] = {
-      {monitor_def.monitor_count <= 1 ? NULL : _("User interface on monitor #"),
-       NULL, NULL}, // if only 1 monitor, list is disabled
-      {monitor_def.monitor_count > 1 ? _("Automatic") : NULL,
-       &buttons.monitorAuto, monitor_tooltip},
-      {monitor_def.monitor_count > 1 ? _("Monitor #0") : NULL,
-       &buttons.monitor0, monitor_tooltip},
-      {monitor_def.monitor_count >= 2 ? _("Monitor #1") : NULL,
-       &buttons.monitor1, monitor_tooltip},
-      {monitor_def.monitor_count >= 3 ? _("Monitor #2") : NULL,
-       &buttons.monitor2, monitor_tooltip},
-      {monitor_def.monitor_count >= 4 ? _("Monitor #3") : NULL,
-       &buttons.monitor3, monitor_tooltip},
-      {monitor_def.monitor_count >= 5 ? _("Monitor #4") : NULL,
-       &buttons.monitor4, monitor_tooltip},
-      {monitor_def.monitor_count >= 6 ? _("Monitor #5") : NULL,
-       &buttons.monitor5, monitor_tooltip},
-      {NULL, NULL, NULL}};
-
-  checkbox_t col1[] = {{_("User interface"), NULL, NULL},
-                       {_("X-Plane's language"), &buttons.xplang, NULL},
-                       {"Deutsch", &buttons.german, NULL},
-                       {"English", &buttons.english, NULL},
-                       {"Español", &buttons.spanish, NULL},
-                       {"Italiano", &buttons.italian, NULL},
-                       {"Français", &buttons.french, NULL},
-                       {"Português", &buttons.portuguese, NULL},
-                       {"Português do Brasil", &buttons.portuguese_BR, NULL},
-                       {"Русский", &buttons.russian, NULL},
-                       {"中文", &buttons.chinese, NULL},
-                       {NULL, NULL, NULL}};
-  checkbox_t col2[] = {{_("Ground crew audio"), NULL, NULL},
-                       {_("My language only at domestic airports"),
-                        &buttons.lang_pref_match_real, match_real_tooltip},
-                       {_("My language at all airports"),
-                        &buttons.lang_pref_native, native_tooltip},
-                       {_("English at all airports"),
-                        &buttons.lang_pref_match_english,
-                        match_english_tooltip},
-                       {NULL, NULL, NULL}};
-  checkbox_t *radio_out = sound_checkboxes_init(
-      _("Radio output device"), &buttons.radio_devs, &buttons.num_radio_devs,
-      &buttons.radio_boxes, &buttons.num_radio_boxes);
-  checkbox_t *sound_out = sound_checkboxes_init(
-      _("Sound output device"), &buttons.sound_devs, &buttons.num_sound_devs,
-      &buttons.sound_boxes, &buttons.num_sound_boxes);
-  checkbox_t other[8] = {
-      {_("Miscellaneous"), NULL, NULL},
-      {_("Always connect the tug first"), &buttons.always_connect_tug_first,
-       always_connect_tug_first_tooltip},
-      {_("Auto disconnect when done **"), &buttons.disco_when_done,
-       disco_when_done_tooltip},
-      {_("Ignore check parking brake is set **"),
-       &buttons.ignore_set_park_brake, ignore_park_brake_tooltip},
-      {_("Ignore doors/GPU/ASU check **"), &buttons.ignore_doors_check,
-       ignore_doors_check_tooltip},
-      {_("Hide the magic squares **"), &buttons.hide_magic_squares,
-       hide_magic_squares_tooltip},
-      {((bp_xp_ver < 11000) || (bp_xp_ver >= 12000))
-           ? NULL
-           : _("Hide default X-Plane 11 tug"), // Feature only for Xp11 , always
-                                               // at the last position
-       &buttons.hide_xp11_tug, hide_xp11_tug_tooltip},
-      {NULL, NULL, NULL}};
-
-  col1_width = measure_checkboxes_width(col1);
-  col2_width = measure_checkboxes_width(col2);
-  col3_width = measure_checkboxes_width(radio_out);
-  col4_width = measure_checkboxes_width(sound_out);
-  main_window_width =
-      4 * MARGIN + col1_width + col2_width + MAX(col3_width, col4_width);
-  if ((buttons.num_radio_boxes + buttons.num_sound_boxes) > 6) {
-    main_window_height +=
-        (buttons.num_radio_boxes + buttons.num_sound_boxes) * BUTTON_HEIGHT;
+bool_t SettingsWindow::comboList(comboList_t *list) {
+  bool_t is_changed = B_FALSE;
+  comboList_t_ combo_previous = list->combo_list[list->selected];
+  if (combo_previous.use_chinese) {
+    ImGui::PushFont(ImgWindow::fontChinese.get());
   }
 
-  if (monitor_def.monitor_count > 1) {
-    main_window_height += monitor_def.monitor_count * BUTTON_HEIGHT * 2;
+  //  ImGui::SetNextItemWidth(360.0f); // Width in pixels
+
+  bool_t lang_combo =
+      ImGui::BeginCombo(list->name, _(combo_previous.string), 0);
+  if (combo_previous.use_chinese) {
+    ImGui::PopFont();
   }
-
-  l = snprintf(NULL, 0, "%s", _("BetterPushback Preferences"));
-  prefs_title = (char *)safe_malloc(l + 1);
-  snprintf(prefs_title, l + 1, "%s", _("BetterPushback Preferences"));
-  main_win = create_widget_rel(100, 100, B_FALSE, main_window_width,
-                               main_window_height, 0, prefs_title, 1, NULL,
-                               xpWidgetClass_MainWindow);
-  XPSetWidgetProperty(main_win, xpProperty_MainWindowHasCloseBoxes, 1);
-  XPAddWidgetCallback(main_win, main_window_cb);
-  free(prefs_title);
-
-  list_create(&main_win_scrollbar_cbs, sizeof(scrollbar_cb_t),
-              offsetof(scrollbar_cb_t, node));
-
-  tts = tooltip_set_new(main_win);
-  tooltip_set_font_size(tts, 14);
-
-  layout_checkboxes(col1, MARGIN, MARGIN, tts);
-  layout_checkboxes(col2, MARGIN + col1_width + MARGIN, MARGIN, tts);
-  layout_checkboxes(other, MARGIN + col1_width + MARGIN,
-                    MARGIN + 4.5 * BUTTON_HEIGHT, tts);
-  if (monitors[0].string != NULL) {
-    layout_checkboxes(monitors, MARGIN + col1_width + MARGIN,
-                      MARGIN + 11 * BUTTON_HEIGHT, tts);
+  if (lang_combo) {
+    for (int i = 0; i < list->list_size; i++) {
+      int is_selected = (i == list->selected);
+      if (list->combo_list[i].use_chinese) {
+        ImGui::PushFont(ImgWindow::fontChinese.get());
+      }
+      if (ImGui::Selectable(_(list->combo_list[i].string), is_selected)) {
+        is_changed = (list->selected != i);
+        list->selected = i;
+      }
+      if (list->combo_list[i].use_chinese) {
+        ImGui::PopFont();
+      }
+      if (is_selected) {
+        ImGui::SetItemDefaultFocus();
+      }
+    }
+    ImGui::EndCombo();
   }
-
-  layout_checkboxes(radio_out, 3 * MARGIN + col1_width + col2_width, MARGIN,
-                    tts);
-  layout_checkboxes(sound_out, 3 * MARGIN + col1_width + col2_width,
-                    MARGIN + (buttons.num_radio_boxes + 1.5) * BUTTON_HEIGHT,
-                    tts);
-
-  const int MAIN_WINDOW_SPACE = 25;
-
-  scrollbars.magic_squares_height = layout_scroll_control(
-      main_win, tts, &main_win_scrollbar_cbs, MARGIN + col1_width + MARGIN,
-      main_window_height - 80 - (MAIN_WINDOW_SPACE + 10) - 0.5 * BUTTON_HEIGHT,
-      _("Magic squares position **"), 10, 80, 10, B_FALSE, 1.0, "%", NULL,
-      _(magic_squares_height_tooltip));
-
-#define LAYOUT_PUSH_BUTTON(var, x, y, w, h, label, tooltip)                    \
-  do {                                                                         \
-    buttons.var = create_widget_rel(x, y, B_FALSE, w, h, 1, label, 0,          \
-                                    main_win, xpWidgetClass_Button);           \
-    if (tooltip != NULL) {                                                     \
-      tooltip_new(tts, x, y, w, h, _(tooltip));                                \
-    }                                                                          \
-  } while (0)
-
-  LAYOUT_PUSH_BUTTON(save_cfg, (main_window_width - BUTTON_WIDTH) / 2,
-                     main_window_height - MARGIN, BUTTON_WIDTH, BUTTON_HEIGHT,
-                     _("Save preferences"), save_prefs_tooltip);
-
-  create_widget_rel(MARGIN, main_window_height - 90 - MAIN_WINDOW_SPACE,
-                    B_FALSE, main_window_width - 4 * MARGIN, BUTTON_HEIGHT, 1,
-                    _("** Settings related to the current aircraft"), 0,
-                    main_win, xpWidgetClass_Caption);
-
-  create_widget_rel(MARGIN, main_window_height - 75 - MAIN_WINDOW_SPACE,
-                    B_FALSE, main_window_width - 4 * MARGIN, BUTTON_HEIGHT, 1,
-                    COPYRIGHT1, 0, main_win, xpWidgetClass_Caption);
-  create_widget_rel(MARGIN, main_window_height - 62 - MAIN_WINDOW_SPACE,
-                    B_FALSE, main_window_width - 4 * MARGIN, BUTTON_HEIGHT, 1,
-                    _(COPYRIGHT2), 0, main_win, xpWidgetClass_Caption);
-  create_widget_rel(MARGIN, main_window_height - 49 - (MAIN_WINDOW_SPACE - 10),
-                    B_FALSE, main_window_width - 4 * MARGIN, BUTTON_HEIGHT, 1,
-                    _(TOOLTIP_HINT), 0, main_win, xpWidgetClass_Caption);
-
-  free_checkboxes(radio_out);
-  free_checkboxes(sound_out);
+  return is_changed;
 }
 
-static void destroy_main_window(void) {
-  free_strlist(buttons.radio_devs, buttons.num_radio_devs);
-  buttons.radio_devs = NULL;
-  buttons.num_radio_devs = 0;
-  free_strlist(buttons.sound_devs, buttons.num_sound_devs);
-  buttons.sound_devs = NULL;
-  buttons.num_sound_devs = 0;
+void SettingsWindow::CenterText(const char *text) {
+  ImVec2 windowSize = ImGui::GetWindowSize();
+  ImVec2 textSize = ImGui::CalcTextSize(text);
 
-  XPDestroyWidget(main_win, 1);
-  main_win = NULL;
+  // Calculate horizontal position to center the text
+  float textPosX = (windowSize.x - textSize.x) * 0.5f;
+
+  // Make sure it doesn't go out of bounds
+  if (textPosX > 0.0f)
+    ImGui::SetCursorPosX(textPosX);
+
+  ImGui::Text("%s", text);
 }
+
+bool SettingsWindow::CenterButton(const char *text) {
+  ImVec2 windowSize = ImGui::GetWindowSize();
+  ImVec2 textSize = ImGui::CalcTextSize(text);
+
+  // Calculate horizontal position to center the text
+  float textPosX = (windowSize.x - textSize.x) * 0.5f;
+
+  // Make sure it doesn't go out of bounds
+  if (textPosX > 0.0f)
+    ImGui::SetCursorPosX(textPosX);
+
+  return ImGui::Button(text);
+}
+
+void SettingsWindow::Tooltip(const char *tip) {
+  // do the tooltip
+  if (tip && ImGui::IsItemHovered()) {
+    ImGui::PushStyleColor(ImGuiCol_PopupBg, TOOLTIP_BG_COLOR);
+    ImGui::BeginTooltip();
+    ImGui::PushTextWrapPos(300);
+    ImGui::TextUnformatted(tip);
+    ImGui::PopTextWrapPos();
+    ImGui::EndTooltip();
+    ImGui::PopStyleColor();
+  }
+}
+void SettingsWindow::buildInterface() {
+  if (is_chinese) {
+    ImGui::PushFont(ImgWindow::fontChinese.get());
+  }
+
+  ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, ROUNDED);
+  float tableWidth = ImGui::GetContentRegionAvail().x;
+  float combowithWidth = tableWidth * 0.45f;
+
+  if (ImGui::BeginTable("##main_table", 2, ImGuiTableFlags_SizingStretchSame,
+                        ImVec2(tableWidth, 0))) {
+
+    ImGui::TableNextRow();
+
+    ImGui::TableNextColumn();
+    ImGui::Text("%s", _("User interface"));
+
+    if (is_chinese) {
+      ImGui::PopFont();
+    }
+    ImGui::TableNextColumn();
+    ImGui::SetNextItemWidth(combowithWidth);
+    if (comboList(&language_list)) {
+      conf_set_str(bp_conf, "lang",
+                   language_list.combo_list[language_list.selected].value);
+    }
+    if (is_chinese) {
+      ImGui::PushFont(ImgWindow::fontChinese.get());
+    }
+    ImGui::TableNextRow();
+
+    ImGui::TableNextColumn();
+    ImGui::Text("%s", _("Ground crew audio"));
+    Tooltip(_(crew_language_tooltip));
+
+    ImGui::TableNextColumn();
+    ImGui::SetNextItemWidth(combowithWidth);
+    if (comboList(&crew_lang_list)) {
+      conf_set_i(bp_conf, "lang_pref", crew_lang_list.selected);
+    }
+
+    if (monitor_list.list_size) {
+      ImGui::TableNextRow();
+      ImGui::TableNextColumn();
+      ImGui::Text("%s", _("User interface on monitor #"));
+      Tooltip(_(monitor_tooltip));
+
+      ImGui::TableNextColumn();
+      ImGui::SetNextItemWidth(combowithWidth);
+      if (comboList(&monitor_list)) {
+        conf_set_i(bp_conf, "monitor_id", monitor_list.selected - 1);
+      }
+    }
+
+    ImGui::TableNextRow();
+    ImGui::TableNextColumn();
+    ImGui::Text("");
+
+    ImGui::TableNextRow();
+    ImGui::TableNextColumn();
+    ImVec2 rowMin = ImGui::GetItemRectMin();
+    ImGui::Text("%s", _("Settings related to the current aircraft"));
+    ImGui::TableNextColumn();
+    ImGui::Text("");
+    // Draw bottom border for the first row
+    // ImVec2 rowMin = ImGui::GetItemRectMin();
+    ImVec2 rowMax = ImGui::GetItemRectMax();
+    ImVec2 rowBottomStart = ImVec2(
+        rowMin.x, rowMax.y); // Start point of the border (bottom of the row)
+    ImVec2 rowBottomEnd = ImVec2(rowMax.x, rowMax.y); // End point of the border
+
+    ImGui::GetWindowDrawList()->AddLine(
+        rowBottomStart, rowBottomEnd, LINE_COLOR,
+        LINE_THICKNESS); // White line, 1.0f thickness
+
+    ImGui::TableNextRow();
+    ImGui::TableNextColumn();
+    ImGui::Text("%s", _("Auto disconnect when done"));
+    Tooltip(_(disco_when_done_tooltip));
+
+    ImGui::TableNextColumn();
+    if (ImGui::Checkbox("##disco_when_done_cbox", (bool *)&disco_when_done)) {
+      conf_set_b_per_acf((char *)"disco_when_done", disco_when_done);
+    }
+
+    ImGui::TableNextRow();
+    ImGui::TableNextColumn();
+    ImGui::Text("%s", _("Ignore check parking brake is set"));
+    Tooltip(_(ignore_park_brake_tooltip));
+
+    ImGui::TableNextColumn();
+    if (ImGui::Checkbox("##ignore_check_park_cbox",
+                        (bool *)&ignore_park_brake)) {
+      conf_set_b_per_acf((char *)"ignore_park_brake", ignore_park_brake);
+    }
+
+    ImGui::TableNextRow();
+    ImGui::TableNextColumn();
+    ImGui::Text("%s", _("Ignore doors/GPU/ASU check"));
+    Tooltip(_(ignore_doors_check_tooltip));
+
+    ImGui::TableNextColumn();
+    if (ImGui::Checkbox("##ignore_doors_check_cbox",
+                        (bool *)&ignore_doors_check)) {
+      conf_set_b_per_acf((char *)"ignore_doors_check", ignore_doors_check);
+    }
+
+    ImGui::TableNextRow();
+    ImGui::TableNextColumn();
+    ImGui::Text("%s", _("Hide the magic squares"));
+    Tooltip(_(hide_magic_squares_tooltip));
+
+    ImGui::TableNextColumn();
+    if (ImGui::Checkbox("##hide_magic_squares_cbox",
+                        (bool *)&hide_magic_squares)) {
+      conf_set_b_per_acf((char *)"hide_magic_squares", hide_magic_squares);
+    }
+
+    ImGui::TableNextRow();
+    ImGui::TableNextColumn();
+    ImGui::Text("%s", _("Magic squares position"));
+    Tooltip(_(magic_squares_height_tooltip));
+
+    ImGui::TableNextColumn();
+    ImGui::SetNextItemWidth(combowithWidth);
+    if (ImGui::SliderInt("##magic_position", &magic_squares_height, 20, 80,
+                         "%d %%")) {
+      conf_set_i_per_acf((char *)"magic_squares_height",
+                         (int)magic_squares_height);
+      main_intf_hide();
+    }
+
+    ImGui::TableNextRow();
+    ImGui::TableNextColumn();
+    ImGui::Text("");
+    ImGui::TableNextRow();
+
+    ImGui::TableNextColumn();
+    rowMin = ImGui::GetItemRectMin();
+    ImGui::Text("%s", _("Miscellaneous"));
+    ImGui::TableNextColumn();
+
+    ImGui::Text("");
+    rowMax = ImGui::GetItemRectMax();
+    // Draw bottom border for the first row
+    //   rowMin = ImGui::GetItemRectMin();
+    //   rowMax = ImGui::GetItemRectMax();
+    rowBottomStart = ImVec2(
+        rowMin.x, rowMax.y); // Start point of the border (bottom of the row)
+    rowBottomEnd = ImVec2(rowMax.x, rowMax.y); // End point of the border
+
+    ImGui::GetWindowDrawList()->AddLine(rowBottomStart, rowBottomEnd,
+                                        LINE_COLOR, LINE_THICKNESS);
+
+    ImGui::TableNextRow();
+    ImGui::TableNextColumn();
+    ImGui::Text("%s", _("Always connect the tug first"));
+    Tooltip(_(always_connect_tug_first_tooltip));
+
+    ImGui::TableNextColumn();
+    if (ImGui::Checkbox("##always_connect_cbox",
+                        (bool *)&always_connect_tug_first)) {
+      (void)conf_set_b(bp_conf, "always_connect_tug_first",
+                       always_connect_tug_first);
+    }
+
+    if (xp11_only) {
+      ImGui::TableNextRow();
+      ImGui::TableNextColumn();
+      ImGui::Text("%s", _("Hide default X-Plane 11 tug"));
+      Tooltip(_(hide_xp11_tug_tooltip));
+
+      ImGui::TableNextColumn();
+      bool hide_ = !dont_hide;
+      if (ImGui::Checkbox("##hide_xp11_tug_cbox", (bool *)&hide_)) {
+        hide_ = !hide_;
+        conf_set_b(bp_conf, "dont_hide_xp11_tug", hide_);
+      }
+    }
+
+    ImGui::TableNextRow();
+    ImGui::TableNextColumn();
+    ImGui::Text("");
+    ImGui::TableNextRow();
+
+    ImGui::TableNextColumn();
+    rowMin = ImGui::GetItemRectMin();
+    ImGui::Text("%s", _("Audio settings"));
+    ImGui::TableNextColumn();
+
+    ImGui::Text("");
+    rowMax = ImGui::GetItemRectMax();
+    // Draw bottom border for the first row
+    //   rowMin = ImGui::GetItemRectMin();
+    //   rowMax = ImGui::GetItemRectMax();
+    rowBottomStart = ImVec2(
+        rowMin.x, rowMax.y); // Start point of the border (bottom of the row)
+    rowBottomEnd = ImVec2(rowMax.x, rowMax.y); // End point of the border
+
+    ImGui::GetWindowDrawList()->AddLine(rowBottomStart, rowBottomEnd,
+                                        LINE_COLOR, LINE_THICKNESS);
+
+    ImGui::TableNextRow();
+    ImGui::TableNextColumn();
+    ImGui::Text("%s", _("Radio output device"));
+    ImGui::TableNextColumn();
+    ImGui::SetNextItemWidth(combowithWidth);
+    if (comboList(&radio_device_list)) {
+      if (radio_device_list.selected == 0) {
+        conf_set_str(bp_conf, "radio_device", NULL);
+      } else {
+        conf_set_str(
+            bp_conf, "radio_device",
+            radio_device_list.combo_list[radio_device_list.selected].value);
+      }
+    }
+
+    ImGui::TableNextRow();
+    ImGui::TableNextColumn();
+    ImGui::Text("");
+    ImGui::TableNextRow();
+    ImGui::TableNextRow();
+    ImGui::TableNextColumn();
+    ImGui::Text("%s", _("Sound output device"));
+    ImGui::TableNextColumn();
+    ImGui::SetNextItemWidth(combowithWidth);
+    if (comboList(&sound_device_list)) {
+      if (sound_device_list.selected == 0) {
+        conf_set_str(bp_conf, "sound_device", NULL);
+      } else {
+        conf_set_str(
+            bp_conf, "sound_device",
+            sound_device_list.combo_list[sound_device_list.selected].value);
+      }
+    }
+
+    ImGui::EndTable();
+  }
+
+  ImGui::Text("");
+  if (save_disabled) {
+    ImGui::BeginDisabled();
+    ImGui::PushStyleVar(ImGuiStyleVar_Alpha,
+                        ImGui::GetStyle().Alpha *
+                            BUTTON_DISABLED); // Reduce button opacity
+  }
+  bool save_button = CenterButton(_("Save preferences"));
+  if (save_disabled) {
+    ImGui::PopStyleVar();
+    ImGui::EndDisabled();
+  }
+  Tooltip(_(save_prefs_tooltip));
+  if (save_button) {
+    SetVisible(B_FALSE);
+    (void)bp_conf_save();
+    bp_sched_reload();
+    set_pref_widget_status(B_FALSE);
+  }
+
+  ImGui::Text("");
+
+  CenterText(_(COPYRIGHT1));
+  if (for_credit > 4) {
+    CenterText("Thanks and Credit to slgolberg for better pushing me :)");
+  } else {
+    CenterText(_(COPYRIGHT2));
+    if (ImGui::IsItemHovered()) {
+      if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
+        for_credit++;
+      }
+    }
+  }
+
+  CenterText("");
+  CenterText(_(TOOLTIP_HINT));
+
+  ImGui::PopStyleVar();
+
+  if (is_chinese) {
+    ImGui::PopFont();
+  }
+
+  setup_view_callback_is_alive = B_TRUE;
+}
+
+SettingsWindow *setup_window = nullptr;
+
 
 bool_t bp_conf_init(void) {
   char *path;
@@ -857,14 +810,19 @@ bool_t bp_conf_save(void) {
   return (res);
 }
 
+void destroy_setup_window(void) {
+
+  if (setup_window != nullptr) {
+    delete setup_window;
+    setup_window = nullptr;
+  }
+}
+
 void bp_conf_fini(void) {
   if (!inited)
     return;
 
-  if (main_win != NULL) {
-    destroy_main_window();
-    tooltip_fini();
-  }
+  destroy_setup_window();
   conf_free(bp_conf);
   bp_conf = NULL;
 
@@ -873,31 +831,10 @@ void bp_conf_fini(void) {
   inited = B_FALSE;
 }
 
-static void gui_init(void) {
-  tooltip_init();
-  create_main_window();
-  buttons_update();
-}
-
 void bp_conf_set_save_enabled(bool_t flag) {
   ASSERT(inited);
-  if (main_win == NULL)
-    gui_init();
-  XPSetWidgetProperty(buttons.save_cfg, xpProperty_Enabled, flag);
+  setup_window->save_disabled = flag;
 }
-
-/*
-void
-bp_conf_open(void) {
-    ASSERT(inited);
-    if (main_win == NULL)
-        gui_init();
-    else
-        buttons_update(); // again here as we may change to another aircraft
-without relauching X-plane XPShowWidget(main_win);
-    set_pref_widget_status(B_TRUE);
-}
-*/
 
 void key_sanity(char *key) {
   int i;
@@ -1234,146 +1171,16 @@ void initMonitorOrigin(void) {
       (int)(monitor_def.h * magic_squares_height / 100);
 }
 
-#include "xp_img_window.h"
-
-typedef struct {
-  const char *string;
-  bool use_chinese;
-  const char *value;
-} comboList_t_;
-
-typedef struct {
-  comboList_t_ *combo_list;
-  int list_size;
-  const char *name;
-  int selected;
-} comboList_t;
-
-comboList_t_ language_list_[] = {{_("X-Plane's language"), B_FALSE, NULL},
-                                 {"Deutsch", B_FALSE, "de"},
-                                 {"English", B_FALSE, "en"},
-                                 {"Español", B_FALSE, "es"},
-                                 {"Italiano", B_FALSE, "it"},
-                                 {"Français", B_FALSE, "fr"},
-                                 {"Português", B_FALSE, "pt"},
-                                 {"Português do Brasil", B_FALSE, "pt_BR"},
-                                 {"Русский", B_FALSE, "ru"},
-                                 {"中文", B_TRUE, "cn"}};
-
-comboList_t language_list = {language_list_, IM_ARRAYSIZE(language_list_), "##lang_list", 0};
-
-class SettingsWindow : public XPImgWindow {
-public:
-  SettingsWindow(WndMode _mode = WND_MODE_FLOAT_CENTERED);
-  void comboList(comboList_t *list);
-  bool is_destroy = B_FALSE;
-
-protected:
-  void buildInterface() override;
-};
-
-SettingsWindow::SettingsWindow(WndMode _mode)
-    : XPImgWindow(_mode, WND_STYLE_SOLID, WndRect(0, 420, 600, 0)) {
-  SetWindowTitle("BetterPushBack Settings");
-  SetWindowResizingLimits(600, 420, 600, 420);
-}
-
-void SettingsWindow::comboList(comboList_t *list) {
-  comboList_t_ combo_previous = list->combo_list[list->selected];
-  if (combo_previous.use_chinese)
-    ImGui::PushFont(ImgWindow::fontChinese.get());
-  bool lang_combo = ImGui::BeginCombo(list->name, combo_previous.string, 0);
-  if (combo_previous.use_chinese)
-    ImGui::PopFont();
-  if (lang_combo) {
-    for (int i = 0; i < list->list_size; i++) {
-      int is_selected = (i == list->selected);
-      if (list->combo_list[i].use_chinese)
-        ImGui::PushFont(ImgWindow::fontChinese.get());
-      if (ImGui::Selectable(list->combo_list[i].string, is_selected)) {
-        list->selected = i;
-      }
-      if (list->combo_list[i].use_chinese)
-        ImGui::PopFont();
-      if (is_selected) {
-        ImGui::SetItemDefaultFocus();
-      }
-    }
-    ImGui::EndCombo();
-  }
-}
-
-void SettingsWindow::buildInterface() {
-  //  if ( font1 != nullptr)  ImGui::PushFont(font1);
-
-  if (ImGui::BeginTable("my_table", 2)) {
-
-    ImGui::TableNextRow();
-    ImGui::TableNextColumn();
-    ImGui::Text("%s", _("User interface"));
-    ImGui::SameLine();
-    ImGui::ButtonIcon(ICON_FA_QUESTION_CIRCLE, _(ignore_doors_check_tooltip));
-
-    ImGui::TableNextColumn();
-    comboList(&language_list);
-
-    ImGui::EndTable();
-  }
-
-  ImGui::Text("Thank you, merci Steve ===");
-
-  ImGui::Text("Thank you, merci Русский");
-  ImGui::PushFont(ImgWindow::fontChinese.get());
-  ImGui::Text("Thank you, merci 中文");
-  ImGui::PopFont();
-
-  if (ImGui::Button("Save test")) {
-    logMsg(BP_INFO_LOG "saving and SetInvisible ");
-    SetVisible(B_FALSE);
-    logMsg(BP_INFO_LOG "is_destroy = B_TRUE;");
-    is_destroy = B_TRUE;
-    // SafeDelete();
-    logMsg(BP_INFO_LOG "bp_sched_reload");
-    bp_sched_reload();
-  }
-}
-
-SettingsWindow *window = nullptr;
-
-// std::shared_ptr<SettingsWindow> window = nullptr; //
-// std::make_shared<SettingsWindow>();
-
 void bp_conf_open() {
 
-  if (!window) {
+  if (!gui_inited) {
     XPImgWindowInit();
     logMsg(BP_INFO_LOG "XPImgWindowInit");
-    //            window = new SettingsWindow(120, 120, 0, 0,
-    //            xplm_WindowDecorationRoundRectangle);
-    //            //xplm_WindowDecorationSelfDecorated);
-    window = new SettingsWindow(); // xplm_WindowDecorationSelfDecorated);
-    window->SetVisible(B_TRUE);
-    return;
-  } else {
-    if (window->is_destroy) {
-      logMsg(BP_INFO_LOG "delete window because destroy");
-      delete window;
-      logMsg(BP_INFO_LOG "new SettingsWindow");
-      window = new SettingsWindow();
-      window->SetVisible(B_TRUE);
-      logMsg(BP_INFO_LOG "SetVisible(B_TRUE)");
-    } else {
-
-      bool is_visible = window->GetVisible();
-      if (!is_visible) {
-        logMsg(BP_INFO_LOG "delete window because not visible");
-        delete window;
-        logMsg(BP_INFO_LOG "new SettingsWindow");
-        window = new SettingsWindow();
-        window->SetVisible(B_TRUE);
-        logMsg(BP_INFO_LOG "SetVisible(B_TRUE)");
-      }
-    }
-    // window->SetVisible(!);
+    gui_inited = B_TRUE;
   }
+
+  destroy_setup_window();
+  setup_window = new SettingsWindow();
+  setup_window->SetVisible(B_TRUE);
+  set_pref_widget_status(B_TRUE);
 }

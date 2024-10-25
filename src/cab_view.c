@@ -51,7 +51,7 @@
 #define	HINTBAR_TIMEOUT	SEC2USEC(5)
 
 static bool_t started = B_FALSE;
-bool_t g_callback_is_alive = B_FALSE;
+bool_t tug_view_callback_is_alive = B_FALSE;
 /*
  * The delta to the tug's nominal camera position.
  * d_orient is the delta in X (heading) and Y (pitch).
@@ -150,7 +150,7 @@ cam_ctl(XPLMCameraPosition_t *pos, int losing_control, void *refcon)
 	vect3_t tug_pos, norm, cam_pos, norm_hdg;
 
 	UNUSED(refcon);
-	g_callback_is_alive = B_TRUE;
+	tug_view_callback_is_alive = B_TRUE;
 	
 	if (pos == NULL || losing_control || !bp_started || !started) {
 		cab_view_stop();

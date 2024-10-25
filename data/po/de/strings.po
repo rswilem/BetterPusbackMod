@@ -134,6 +134,28 @@ msgstr "Bodenpersonal spricht meine Sprache, egal in welchem Land sich "
 msgid "Ground crew always speaks English with a local accent."
 msgstr "Bodenpersonal spricht immer Englisch mit lokalem Akzent."
 
+msgid 
+    "My language only at domestic airports:\n"
+    "Ground crew speaks my language only if the country the airport is\n"
+    "in speaks my language. Otherwise the ground crew speaks English\n"
+    "with a local accent.\n\n"
+    "My language at all airports:\n"
+    "Ground crew speaks my language irrespective "
+    "of what country the airport is in.\n\n"
+    "English at all airports:\n"
+    "Ground crew always speaks English "
+    "with a local accent."
+msgstr
+"Meine Sprache nur für inländische Flughäfen:\n"
+"Bodenpersonal spricht meine Sprache, wenn sich der Flughafen\n"
+"in einem Land befindet, in dem meine Sprache gesprochen wird.\n"
+"Falls nicht, spricht sie Englisch mit lokalem Akzent.\n\n"
+"Meine Sprache für alle Flughäfen:\n"
+"Bodenpersonal spricht meine Sprache, egal in welchem Land sich "
+"der Flughafen befindet.\n\n"
+"Englisch für alle Flughäfen:\n"
+"Bodenpersonal spricht immer Englisch mit lokalem Akzent."
+
 msgid "Save current preferences to disk."
 msgstr "Aktuelle Einstellungen auf die Festplatte speichern."
 
@@ -143,20 +165,20 @@ msgstr "Schlepper und Headset trennen + weitere Anweisungen per Handzeichen."
 msgid "Reconnect tow and await further instructions."
 msgstr "Schlepper wieder ankoppeln und weitere Anweisungen erwarten."
 
-msgid "** Settings related to the current aircraft"
-msgstr "** Einstellung bezieht sich auf aktuelles Flugzeug"
+msgid "Settings related to the current aircraft"
+msgstr "Einstellung bezieht sich auf aktuelles Flugzeug"
 
-msgid "Hint: hover your mouse cursor over any knob to show a short description of what it does."
-msgstr "Hinweis: es können Tooltips via Mauszeige über den Knöpfen und Buttons angezeigt werden."
+msgid "Hint: hover your mouse cursor over any label to show a short description of what it does."
+msgstr "Hinweis: Zeigen Sie mit dem Mauszeiger auf ein Label, um eine kurze Beschreibung anzuzeigen."
 
 msgid "BetterPushback is open-source software. See COPYING for more information."
 msgstr "BetterPushback ist open-source software. Siehe COPYING für mehr Informationen"
 
-msgid "Auto disconnect when done **"
-msgstr "Am Ende automatisch trennen **"
+msgid "Auto disconnect when done"
+msgstr "Am Ende automatisch trennen"
 
 msgid "Miscellaneous"
 msgstr "Verschiedenes"
 
-msgid "Ignore check parking brake is set **"
-msgstr "Mach kein Parking Brake check **"
+msgid "Ignore check parking brake is set"
+msgstr "Mach kein Parking Brake check"

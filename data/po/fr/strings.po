@@ -130,15 +130,15 @@ msgid ""
 "in speaks my language. Otherwise the ground crew speaks English\n"
 "with a local accent."
 msgstr ""
-"Le personnel au sol parle francais uniquement dans les pays francophones.\n"
+"Le personnel au sol parle français uniquement dans les pays francophones.\n"
 "Sinon, Le personnel au sol parle anglais avec un accent local pour certains."
 
 msgid ""
 "Ground crew speaks my language irrespective of what country the airport is "
 "in."
 msgstr ""
-"Le personnel au sol parle francais quel que soit le pays dans lequel se "
-"trouve l'aeroport."
+"Le personnel au sol parle français quel que soit le pays dans lequel se "
+"trouve l'aéroport."
 
 msgid "Ground crew always speaks English with a local accent."
 msgstr ""
@@ -146,7 +146,7 @@ msgstr ""
 "certains."
 
 msgid "Save current preferences to disk."
-msgstr "Sauvegarder ces preferences."
+msgstr "Sauvegarder ces préférences."
 
 msgid "Disconnect tow + headset and switch to hand signals."
 msgstr "Désattelez tracteur, retirez casque et passez en signal visuel."
@@ -177,32 +177,32 @@ msgid ""
 "Never ask and always automatically disconnect\n"
 "the tug when the pushback operation is complete."
 msgstr ""
-"Le tracteur se deconnecte quand l'avion\n"
+"Le tracteur se déconnecte quand l'avion\n"
 "est en place et le frein de parking est mis."
 
-msgid "Hide the magic squares **"
-msgstr "Masquer les raccourcis **"
+msgid "Hide the magic squares"
+msgstr "Masquer les raccourcis"
 
 msgid "Hides the shortcut buttons on the left side of the screen.\n"
    "The first button starts the planner and the second starts the push-back."
 msgstr ""
-"Masquer les miniatures-raccourcis sur la gauche de l'ecran.\n"
+"Masquer les miniatures-raccourcis sur la gauche de l'écran.\n"
 "Le premier bouton lance la planification, l'autre le repoussage."
 
-msgid "Ignore check parking brake is set **"
-msgstr "Ignorer la position du frein de parking **"
+msgid "Ignore check parking brake is set"
+msgstr "Ignorer la position du frein de parking"
 
 msgid "Never check \"set parking brake\".\n"
     "Some aircraft stuck on this check.\n"
     "It's on the beginning and on the end.\n"
     "This should solve this problem for some aircrafts. (KA350 for instance)."
 msgstr "Refus de fonctionnement du frein de parking.\n"
-"sur certains avions (le KA350 par exemple), au debut\n"
-"ou a la fin du repoussage, le frein ne reagit plus.\n"
-"Cochez ici pour ne pas avoir ce probleme."
+"sur certains avions (le KA350 par exemple), au début\n"
+"ou à la fin du repoussage, le frein ne réagit plus.\n"
+"Cochez ici pour ne pas avoir ce problème."
 
-msgid "Auto disconnect when done **"
-msgstr "Déconnexion automatique une fois terminé **"
+msgid "Auto disconnect when done"
+msgstr "Déconnexion automatique une fois terminé"
 
 msgid "Radio output device"
 msgstr "Périphérique de sortie Radios"
@@ -213,39 +213,38 @@ msgstr "Périphérique de sortie Sons"
 msgid "Connect tug first"
 msgstr "Connectez d'abord le tracteur"
 
-msgid "** Settings related to the current aircraft"
-msgstr "** Paramètres spécifiques à chaque appareil"
+msgid "Settings related to the current aircraft"
+msgstr "Paramètres spécifiques à chaque appareil"
 
-msgid ""
-"Hint: hover your mouse cursor over any knob to show a short description of "
-"what it does."
-msgstr ""
-"Astuce: placez votre curseur sur n'importe quel bouton pour afficher une "
-"description."
+msgid "Hint: hover your mouse cursor over any label to show a short description of what it does."
+msgstr "Astuce: placez votre curseur sur n'importe quelle étiquette pour afficher une description."
+
+msgid "BetterPushback is open-source software. See COPYING for more information."
+msgstr "BetterPushback est un logiciel open-source. Voir COPYING pour plus d'informations"
 
 msgid "Don't check the doors/GPU/ASU status before starting the push-back"
-msgstr "Ne verifie pas le statut des portes, du GPU/ASU pour commencer le repoussage"
+msgstr "Ne vérifie pas le statut des portes, du GPU/ASU pour commencer le repoussage"
 
-msgid "Ignore doors/GPU/ASU check **"
-msgstr "Ignorer le contrôle des portes et du GPU/ASU **"
+msgid "Ignore doors/GPU/ASU check"
+msgstr "Ignorer le contrôle des portes et du GPU/ASU"
 
 msgid "Some doors are still opened or the GPU or the ASU are still connected. I'm waiting for all of them closed and disconnected then I will proceed."
 msgstr "Soit des portes sont ouvertes soit le GPU ou l'ASU est encore connecté. Faites le nécessaire pour que la procédure puisse continuer."
 
 msgid "Hides default X-Plane 11 pushback tug.\n"
     "Restart X-Plane for this change to take effect."
-msgstr "Ignore le tracteur par defaut de X-Plane 11.\n"
+msgstr "Ignore le tracteur par défaut de X-Plane 11.\n"
     "Relancez X-Plane pour que le changement prenne effet."
 
 msgid "In case of multiple monitors configuration, BpB need to use the primary monitor\n"
         "(the one with the x-plane menus), Bpb is able to select it automatically.\n"
         "If not select the one that works ! (the monitor numbers are arbitrary)."
-msgstr "Dans le cas d'une configuration a plusieurs ecrans, BpB doit etre sur l'ecran principal\n"
-        "(celui avec les menus de x-plane), Bpb le selectionne automatiquement.\n"
-        "Si ce n'est pas le cas, selectionnez cet ecran! (La numerotation des ecrans est arbitraire)."
+msgstr "Dans le cas d'une configuration a plusieurs écrans, BpB doit être sur l'écran principal\n"
+        "(celui avec les menus de x-plane), Bpb le sélectionne automatiquement.\n"
+        "Si ce n'est pas le cas, sélectionnez cet écran! (La numérotation des écrans est arbitraire)."
 
 msgid "User interface on monitor #"
-msgstr "Interface sur l'ecran n°"
+msgstr "Interface sur l'écran n°"
 
 msgid "Automatic"
 msgstr "Automatique"
@@ -268,18 +267,18 @@ msgstr "Ecran n°4"
 msgid "Monitor #5"
 msgstr "Ecran n°5"
 
-msgid "Magic squares position **"
-msgstr "Position des raccourcis **"
+msgid "Magic squares position"
+msgstr "Position des raccourcis"
 
 msgid "Slide this bar to move the magic squares up or down"
-msgstr "Ce curseur deplace les miniatures-raccourcis en hauteur"
+msgstr "Ce curseur déplace les miniatures-raccourcis en hauteur"
 
 msgid "Hide default X-Plane 11 tug"
-msgstr "Cache le tracteur par defaut de X-plane"
+msgstr "Cache le tracteur par défaut de X-plane"
 
 #: src/bp.c:2185
 msgid   "Waiting for the parking brakes release"
-msgstr  "En attente de relacher les freins de stationnement"
+msgstr  "En attente de relâcher les freins de stationnement"
 
 #: src/bp.c:2330 src/bp.c:3252 src/bp.c:3256 src/bp.c:3257
 msgid   "Waiting for the parking brakes set"
@@ -319,7 +318,7 @@ msgstr  "Repoussage en cours"
 
 #: src/bp.c:3299 src/bp.c:3303 src/bp.c:3304
 msgid   "Push-back stopping"
-msgstr  "Repoussage en cours d'arret"
+msgstr  "Repoussage en cours d'arrêt"
 
 #: src/bp.c:3303 src/bp.c:3307 src/bp.c:3308
 msgid   "Push-back stopped"
@@ -327,11 +326,11 @@ msgstr  "Repoussage terminé"
 
 #: src/bp.c:3307 src/bp.c:3311 src/bp.c:3312
 msgid   "Lowering the nose"
-msgstr  "Le train avant est remis au sol"
+msgstr  "Le train avant est remis au sol"
 
 #: src/bp.c:3311 src/bp.c:3315 src/bp.c:3316
 msgid   "Ungrabbing the nose"
-msgstr  "Le train avant est libéré"
+msgstr  "Le train avant est libéré"
 
 #: src/bp.c:3315 src/bp.c:3319 src/bp.c:3320
 msgid   "Waiting the OK to disconnect"
@@ -377,4 +376,4 @@ msgstr  "Toujours connecter le tracteur avant planification"
 msgid "The push process is always halted when the tug is at the nose of the aircraft\n"
        "The process will proceed by triggering again the 'start pushback' command."
 msgstr  "Le repoussage est toujours interrompu lorsque le remorqueur se trouve au niveau du nez de l'avion\n"
-    "Le processus se poursuivra en declenchant a nouveau la commande 'start pushback'."
+    "Le processus se poursuivra en déclenchant à nouveau la commande 'start pushback'."

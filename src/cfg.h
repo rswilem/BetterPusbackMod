@@ -50,6 +50,7 @@ typedef struct {
 } monitors_t;
 
 extern  monitors_t monitor_def;
+extern bool_t setup_view_callback_is_alive;
 
 bool_t bp_conf_init();
 
