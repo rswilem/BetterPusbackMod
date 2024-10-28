@@ -107,6 +107,28 @@ msgstr "Idioma de X-Plane"
 msgid "Ground crew audio"
 msgstr "Sonido del personal de tierra"
 
+msgid "My language only at domestic airports:\n"
+"Ground crew speaks my language only if the country the airport is "
+"in speaks my language. Otherwise the ground crew speaks English "
+"with a local accent.\n\n"
+"My language at all airports:\n"
+"Ground crew speaks my language irrespective "
+"of what country the airport is in.\n\n"
+"English at all airports:\n"
+"Ground crew always speaks English "
+"with a local accent."
+
+msgstr "Mi idioma sólo en los aeropuertos domésticos:\n"
+"El personal de tierra habla mi idioma sólo si el pais en el que "
+"está el aeropuerto habla mi idioma. De otra manera el personal "
+"de tierra habla inglés con acento local.\n\n"
+"Mi idioma en todos los aeropuertos:\n"
+"El personal de tierra habla mi idioma independientemente de en que "
+"pais esté el aeropuerto.\n\n"
+"Inglés en todos los aeropuertos:\n"
+"El personal de tierra siempre habla inglés con acento local."
+
+
 msgid "My language only at domestic airports"
 msgstr "Mi idioma sólo en los aeropuertos domésticos"
 
@@ -119,8 +141,8 @@ msgstr "Inglés en todos los aeropuertos"
 msgid "Save preferences"
 msgstr "Guardar preferencias"
 
-msgid "Ground crew speaks my language only if the country the airport is\n"
-"in speaks my language. Otherwise the ground crew speaks English\n"
+msgid "Ground crew speaks my language only if the country the airport is "
+"in speaks my language. Otherwise the ground crew speaks English "
 "with a local accent."
 msgstr "El personal de tierra habla mi idioma sólo si el pais en el que\n"
 "está el aeropuerto habla mi idioma. De otra manera el personal\n"
@@ -157,3 +179,75 @@ msgstr "Misceláneas"
 
 msgid "Ignore check parking brake is set"
 msgstr "Ignore la verificación de estacionamiento"
+
+msgid   "Never ask and always automatically disconnect "
+        "the tug when the pushback operation is complete."
+msgstr  "Nunca preguntar y siempre desconectar automáticamente "
+        "el remolcador cuando la operación de retroceso esté completa."
+
+msgid   "Never check \"set parking brake\".\n"
+        "Some aircraft stuck on this check.\n"
+        "It's on the beginning and on the end.\n"
+        "This should solve this problem for some aircrafts. (KA350 for "
+        "instance)."
+msgstr  "Nunca verifique \"poner el freno de estacionamiento\".\n"
+        "Algunas aeronaves se atascan en esta verificación.\n"
+        "Esto ocurre al inicio y al final.\n"
+        "Esto debería resolver el problema en algunas aeronaves (como el KA350)."
+
+msgid   "Don't check the doors/GPU/ASU status before starting the push-back."
+msgstr  "No verifique el estado de las puertas/GPU/ASU antes de iniciar el retroceso."
+
+msgid   "Hides the shortcut buttons on the left side of the screen.\n"
+        "The first button starts the planner and the second starts the push-"
+        "back."
+msgstr  "Oculta los botones de acceso directo en el lado izquierdo de la pantalla.\n"
+        "El primer botón inicia el planificador y el segundo inicia el retroceso."
+
+msgid   "Slide this bar to move the magic squares up or down."
+msgstr  "Deslice esta barra para mover los cuadros mágicos hacia arriba o hacia abajo."
+
+msgid   "The push process is always halted when the tug is at the nose of the "
+        "aircraft.\n"
+        "The process will proceed by triggering again the 'start pushback' "
+        "command."
+msgstr  "El proceso de retroceso siempre se detiene cuando el remolcador está en la nariz de la aeronave.\n"
+        "El proceso continuará activando nuevamente el comando 'iniciar retroceso'."
+
+msgid   "Hides default X-Plane 11 pushback tug.\n"
+        "Restart X-Plane for this change to take effect."
+msgstr  "Oculta el remolcador de retroceso predeterminado de X-Plane 11.\n"
+        "Reinicie X-Plane para que este cambio surta efecto."
+
+msgid   "Ignore doors/GPU/ASU check"
+msgstr  "Ignorar la verificación de puertas/GPU/ASU."
+
+msgid   "Hide the magic squares"
+msgstr  "Ocultar los cuadros mágicos."
+
+msgid   "Magic squares position"
+msgstr  "Posición de los cuadros mágicos."
+
+msgid   "Hide default X-Plane 11 tug"
+msgstr  "Ocultar el remolcador predeterminado de X-Plane 11."
+
+msgid   "Always connect the tug first"
+msgstr  "Conectar siempre el remolcador primero."
+
+msgid   "Connect tug first"
+msgstr  "Conectar el remolcador primero."
+
+msgid   "Tug cab view"
+msgstr  "Vista de la cabina del remolcador."
+
+msgid "BetterPushback is open-source software. See COPYING for more information."
+msgstr "BetterPushback es software de código abierto. Consulte COPYING para más información."
+
+msgid "Radio output device"
+msgstr "Dispositivo de salida de radio"
+
+msgid "Sound output device"
+msgstr "Dispositivo de salida de sonido"
+
+msgid "Audio settings"
+msgstr "Configuración de audio"

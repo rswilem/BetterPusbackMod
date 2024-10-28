@@ -391,6 +391,7 @@ start_cam_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon) {
         return (1);
     }
 
+    bp_plan_callback_is_alive = B_TRUE;
     prefs_enable = B_FALSE;
     start_pb_plan_enable = B_FALSE;
     stop_pb_plan_enable = B_TRUE;
@@ -511,6 +512,7 @@ cab_cam_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon) {
         return (0);
     }
 
+    tug_view_callback_is_alive = B_TRUE;
     return (1);
 }
 

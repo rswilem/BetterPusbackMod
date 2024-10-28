@@ -117,11 +117,33 @@ msgstr "BetterPushback設置"
 msgid "User interface"
 msgstr "界面設置"
 
-msgid "X-Plane's language"
-msgstr "X-Plane系統語言"
+#msgid "X-Plane's language"
+#msgstr "X-Plane系統語言"
+#msgstr "X-Plane语言"
 
 msgid "Ground crew audio"
 msgstr "地勤人員聲音"
+
+
+msgid 
+    "My language only at domestic airports:\n"
+    "Ground crew speaks my language only if the country the airport is "
+    "in speaks my language. Otherwise the ground crew speaks English "
+    "with a local accent.\n\n"
+    "My language at all airports:\n"
+    "Ground crew speaks my language irrespective "
+    "of what country the airport is in.\n\n"
+    "English at all airports:\n"
+    "Ground crew always speaks English "
+    "with a local accent."
+msgstr
+"只在國內機場說中文:\n"
+"地面人員只有在說中文的機場時，才會說中文，否則地勤人員會說當地口音英語.\n\n"
+"所有機場說中文:\n"
+"無論機場在哪個國家，地勤人員都會說中文.\n\n"
+"所有機場說英文:\n"
+"地勤人員總是說著帶有當地口音的英語."
+
 
 msgid "My language only at domestic airports"
 msgstr "只在國內機場說中文"
@@ -135,8 +157,8 @@ msgstr "所有機場說英文"
 msgid "Save preferences"
 msgstr "保存設置"
 
-msgid "Ground crew speaks my language only if the country the airport is\n"
-"in speaks my language. Otherwise the ground crew speaks English\n"
+msgid "Ground crew speaks my language only if the country the airport is "
+"in speaks my language. Otherwise the ground crew speaks English "
 "with a local accent."
 msgstr "地面人員只有在說中文的機場時，才會說中文，否則地勤人員會說當地口音英語"
 
@@ -145,13 +167,101 @@ msgid "Ground crew speaks my language irrespective of what country the "
 msgstr "無論機場在哪個國家，地勤人員都會說中文"
 
 msgid "Ground crew always speaks English with a local accent."
-msgstr "無論機場在哪個國家，地勤人員都會說中文"
+msgstr "地勤人員總是說著帶有當地口音的英語"
 
 msgid "Save current preferences to disk."
-msgstr "保存當前設置"
+msgstr "保存當前設置."
 
 msgid "Disconnect tow + headset and switch to hand signals."
 msgstr "斷開拖桿和耳機然後註意手勢"
 
 msgid "Reconnect tow and await further instructions."
 msgstr "重新連接拖桿，等待指令"
+
+msgid   "Never ask and always automatically disconnect "
+        "the tug when the pushback operation is complete."
+msgstr  "永遠不要詢問，並在推回操作完成時自動斷開 "
+        "拖拉機的連接。"
+
+msgid   "Never check \"set parking brake\".\n"
+        "Some aircraft stuck on this check.\n"
+        "It's on the beginning and on the end.\n"
+        "This should solve this problem for some aircrafts. (KA350 for "
+        "instance)."
+msgstr  "永遠不要檢查「設置停車剎車」。\n"
+        "某些飛機在此檢查中卡住。\n"
+        "這在開始和結束時都會發生。\n"
+        "這應該能解決某些飛機的問題（例如KA350）。"
+
+msgid   "Don't check the doors/GPU/ASU status before starting the push-back."
+msgstr  "在開始推回之前，請勿檢查門/GPU/ASU的狀態。"
+
+msgid   "Hides the shortcut buttons on the left side of the screen.\n"
+        "The first button starts the planner and the second starts the push-"
+        "back."
+msgstr  "隱藏屏幕左側的快捷按鈕。\n"
+        "第一個按鈕啟動規劃器，第二個按鈕啟動推回。"
+
+msgid   "Slide this bar to move the magic squares up or down."
+msgstr  "滑動此條以向上或向下移動魔法方塊。"
+
+msgid   "The push process is always halted when the tug is at the nose of the "
+        "aircraft.\n"
+        "The process will proceed by triggering again the 'start pushback' "
+        "command."
+msgstr  "當拖拉機在飛機鼻部時，推回過程會始終暫停。\n"
+        "此過程將通過重新觸發「開始推回」命令繼續進行。"
+
+msgid   "Hides default X-Plane 11 pushback tug.\n"
+        "Restart X-Plane for this change to take effect."
+msgstr  "隱藏預設的X-Plane 11推回拖拉機。\n"
+        "重啟X-Plane以使此更改生效。"
+
+msgid   "Ignore doors/GPU/ASU check"
+msgstr  "忽略門/GPU/ASU檢查。"
+
+msgid   "Hide the magic squares"
+msgstr  "隱藏魔法方塊。"
+
+msgid   "Magic squares position"
+msgstr  "魔法方塊位置。"
+
+msgid   "Hide default X-Plane 11 tug"
+msgstr  "隱藏預設的X-Plane 11拖拉機。"
+
+msgid   "Always connect the tug first"
+msgstr  "始終首先連接拖拉機。"
+
+msgid   "Connect tug first"
+msgstr  "先連接拖拉機。"
+
+msgid   "Tug cab view"
+msgstr  "拖拉機駕駛室視圖。"
+
+msgid "Radio output device"
+msgstr "無線電輸出設備。"
+
+#: cfg.c:658
+msgid "Sound output device"
+msgstr "聲音輸出設備。"
+
+msgid "Audio settings"
+msgstr "音頻設置。"
+
+msgid "Auto disconnect when done"
+msgstr "完成時自動斷開連接。"
+
+msgid "Miscellaneous"
+msgstr "其他。"
+
+msgid "Ignore check parking brake is set"
+msgstr "忽略檢查停車剎車是否已設置。"
+
+msgid "Settings related to the current aircraft"
+msgstr "與當前飛機相關的設置。"
+
+msgid "BetterPushback is open-source software. See COPYING for more information."
+msgstr "BetterPushback是開源軟件。請參閱COPYING以獲取更多信息。"
+
+msgid "Hint: hover your mouse cursor over any label to show a short description of what it does."
+msgstr "提示：將鼠標光標懸停在任何標籤上以顯示其功能的簡短描述。"

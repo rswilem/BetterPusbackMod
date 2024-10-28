@@ -107,6 +107,30 @@ msgstr "Язык X-Plane"
 msgid "Ground crew audio"
 msgstr "Голос наземной службы"
 
+msgid 
+    "My language only at domestic airports:\n"
+    "Ground crew speaks my language only if the country the airport is "
+    "in speaks my language. Otherwise the ground crew speaks English "
+    "with a local accent.\n\n"
+    "My language at all airports:\n"
+    "Ground crew speaks my language irrespective "
+    "of what country the airport is in.\n\n"
+    "English at all airports:\n"
+    "Ground crew always speaks English "
+    "with a local accent."
+msgstr
+"Мой язык, только в домашних аэропортах:\n"
+"Наземная служба говорит на моем языке, только если аэропорт "
+"в стране, говорящей на моем языке. Иначе, наземная служба "
+"говорит по Английски, с местным акцентом.\n\n"
+"Мой язык, во всех аэропортах:\n"
+"Наземная служба говорит на моем языке, независимо от страны "
+"расположения аэропорта.\n\n"
+"Английский, во всех аэропортах:\n"
+"Наземная служба всегда говорит по Английски, с местным акцентом."
+
+
+
 msgid "My language only at domestic airports"
 msgstr "Мой язык, только в домашних аэропортах"
 
@@ -119,8 +143,8 @@ msgstr "Английский, во всех аэропортах"
 msgid "Save preferences"
 msgstr "Сохранить настройки"
 
-msgid "Ground crew speaks my language only if the country the airport is\n"
-"in speaks my language. Otherwise the ground crew speaks English\n"
+msgid "Ground crew speaks my language only if the country the airport is "
+"in speaks my language. Otherwise the ground crew speaks English "
 "with a local accent."
 msgstr "Наземная служба говорит на моем языке, только если аэропорт\n"
 "в стране, говорящей на моем языке. Иначе, наземная служба\n"
@@ -142,3 +166,92 @@ msgstr "Отсоединить буксировщик и голосовую св
 
 msgid "Reconnect tow and await further instructions."
 msgstr "Присоединить буксировщик заново и ждать дальнейших указаний."
+
+msgid   "Never ask and always automatically disconnect "
+        "the tug when the pushback operation is complete."
+msgstr  "Никогда не спрашивайте и всегда автоматически отключайте "
+        "толкач, когда операция отката завершена."
+
+msgid   "Never check \"set parking brake\".\n"
+        "Some aircraft stuck on this check.\n"
+        "It's on the beginning and on the end.\n"
+        "This should solve this problem for some aircrafts. (KA350 for "
+        "instance)."
+msgstr  "Никогда не проверяйте «установить стояночный тормоз».\n"
+        "Некоторые самолеты застревают на этой проверке.\n"
+        "Это происходит в начале и в конце.\n"
+        "Это должно решить проблему для некоторых самолетов (например, KA350)."
+
+msgid   "Don't check the doors/GPU/ASU status before starting the push-back."
+msgstr  "Не проверяйте статус дверей/GPU/ASU перед началом отката."
+
+msgid   "Hides the shortcut buttons on the left side of the screen.\n"
+        "The first button starts the planner and the second starts the push-"
+        "back."
+msgstr  "Скрывает кнопки быстрого доступа на левой стороне экрана.\n"
+        "Первая кнопка запускает планировщик, а вторая - откат."
+
+msgid   "Slide this bar to move the magic squares up or down."
+msgstr  "Переместите этот ползунок, чтобы сдвинуть волшебные квадраты вверх или вниз."
+
+msgid   "The push process is always halted when the tug is at the nose of the "
+        "aircraft.\n"
+        "The process will proceed by triggering again the 'start pushback' "
+        "command."
+msgstr  "Процесс отката всегда приостанавливается, когда толкач находится у носа "
+        "самолета.\n"
+        "Процесс продолжится, если снова активировать команду 'начать откат'."
+
+msgid   "Hides default X-Plane 11 pushback tug.\n"
+        "Restart X-Plane for this change to take effect."
+msgstr  "Скрывает стандартный толкач X-Plane 11.\n"
+        "Перезапустите X-Plane, чтобы изменения вступили в силу."
+
+msgid   "Ignore doors/GPU/ASU check"
+msgstr  "Игнорировать проверку дверей/GPU/ASU."
+
+msgid   "Hide the magic squares"
+msgstr  "Скрыть волшебные квадраты."
+
+msgid   "Magic squares position"
+msgstr  "Позиция волшебных квадратов."
+
+msgid   "Hide default X-Plane 11 tug"
+msgstr  "Скрыть стандартный толкач X-Plane 11."
+
+msgid   "Always connect the tug first"
+msgstr  "Всегда сначала подключайте толкач."
+
+msgid   "Connect tug first"
+msgstr  "Сначала подключите толкач."
+
+msgid   "Tug cab view"
+msgstr  "Вид из кабины толкача."
+
+msgid "Radio output device"
+msgstr "Устройство вывода радио."
+
+#: cfg.c:658
+msgid "Sound output device"
+msgstr "Устройство вывода звука."
+
+msgid "Audio settings"
+msgstr "Настройки звука."
+
+msgid "Auto disconnect when done"
+msgstr "Автоматически отключить при завершении."
+
+msgid "Miscellaneous"
+msgstr "Разное."
+
+msgid "Ignore check parking brake is set"
+msgstr "Игнорировать проверку установлен ли стояночный тормоз."
+
+msgid "Settings related to the current aircraft"
+msgstr "Настройки, относящиеся к текущему самолету."
+
+msgid "BetterPushback is open-source software. See COPYING for more information."
+msgstr "BetterPushback - это программное обеспечение с открытым исходным кодом. Смотрите COPYING для получения дополнительной информации."
+
+msgid "Hint: hover your mouse cursor over any label to show a short description of what it does."
+msgstr "Подсказка: наведите курсор мыши на любую метку, чтобы отобразить краткое описание ее функций."

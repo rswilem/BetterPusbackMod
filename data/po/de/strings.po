@@ -119,11 +119,11 @@ msgstr "Englisch für alle Flughäfen"
 msgid "Save preferences"
 msgstr "Einstellungen sichern"
 
-msgid "Ground crew speaks my language only if the country the airport is\n"
-"in speaks my language. Otherwise the ground crew speaks English\n"
+msgid "Ground crew speaks my language only if the country the airport is "
+"in speaks my language. Otherwise the ground crew speaks English "
 "with a local accent."
-msgstr "Bodenpersonal spricht meine Sprache, wenn sich der Flughafen\n"
-"in einem Land befindet, in dem meine Sprache gesprochen wird.\n"
+msgstr "Bodenpersonal spricht meine Sprache, wenn sich der Flughafen "
+"in einem Land befindet, in dem meine Sprache gesprochen wird. "
 "Falls nicht, spricht sie Englisch mit lokalem Akzent."
 
 msgid "Ground crew speaks my language irrespective of what country the "
@@ -136,8 +136,8 @@ msgstr "Bodenpersonal spricht immer Englisch mit lokalem Akzent."
 
 msgid 
     "My language only at domestic airports:\n"
-    "Ground crew speaks my language only if the country the airport is\n"
-    "in speaks my language. Otherwise the ground crew speaks English\n"
+    "Ground crew speaks my language only if the country the airport is "
+    "in speaks my language. Otherwise the ground crew speaks English "
     "with a local accent.\n\n"
     "My language at all airports:\n"
     "Ground crew speaks my language irrespective "
@@ -147,8 +147,8 @@ msgid
     "with a local accent."
 msgstr
 "Meine Sprache nur für inländische Flughäfen:\n"
-"Bodenpersonal spricht meine Sprache, wenn sich der Flughafen\n"
-"in einem Land befindet, in dem meine Sprache gesprochen wird.\n"
+"Bodenpersonal spricht meine Sprache, wenn sich der Flughafen "
+"in einem Land befindet, in dem meine Sprache gesprochen wird. "
 "Falls nicht, spricht sie Englisch mit lokalem Akzent.\n\n"
 "Meine Sprache für alle Flughäfen:\n"
 "Bodenpersonal spricht meine Sprache, egal in welchem Land sich "
@@ -182,3 +182,73 @@ msgstr "Verschiedenes"
 
 msgid "Ignore check parking brake is set"
 msgstr "Mach kein Parking Brake check"
+
+msgid   "Never ask and always automatically disconnect "
+        "the tug when the pushback operation is complete."
+msgstr  "Nie fragen und den Schlepper immer automatisch trennen, "
+        "wenn der Pushback-Vorgang abgeschlossen ist."
+
+msgid   "Never check \"set parking brake\".\n"
+        "Some aircraft stuck on this check.\n"
+        "It's on the beginning and on the end.\n"
+        "This should solve this problem for some aircrafts. (KA350 for "
+        "instance)."
+msgstr  "Nie die \"Parkbremse setzen\" überprüfen.\n"
+        "Einige Flugzeuge bleiben bei dieser Überprüfung hängen.\n"
+        "Dies tritt am Anfang und am Ende auf.\n"
+        "Dies sollte das Problem bei einigen Flugzeugen lösen (zum Beispiel die KA350)."
+
+msgid   "Don't check the doors/GPU/ASU status before starting the push-back."
+msgstr  "Überprüfen Sie den Status der Türen/GPU/ASU nicht, bevor Sie mit dem Pushback beginnen."
+
+msgid   "Hides the shortcut buttons on the left side of the screen.\n"
+        "The first button starts the planner and the second starts the push-"
+        "back."
+msgstr  "Blendet die Schaltflächen für Schnellzugriff auf der linken Seite des Bildschirms aus.\n"
+        "Der erste Knopf startet den Planer, der zweite den Pushback."
+
+msgid   "Slide this bar to move the magic squares up or down."
+msgstr  "Schieben Sie diesen Balken, um die magischen Quadrate nach oben oder unten zu bewegen."
+
+msgid   "The push process is always halted when the tug is at the nose of the "
+        "aircraft.\n"
+        "The process will proceed by triggering again the 'start pushback' "
+        "command."
+msgstr  "Der Push-Prozess wird immer angehalten, wenn der Schlepper sich an der Flugzeugnase befindet.\n"
+        "Der Prozess wird durch erneutes Auslösen des 'Pushback starten'-Befehls fortgesetzt."
+
+msgid   "Hides default X-Plane 11 pushback tug.\n"
+        "Restart X-Plane for this change to take effect."
+msgstr  "Blendet den Standard-Pushback-Schlepper von X-Plane 11 aus.\n"
+        "Starten Sie X-Plane neu, damit diese Änderung wirksam wird."
+
+msgid   "Ignore doors/GPU/ASU check"
+msgstr  "Überprüfen der Türen/GPU/ASU ignorieren"
+
+msgid   "Hide the magic squares"
+msgstr  "Magische Quadrate ausblenden"
+
+msgid   "Magic squares position"
+msgstr  "Position der magischen Quadrate"
+
+msgid   "Hide default X-Plane 11 tug"
+msgstr  "Standard-Schlepper von X-Plane 11 ausblenden"
+
+msgid   "Always connect the tug first"
+msgstr  "Schlepper immer zuerst verbinden"
+
+msgid   "Connect tug first"
+msgstr  "Schlepper zuerst verbinden"
+
+msgid   "Tug cab view"
+msgstr  "Ansicht der Schlepperkabine"
+
+msgid "Radio output device"
+msgstr "Radioausgabegerät"
+
+#: cfg.c:658
+msgid "Sound output device"
+msgstr "Tonausgabegerät"
+
+msgid "Audio settings"
+msgstr "Audioeinstellungen"

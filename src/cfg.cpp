@@ -113,8 +113,8 @@ void fetchGitVersion(void);
 
 const char *crew_language_tooltip =
     "My language only at domestic airports:\n"
-    "Ground crew speaks my language only if the country the airport is\n"
-    "in speaks my language. Otherwise the ground crew speaks English\n"
+    "Ground crew speaks my language only if the country the airport is "
+    "in speaks my language. Otherwise the ground crew speaks English "
     "with a local accent.\n\n"
     "My language at all airports:\n"
     "Ground crew speaks my language irrespective "
@@ -126,11 +126,11 @@ const char *crew_language_tooltip =
 const char *dev_menu_tooltip = "Show the developer menu options.";
 const char *save_prefs_tooltip = "Save current preferences to disk.";
 const char *disco_when_done_tooltip =
-    "Never ask and always automatically disconnect\n"
+    "Never ask and always automatically disconnect "
     "the tug when the pushback operation is complete.";
 const char *always_connect_tug_first_tooltip =
     "The push process is always halted when the tug is at the nose of the "
-    "aircraft\n"
+    "aircraft.\n"
     "The process will proceed by triggering again the 'start pushback' "
     "command.";
 const char *ignore_park_brake_tooltip =
@@ -145,7 +145,7 @@ const char *hide_magic_squares_tooltip =
     "Hides the shortcut buttons on the left side of the screen.\n"
     "The first button starts the planner and the second starts the push-back.";
 const char *ignore_doors_check_tooltip =
-    "Don't check the doors/GPU/ASU status before starting the push-back";
+    "Don't check the doors/GPU/ASU status before starting the push-back.";
 
 const char *monitor_tooltip =
     "In case of multiple monitors configuration, BpB need to use the primary "
@@ -155,7 +155,7 @@ const char *monitor_tooltip =
     "If not select the one that works ! (the monitor numbers are arbitrary).";
 
 const char *magic_squares_height_tooltip =
-    "Slide this bar to move the magic squares up or down";
+    "Slide this bar to move the magic squares up or down.";
 
 typedef struct {
   const char *string;
@@ -256,6 +256,7 @@ SettingsWindow::SettingsWindow(WndMode _mode)
   SetWindowResizingLimits(MAIN_WINDOW_W, MAIN_WINDOW_H, MAIN_WINDOW_W,
                           MAIN_WINDOW_H);
   LoadConfig();
+  setup_view_callback_is_alive = B_TRUE;
 }
 
 void SettingsWindow::LoadConfig(void) {
@@ -833,7 +834,9 @@ void bp_conf_fini(void) {
 
 void bp_conf_set_save_enabled(bool_t flag) {
   ASSERT(inited);
-  setup_window->save_disabled = flag;
+  if (setup_window) {
+    setup_window->save_disabled = flag;
+  }
 }
 
 void key_sanity(char *key) {
@@ -991,35 +994,6 @@ int get_ui_monitor_from_pref(void) {
 
     free(path);
     return monit_id;
-}
-
-int get_ui_monitor_from_pref2(void) {
-  char *path = mkpathname(CONF_DIRS, XP_PREF_WINDOWS, NULL);
-  const char *key = "monitor/0/m_monitor";
-  int monit_id = 0;
-  FILE *fp = fopen(path, "rb");
-  char *line = NULL;
-  char *search;
-  size_t cap = 0;
-  int line_num;
-
-  UNUSED(line_num);
-/*
-  if (fp != NULL) {
-    for (line_num = 1; getline(&line, &cap, fp) > 0; line_num++) {
-      search = strstr(line, key);
-      if (search != NULL) {
-        monit_id = atoi(search + strlen(key));
-        logMsg("monit id %d found in the prf file", monit_id);
-        break;
-      }
-    }
-    free(line);
-    fclose(fp);
-  }
-*/
-  free(path);
-  return (monit_id);
 }
 
 static size_t wrCallback(void *data, size_t size, size_t nmemb, void *clientp) {
