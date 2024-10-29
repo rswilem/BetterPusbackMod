@@ -26,6 +26,7 @@ extern "C" {
 #endif
 
 extern bool_t tug_view_callback_is_alive;
+extern bool_t tug_cam_started;
 
 void cab_view_init(void);
 

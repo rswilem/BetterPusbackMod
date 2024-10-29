@@ -708,7 +708,7 @@ void SettingsWindow::buildInterface() {
 
   CenterText(_(COPYRIGHT1));
   if (for_credit > 4) {
-    CenterText("Thanks and Credit to slgolberg for better pushing me :)");
+    CenterText("Thanks and Credit to slgoldberg for better pushing me :)");
   } else {
     CenterText(_(COPYRIGHT2));
     if (ImGui::IsItemHovered()) {

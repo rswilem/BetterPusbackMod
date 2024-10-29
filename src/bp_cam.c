@@ -1498,15 +1498,20 @@ void eye_track_debut(void) {
         if (eye_tracker_plg.plg_status) {
             XPLMDisablePlugin(eye_tracker_plg.plg_id);
             logMsg("XPLMDisablePlugin");
+        } else {
+            logMsg("XPLMDisablePlugin not done, was already disabled");
         }
     }
 }
 
 void eye_track_fini(void) {
     if (eye_tracker_plg.plg_id != -1) {
-        if (eye_tracker_plg.plg_status) {
+        eye_tracker_plg.plg_status = XPLMIsPluginEnabled(eye_tracker_plg.plg_id);
+        if (!eye_tracker_plg.plg_status) {
             int r = XPLMEnablePlugin(eye_tracker_plg.plg_id);
             logMsg("XPLMEnablePlugin %d", r);
+        } else {
+            logMsg("XPLMEnablePlugin not done, was already enabled");
         }
     }
 }

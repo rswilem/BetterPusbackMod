@@ -490,6 +490,7 @@ conn_first_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon) {
         start_pb_enable = (bp_num_segs() == 0);
         stop_pb_enable = B_TRUE;
         conn_first_enable = B_FALSE;
+        prefs_enable = B_FALSE;
         enable_menu_items();
     }
     return (1);
@@ -633,7 +634,7 @@ status_check(float elapsed, float elapsed2, int counter, void *refcon)
     cab_cam_enable = cab_view_can_start();
     enable_menu_items();
 
-    if( !tug_view_callback_is_alive && !cab_cam_enable ) {
+    if( !tug_view_callback_is_alive && tug_cam_started ) {
         cab_view_stop();
     }
     tug_view_callback_is_alive = B_FALSE;

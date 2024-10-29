@@ -50,7 +50,7 @@
 #define	HINTBAR_HEIGHT	20
 #define	HINTBAR_TIMEOUT	SEC2USEC(5)
 
-static bool_t started = B_FALSE;
+bool_t tug_cam_started = B_FALSE;
 bool_t tug_view_callback_is_alive = B_FALSE;
 /*
  * The delta to the tug's nominal camera position.
@@ -139,7 +139,7 @@ cab_view_can_start(void)
 	 * but steals mouse events and never resets.
 	 */
 	//bool_t is_external = (bool_t)dr_geti(&view_is_external_dr);
-	return (!started && bp_started && bp_ls.tug != NULL ); // && !is_external);
+	return (!tug_cam_started && bp_started && bp_ls.tug != NULL ); // && !is_external);
 }
 
 static int
@@ -152,7 +152,7 @@ cam_ctl(XPLMCameraPosition_t *pos, int losing_control, void *refcon)
 	UNUSED(refcon);
 	tug_view_callback_is_alive = B_TRUE;
 	
-	if (pos == NULL || losing_control || !bp_started || !started) {
+	if (pos == NULL || losing_control || !bp_started || !tug_cam_started) {
 		cab_view_stop();
 		return (0);
 	}
@@ -315,7 +315,7 @@ cab_view_start(void)
 	XPLMCommandOnce(XPLMFindCommand("sim/view/circle"));
 
 	XPLMControlCamera(xplm_ControlCameraUntilViewChanges, cam_ctl, NULL);
-	started = B_TRUE;
+	tug_cam_started = B_TRUE;
 
 	initMonitorOrigin();
 	if (win == NULL) {
@@ -397,5 +397,5 @@ cab_view_stop(void)
 	}
 
 	eye_track_fini();
-	started = B_FALSE;
+	tug_cam_started = B_FALSE;
 }
