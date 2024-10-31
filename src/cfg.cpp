@@ -23,6 +23,7 @@
 
 #include <XPLMGraphics.h>
 #include <XPLMPlanes.h>
+#include <XPLMPlugin.h>
 #include <XPStandardWidgets.h>
 #include <XPWidgets.h>
 
@@ -57,7 +58,6 @@ static bool_t inited = B_FALSE;
 static bool_t gui_inited = B_FALSE;
 bool_t setup_view_callback_is_alive = B_FALSE;
 
-
 #define MAIN_WINDOW_W 800
 #define MAIN_WINDOW_H 650
 
@@ -77,8 +77,8 @@ bool_t setup_view_callback_is_alive = B_FALSE;
 
 /* Warning this is used on PO Translation as ID */
 #define TOOLTIP_HINT                                                           \
-  "Hint: hover your mouse cursor over any label to show a short description of what it does."
-
+  "Hint: hover your mouse cursor over any label to show a short description "  \
+  "of what it does."
 
 static fov_t fov_values = {0};
 static struct {
@@ -157,6 +157,15 @@ const char *monitor_tooltip =
 const char *magic_squares_height_tooltip =
     "Slide this bar to move the magic squares up or down.";
 
+const char *eye_tracker_tooltip =
+    "Some Eye tracker plugins use the X-plane camera system and therefore "
+    "doesn't allow BpB to work properly "
+    "while using the planner or the tug view.\n\n"
+    "If it is the case, select the plugin that is in conflit with BpB.\n\n"
+    "CAUTION: At this point, you know that your are doing, selecting the wrong "
+    "plugin may cause X-plane to crash.\n"
+    "If you don't know select : None.";
+
 typedef struct {
   const char *string;
   bool use_chinese;
@@ -209,6 +218,9 @@ comboList_t_ *sound_device_list_ = nullptr;
 comboList_t sound_device_list = {sound_device_list_, 0, "##sound_device_list",
                                  0};
 
+comboList_t_ *plg_list_ = nullptr;
+comboList_t plg_list = {plg_list_, 0, "##plg_list", 0};
+
 class SettingsWindow : public XPImgWindow {
 public:
   SettingsWindow(WndMode _mode = WND_MODE_FLOAT_CENTERED);
@@ -219,8 +231,9 @@ public:
   bool_t save_disabled;
 
   ~SettingsWindow() {
-    free(radio_device_list.combo_list);
-    free(sound_device_list.combo_list);
+    comboList_free(&radio_device_list);
+    comboList_free(&sound_device_list);
+    comboList_free(&plg_list);
   }
 
   bool_t getIsDestroy(void) { return is_destroy; }
@@ -240,9 +253,11 @@ private:
   int monitor_id;
   int for_credit;
   int magic_squares_height;
-  const char *radio_dev, *sound_dev;
+  const char *radio_dev, *sound_dev, *plg_to_exclude;
   void LoadConfig(void);
   void sound_comboList_init(comboList_t *list);
+  void plugin_comboList_init(comboList_t *list);
+  void comboList_free(comboList_t *list);
 
 protected:
   void buildInterface() override;
@@ -261,7 +276,7 @@ SettingsWindow::SettingsWindow(WndMode _mode)
 
 void SettingsWindow::LoadConfig(void) {
 
-  lang = "XX";
+  lang = NULL;
   language_list.selected = 0;
   is_chinese = B_FALSE;
 
@@ -317,7 +332,7 @@ void SettingsWindow::LoadConfig(void) {
   (void)conf_get_i_per_acf((char *)"magic_squares_height",
                            &magic_squares_height);
 
-  radio_dev = "";
+  radio_dev = NULL;
   sound_comboList_init(&radio_device_list);
   radio_device_list.selected = 0;
   if (conf_get_str(bp_conf, "radio_device", &radio_dev)) {
@@ -329,7 +344,7 @@ void SettingsWindow::LoadConfig(void) {
     }
   }
 
-  sound_dev = "";
+  sound_dev = NULL;
   sound_comboList_init(&sound_device_list);
   sound_device_list.selected = 0;
   if (conf_get_str(bp_conf, "sound_device", &sound_dev)) {
@@ -340,6 +355,53 @@ void SettingsWindow::LoadConfig(void) {
       }
     }
   }
+
+  plg_to_exclude = NULL;
+  plugin_comboList_init(&plg_list);
+  plg_list.selected = 0;
+  if (conf_get_str(bp_conf, "plg_to_exclude", &plg_to_exclude)) {
+    for (int i = 0; i < plg_list.list_size; i++) {
+      if ((strcmp(plg_to_exclude, plg_list.combo_list[i].value) == 0)) {
+        plg_list.selected = i;
+        break;
+      }
+    }
+  }
+}
+
+void SettingsWindow::plugin_comboList_init(comboList_t *list) {
+  int num_plg = XPLMCountPlugins();
+  XPLM_API XPLMPluginID plg_id;
+  char plg_name[256] = {0};
+  char plg_signature[256] = {0};
+  char path[1024] = {0};
+  int num_resource_plg = 1;
+
+  list->combo_list =
+      (comboList_t_ *)safe_calloc(num_plg + 1, sizeof(comboList_t_));
+  list->list_size = num_plg + 1;
+  list->combo_list[0].string = strdup(_("None"));
+  list->combo_list[0].use_chinese = B_FALSE;
+  list->combo_list[0].value = strdup(list->combo_list[0].string);
+
+  for (int i = 0; i < num_plg; i++) {
+    plg_id = XPLMGetNthPlugin(i);
+    XPLMGetPluginInfo(plg_id, plg_name, path, plg_signature, NULL);
+    // excluding pluginadmin and Navigraph and Bpb !!!!!
+    if ((strstr(plg_signature, "pluginadmin") != NULL) ||
+        (strstr(plg_signature, BP_PLUGIN_SIG) != NULL) ||
+        (strstr(plg_signature, "skiselkov.xraas2") != NULL) ||
+        (strstr(plg_signature, "Navigraph") != NULL)) { 
+      continue;
+    }
+    if (strstr(path, "Resources/plugins/") != NULL) {
+      list->combo_list[num_resource_plg].string = strdup(plg_name);
+      list->combo_list[num_resource_plg].use_chinese = B_FALSE;
+      list->combo_list[num_resource_plg].value = strdup(plg_signature);
+      num_resource_plg++;
+    }
+  }
+  list->list_size = num_resource_plg;
 }
 
 void SettingsWindow::sound_comboList_init(comboList_t *list) {
@@ -351,22 +413,22 @@ void SettingsWindow::sound_comboList_init(comboList_t *list) {
   list->list_size = num_devs + 1;
   list->combo_list[0].string = strdup(_("Default output device"));
   list->combo_list[0].use_chinese = B_FALSE;
-  list->combo_list[0].value = list->combo_list[0].string;
+  list->combo_list[0].value = strdup(list->combo_list[0].string);
 
   for (size_t i = 1; i < (num_devs + 1); i++) {
-    if (strlen(devs[i - 1]) > 30) {
-      const char *dev = devs[i - 1];
-      char chkbx_name[40] = {0};
-      strncat(chkbx_name, dev, 22);
-      strcat(chkbx_name, "...");
-      strcat(chkbx_name, &dev[strlen(dev) - 8]);
-      list->combo_list[i].string = strdup(chkbx_name);
-    } else {
-      list->combo_list[i].string = strdup(devs[i - 1]);
-    }
+    list->combo_list[i].string = strdup(devs[i - 1]);
     list->combo_list[i].use_chinese = B_FALSE;
-    list->combo_list[i].value = list->combo_list[i].string;
+    list->combo_list[i].value = strdup(list->combo_list[i].string);
   }
+}
+
+void SettingsWindow::comboList_free(comboList_t *list) {
+  for (size_t i = 0; i < list->list_size; i++) {
+    free((void *)list->combo_list[i].string);
+    free((void *)list->combo_list[i].value);
+  }
+  free((void *)list->combo_list);
+  list->list_size = 0;
 }
 
 bool_t SettingsWindow::comboList(comboList_t *list) {
@@ -611,6 +673,23 @@ void SettingsWindow::buildInterface() {
                        always_connect_tug_first);
     }
 
+    ImGui::TableNextRow();
+    ImGui::TableNextColumn();
+    ImGui::Text("%s", _("Eye Tracker Plugins Exclusion"));
+    Tooltip(_(eye_tracker_tooltip));
+
+    ImGui::TableNextColumn();
+    ImGui::SetNextItemWidth(combowithWidth);
+    if (comboList(&plg_list)) {
+      if (plg_list.selected == 0) {
+        conf_set_str(bp_conf, "plg_to_exclude", NULL);
+      } else {
+        conf_set_str(
+            bp_conf, "plg_to_exclude",
+            plg_list.combo_list[plg_list.selected].value);
+      }
+    }
+
     if (xp11_only) {
       ImGui::TableNextRow();
       ImGui::TableNextColumn();
@@ -731,7 +810,6 @@ void SettingsWindow::buildInterface() {
 }
 
 SettingsWindow *setup_window = nullptr;
-
 
 bool_t bp_conf_init(void) {
   char *path;
@@ -971,29 +1049,29 @@ void set_fov_values_impl(fov_t *values) {
 #define BUFFER_SIZE 1024
 
 int get_ui_monitor_from_pref(void) {
-    char *path = mkpathname(CONF_DIRS, XP_PREF_WINDOWS, NULL);
-    const char *key = "monitor/0/m_monitor";
-    int monit_id = 0;
-    FILE *fp = fopen(path, "rb");
-    char line[BUFFER_SIZE];
-    int line_num;
+  char *path = mkpathname(CONF_DIRS, XP_PREF_WINDOWS, NULL);
+  const char *key = "monitor/0/m_monitor";
+  int monit_id = 0;
+  FILE *fp = fopen(path, "rb");
+  char line[BUFFER_SIZE];
+  int line_num;
 
-    UNUSED(line_num);
+  UNUSED(line_num);
 
-    if (fp != NULL) {
-        while (fgets(line, BUFFER_SIZE, fp) != NULL) { // fgets reads a line
-            char *search = strstr(line, key);
-            if (search != NULL) {
-                monit_id = atoi(search + strlen(key));
-                logMsg("monit id %d found in the prf file", monit_id);
-                break;
-            }
-        }
-        fclose(fp);
+  if (fp != NULL) {
+    while (fgets(line, BUFFER_SIZE, fp) != NULL) { // fgets reads a line
+      char *search = strstr(line, key);
+      if (search != NULL) {
+        monit_id = atoi(search + strlen(key));
+        logMsg("monit id %d found in the prf file", monit_id);
+        break;
+      }
     }
+    fclose(fp);
+  }
 
-    free(path);
-    return monit_id;
+  free(path);
+  return monit_id;
 }
 
 static size_t wrCallback(void *data, size_t size, size_t nmemb, void *clientp) {

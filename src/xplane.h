@@ -53,6 +53,10 @@ extern XPLMHostApplicationID bp_host_id;
 extern XPLMCommandRef start_pb,  start_cam, conn_first, stop_pb;
 extern bool_t  start_pb_plan_enable, start_pb_enable;
 
+#define BP_PLUGIN_NAME          "BetterPushback-" BP_PLUGIN_VERSION
+#define BP_PLUGIN_SIG           "skiselkov.BetterPushback"
+#define BP_PLUGIN_DESCRIPTION   "Generic automated pushback plugin."
+
 // Internal Log Level
 #define BP_INFO_LOG "INFO: "
 #define BP_WARN_LOG "WARN: "

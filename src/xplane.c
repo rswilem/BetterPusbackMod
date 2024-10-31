@@ -52,10 +52,6 @@
 /* Enables leaving bp_tug_name set to facilitate local master/slave debug */
 /*#define	SLAVE_DEBUG*/
 
-#define BP_PLUGIN_NAME          "BetterPushback-" BP_PLUGIN_VERSION
-#define BP_PLUGIN_SIG           "skiselkov.BetterPushback"
-#define BP_PLUGIN_DESCRIPTION   "Generic automated pushback plugin."
-
 #define    STATUS_CHECK_INTVAL    1    /* second */
 enum {
     COUPLED_STATE_OFF = 0,  /* disconnected */
@@ -728,7 +724,7 @@ XPluginStart(char *name, char *sig, char *desc) {
     GLenum err;
 
     log_init(XPLMDebugString, "BetterPushback");
-    logMsg(BP_INFO_LOG "This is Better Pushback (MOD) -" BP_PLUGIN_VERSION " libacfutils-%s - for X-Plane 12",
+    logMsg(BP_INFO_LOG "This is Better Pushback (MOD) -" BP_PLUGIN_VERSION " libacfutils-%s - for X-Plane 11/12",
            libacfutils_version);
 
     crc64_init();
@@ -857,6 +853,7 @@ XPluginStop(void) {
         XPLMDestroyFlightLoop(reload_floop_ID);
         reload_floop_ID = NULL;
     }
+    logMsg(BP_INFO_LOG "Unloading BetterPushBack");
 }
 
 /*

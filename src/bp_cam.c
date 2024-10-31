@@ -210,10 +210,9 @@ static FT_Library ft;
 static FT_Face face;
 
 static struct {
-    int is_init;
     int plg_status;
     XPLMPluginID plg_id;
-} eye_tracker_plg = { 0, 0 , -1 };
+} eye_tracker_plg = { 0 , -1 };
 
 bool_t
 load_icon(button_t *btn) {
@@ -1442,66 +1441,29 @@ draw_bottom_msg(int screen_x, int screen_y) {
     glEnd();
 }
 
-void eye_track_ini(void) {
-    #define PLG_SIG_MAX_LEN 100 
-    char *plg_eye_tracker;
-    char *plgSignature = safe_calloc(PLG_SIG_MAX_LEN, sizeof(*plgSignature));
-
-    // looking for the file , fist in the Output/preferences folder 
-    plg_eye_tracker = mkpathname(bp_xpdir, "Output", "preferences",  "plg_exclude.cfg", NULL);
-    if (!file_exists(plg_eye_tracker, NULL)) {
-        free(plg_eye_tracker);
-        // if not found then in the Betterpushback plugin folder
-        plg_eye_tracker = mkpathname(bp_xpdir, bp_plugindir, "plg_exclude.cfg", NULL);
-    }
-
-    if (file_exists(plg_eye_tracker, NULL)) {
-        FILE *cfg_f = fopen(plg_eye_tracker, "r");
-        if (fscanf(cfg_f, "%99[^\n]", plgSignature) != 1) {
-            logMsg(BP_INFO_LOG "%s file found, but no plugin signature found", plg_eye_tracker);
-            goto end_eye;
-        }
-        if (plgSignature[0] == '#' ) {
-            logMsg(BP_INFO_LOG "%s file found, but no plugin signature found", plg_eye_tracker);
-            goto end_eye;
-        }
-        for ( int i = 0;  plgSignature[i] != '\0' ; i++ ) {
-            if ( plgSignature[i] == ' ') {
-                plgSignature[i] = '\0';
-                break;
-            }
-        }
-        eye_tracker_plg.plg_id =  XPLMFindPluginBySignature(plgSignature);
-        if (eye_tracker_plg.plg_id != -1) {
-            logMsg(BP_INFO_LOG "%s file found, temporary disabling plugin %s<-", plg_eye_tracker, plgSignature);
-        } else {
-            logMsg(BP_INFO_LOG "%s file found, no plugin found with signature %s<-", plg_eye_tracker, plgSignature);
-        }
-    } else {
-        logMsg(BP_INFO_LOG "%s file not found, no plugin to disable to do", plg_eye_tracker);
-    }
-
-end_eye:    
-    free(plg_eye_tracker);
-    free(plgSignature);
-
-    eye_tracker_plg.is_init = 1 ;
-}
-
 void eye_track_debut(void) {
-    if ( !eye_tracker_plg.is_init) {
-        eye_track_ini();
-    }
+ 
+    const char *plg_to_exclude = NULL;
+
+    eye_tracker_plg.plg_id = -1;
+    if ( conf_get_str(bp_conf, "plg_to_exclude", &plg_to_exclude) ) {
+        eye_tracker_plg.plg_id =  XPLMFindPluginBySignature(plg_to_exclude);
+    } else {
+            logMsg("XPLMDisablePlugin not done, no plugin to exclude selected");
+            return;
+        }
 
     if (eye_tracker_plg.plg_id != -1) {
        eye_tracker_plg.plg_status = XPLMIsPluginEnabled(eye_tracker_plg.plg_id);
         if (eye_tracker_plg.plg_status) {
             XPLMDisablePlugin(eye_tracker_plg.plg_id);
-            logMsg("XPLMDisablePlugin");
+            logMsg("XPLMDisablePlugin on %s", plg_to_exclude);
         } else {
             logMsg("XPLMDisablePlugin not done, was already disabled");
         }
-    }
+    } else {
+            logMsg("XPLMDisablePlugin not done, plugin %s not found", plg_to_exclude);
+        }
 }
 
 void eye_track_fini(void) {
