@@ -162,9 +162,9 @@ const char *eye_tracker_tooltip =
     "doesn't allow BpB to work properly "
     "while using the planner or the tug view.\n\n"
     "If it is the case, select the plugin that is in conflit with BpB.\n\n"
-    "CAUTION: At this point, you know that your are doing, selecting the wrong "
+    "CAUTION: At this point, you know what you are doing, selecting the wrong "
     "plugin may cause X-plane to crash.\n"
-    "If you don't know select : None.";
+    "Otherwise this setting must be set to : None.";
 
 typedef struct {
   const char *string;
@@ -371,7 +371,7 @@ void SettingsWindow::LoadConfig(void) {
 
 void SettingsWindow::plugin_comboList_init(comboList_t *list) {
   int num_plg = XPLMCountPlugins();
-  XPLM_API XPLMPluginID plg_id;
+  XPLMPluginID plg_id;
   char plg_name[256] = {0};
   char plg_signature[256] = {0};
   char path[1024] = {0};
