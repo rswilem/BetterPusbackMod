@@ -65,7 +65,7 @@ static bool_t inited = B_FALSE;
 XPLMCommandRef start_pb,  start_cam, conn_first, stop_pb;
 static XPLMCommandRef  stop_cam;
 static XPLMCommandRef cab_cam, recreate_routes;
-static XPLMCommandRef   abort_push;
+static XPLMCommandRef   abort_push, pref_cmd;
 static XPLMMenuID root_menu;
 static int plugins_menu_item;
 static int start_pb_plan_menu_item, stop_pb_plan_menu_item;
@@ -523,13 +523,28 @@ recreate_routes_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon
     return (1);
 }
 
+static int
+preference_window_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon) {
+    UNUSED(cmd);
+    UNUSED(refcon);
+    if (phase != xplm_CommandEnd)
+        return (0);
+
+    if (!prefs_enable) {
+        logMsg(BP_WARN_LOG "Command \"BetterPushback/preference\" is currently disabled");
+        return (0);
+    }
+    
+    bp_conf_open();
+    return (1);
+}
+
+
 static void
 menu_cb(void *inMenuRef, void *inItemRef) {
     UNUSED(inMenuRef);
     if (inItemRef == NULL)
         return;
-    else if (inItemRef == &prefs_menu_item)
-        bp_conf_open();
     else
         XPLMCommandOnce((XPLMCommandRef) inItemRef);
 }
@@ -801,6 +816,9 @@ XPluginStart(char *name, char *sig, char *desc) {
     recreate_routes = XPLMCreateCommand(
             "BetterPushback/recreate_scenery_routes",
             _("Recreate scenery routes from WED files."));
+    pref_cmd = XPLMCreateCommand(
+            "BetterPushback/preference",
+            _("Open preference window."));        
 
     abort_push = XPLMCreateCommand("BetterPushback/abort_push",
         _("Abort pushback during coupled push"));
@@ -934,6 +952,8 @@ bp_priv_enable(void) {
     XPLMRegisterCommandHandler(cab_cam, cab_cam_handler, 1, NULL);
     XPLMRegisterCommandHandler(recreate_routes, recreate_routes_handler,
                                1, NULL);
+    XPLMRegisterCommandHandler(pref_cmd, preference_window_handler,
+                               1, NULL);
     XPLMRegisterCommandHandler(abort_push, abort_push_handler, 1, NULL);
 
     plugins_menu_item = XPLMAppendMenuItem(XPLMFindPluginsMenu(),
@@ -955,8 +975,8 @@ bp_priv_enable(void) {
                                            _("Tug cab view"), cab_cam);
 
     XPLMAppendMenuSeparator(root_menu);
-    prefs_menu_item = XPLMAppendMenuItem(root_menu,
-                                         _("Preferences..."), &prefs_menu_item, 1);
+    prefs_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
+                                         _("Preferences..."), pref_cmd );
 
 	prefs_enable = B_TRUE;
     start_pb_enable = B_TRUE;
@@ -1010,6 +1030,7 @@ bp_priv_disable(void) {
     XPLMUnregisterCommandHandler(recreate_routes, recreate_routes_handler,
                                  1, NULL);
     XPLMUnregisterCommandHandler(abort_push, abort_push_handler, 1, NULL);
+    XPLMUnregisterCommandHandler(pref_cmd, preference_window_handler, 1, NULL);
 
     bp_fini();
     tug_glob_fini();

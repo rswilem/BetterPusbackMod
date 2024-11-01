@@ -675,7 +675,7 @@ void SettingsWindow::buildInterface() {
 
     ImGui::TableNextRow();
     ImGui::TableNextColumn();
-    ImGui::Text("%s", _("Eye Tracker Plugins Exclusion"));
+    ImGui::Text("%s", _("Eye Tracker Plugin Exclusion"));
     Tooltip(_(eye_tracker_tooltip));
 
     ImGui::TableNextColumn();
