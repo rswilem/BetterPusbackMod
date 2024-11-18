@@ -1309,7 +1309,6 @@ bp_cam_start(void)
     ASSERT(circle_view_cmd != NULL);
     XPLMCommandOnce(circle_view_cmd);
 
-    //bp_plan_callback_is_alive = CAMERA_TIMEOUT;
     fake_win = XPLMCreateWindowEx(&fake_win_ops);
     ASSERT(fake_win != NULL);
     XPLMBringWindowToFront(fake_win);
