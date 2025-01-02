@@ -1417,7 +1417,6 @@ bp_cam_stop(void)
     XPLMCommandOnce(cockpit_view_cmd);
 
     dr_setf(&drs.visibility, saved_visibility);
-    dr_seti(&drs.use_real_wx, saved_real_wx);
     if (bp_xp_ver < 12000)
     {
         dr_seti(&drs.cloud_types[0], saved_cloud_types[0]);
@@ -1428,7 +1427,7 @@ bp_cam_stop(void)
     {
         dr_setvf32(&drs.cloud_types[0], fsaved_cloud_types, 0, 3);
     }
-
+    dr_seti(&drs.use_real_wx, saved_real_wx);
     cam_inited = B_FALSE;
 
     pop_fov_values();

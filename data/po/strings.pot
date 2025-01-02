@@ -7,7 +7,7 @@
 msgid   ""
 msgstr  "Project-Id-Version: PACKAGE VERSION\n"
         "Report-Msgid-Bugs-To: \n"
-        "POT-Creation-Date: 2024-11-18 07:45+0200\n"
+        "POT-Creation-Date: 2025-01-02 07:02+0200\n"
         "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
         "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
         "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -118,7 +118,7 @@ msgid   "Can't start planner: pushback already in progress. Please stop the "
         "pushback operation first."
 msgstr  ""
 
-#: src/cab_view.c:347 src/cab_view.c:348
+#: src/cab_view.c:347 src/cab_view.c:348 src/cab_view.c:354 src/cab_view.c:353
 msgid   "Left mouse button to reorient view"
 msgstr  ""
 
