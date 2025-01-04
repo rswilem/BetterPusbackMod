@@ -1809,6 +1809,9 @@ late_plan_end_cond(void) {
 
 static bool_t
 pb_step_tug_load(void) {
+    bool_t tug_starts_next_plane = B_FALSE;
+    (void) conf_get_b(bp_conf,"tug_starts_next_plane", &tug_starts_next_plane);
+
     if (!slave_mode) {
         char icao[8] = {0};
         char airline[1024] = {0};
@@ -1873,12 +1876,20 @@ pb_step_tug_load(void) {
     if (!bp_ls.tug->info->drive_debug) {
         vect2_t p_start, dir;
         dir = hdg2dir(bp.cur_pos.hdg);
-        p_start = vect2_add(bp.cur_pos.pos, vect2_scmul(dir,
-                                                        -bp.acf.nw_z + TUG_APPCH_LONG_DIST));
-        p_start = vect2_add(p_start, vect2_scmul(vect2_norm(dir,
-                                                            B_TRUE), 10 * bp_ls.tug->veh.wheelbase));
-        tug_set_pos(bp_ls.tug, p_start, normalize_hdg(bp.cur_pos.hdg -
-                                                      90), bp_ls.tug->veh.max_fwd_spd);
+        if (tug_starts_next_plane) {
+            p_start = vect2_add(bp.cur_pos.pos, vect2_scmul(dir,
+                                                            5 * bp_ls.tug->veh.wheelbase));
+            //p_start = vect2_add(p_start, vect2_scmul(vect2_norm(dir,
+            //                                                    B_TRUE), 10 * bp_ls.tug->veh.wheelbase));
+            tug_set_pos(bp_ls.tug, p_start, normalize_hdg(bp.cur_pos.hdg), 0);
+        } else {
+            p_start = vect2_add(bp.cur_pos.pos, vect2_scmul(dir,
+                                                            -bp.acf.nw_z + TUG_APPCH_LONG_DIST));
+            p_start = vect2_add(p_start, vect2_scmul(vect2_norm(dir,
+                                                                B_TRUE), 10 * bp_ls.tug->veh.wheelbase));
+            tug_set_pos(bp_ls.tug, p_start, normalize_hdg(bp.cur_pos.hdg -
+                                                    90), bp_ls.tug->veh.max_fwd_spd);
+        }                                               
     } else {
         tug_set_pos(bp_ls.tug, bp.cur_pos.pos, bp.cur_pos.hdg, 0);
     }
@@ -1892,19 +1903,35 @@ static void
 pb_step_start(void) {
     if (!bp_ls.tug->info->drive_debug) {
         vect2_t left_off, p_end, dir;
+        bool_t tug_starts_next_plane = B_FALSE;
+        (void) conf_get_b(bp_conf,"tug_starts_next_plane", &tug_starts_next_plane);
 
         dir = hdg2dir(bp.cur_pos.hdg);
 
-        left_off = vect2_add(bp.cur_pos.pos, vect2_scmul(dir,
-                                                         -bp.acf.nw_z + TUG_APPCH_LONG_DIST));
-        left_off = vect2_add(left_off, vect2_scmul(
-                vect2_norm(dir, B_FALSE), 2 * bp_ls.tug->veh.wheelbase));
-        p_end = vect2_add(bp.cur_pos.pos, vect2_scmul(dir,
-                                                      (-bp.acf.nw_z) + bp_ls.tug->info->apch_dist));
+        if (tug_starts_next_plane) {
+            left_off = vect2_add(bp.cur_pos.pos, vect2_scmul(dir,
+                                                            5 * bp_ls.tug->veh.wheelbase));
+            tug_set_pos(bp_ls.tug, left_off, normalize_hdg(bp.cur_pos.hdg), -bp_ls.tug->veh.max_fwd_spd);                                                
+    //        left_off = vect2_add(left_off, vect2_scmul(
+    //                vect2_norm(dir, B_FALSE), 2 * bp_ls.tug->veh.wheelbase));
+            p_end = vect2_add(bp.cur_pos.pos, vect2_scmul(dir,
+                                                        (-bp.acf.nw_z) + bp_ls.tug->info->apch_dist));
 
-        VERIFY(tug_drive2point(bp_ls.tug, left_off,
-                               normalize_hdg(bp.cur_pos.hdg - 90)));
-        VERIFY(tug_drive2point(bp_ls.tug, p_end, bp.cur_pos.hdg));
+        //    VERIFY(tug_drive2point(bp_ls.tug, left_off,
+        //                        normalize_hdg(bp.cur_pos.hdg )));
+            VERIFY(tug_drive2point(bp_ls.tug, p_end, bp.cur_pos.hdg));
+        } else {
+            left_off = vect2_add(bp.cur_pos.pos, vect2_scmul(dir,
+                                                            -bp.acf.nw_z + TUG_APPCH_LONG_DIST));
+            left_off = vect2_add(left_off, vect2_scmul(
+                    vect2_norm(dir, B_FALSE), 2 * bp_ls.tug->veh.wheelbase));
+            p_end = vect2_add(bp.cur_pos.pos, vect2_scmul(dir,
+                                                        (-bp.acf.nw_z) + bp_ls.tug->info->apch_dist));
+
+            VERIFY(tug_drive2point(bp_ls.tug, left_off,
+                                normalize_hdg(bp.cur_pos.hdg - 90)));
+            VERIFY(tug_drive2point(bp_ls.tug, p_end, bp.cur_pos.hdg));
+        }
     } else {
         for (seg_t *seg = list_head(&bp.segs); seg != NULL;
              seg = list_next(&bp.segs, seg)) {

@@ -130,6 +130,8 @@ const char *always_connect_tug_first_tooltip =
     "aircraft.\n"
     "The process will proceed by triggering again the 'start pushback' "
     "command.";
+const char *tug_starts_next_plane_tooltip =
+    "The tug appears next to the plane avoiding in certain case the tug travelling inside the buildings.";
 const char *ignore_park_brake_tooltip =
     "Never check \"set parking brake\".\n"
     "Some aircraft stuck on this check.\n"
@@ -247,6 +249,7 @@ private:
   bool_t always_connect_tug_first;
   bool_t xp11_only;
   bool_t is_destroy;
+  bool_t tug_starts_next_plane;
   int monitor_id;
   int for_credit;
   int magic_squares_height;
@@ -310,6 +313,9 @@ void SettingsWindow::LoadConfig(void) {
   always_connect_tug_first = B_FALSE;
   (void)conf_get_b(bp_conf, "always_connect_tug_first",
                    &always_connect_tug_first);
+  
+  tug_starts_next_plane = B_FALSE;
+        (void) conf_get_b(bp_conf,"tug_starts_next_plane", &tug_starts_next_plane);
 
   initMonitorOrigin();
 
@@ -668,6 +674,18 @@ void SettingsWindow::buildInterface() {
                         (bool *)&always_connect_tug_first)) {
       (void)conf_set_b(bp_conf, "always_connect_tug_first",
                        always_connect_tug_first);
+    }
+
+    ImGui::TableNextRow();
+    ImGui::TableNextColumn();
+    ImGui::Text("%s", _("Tug started near the aircraft"));
+    Tooltip(_(always_connect_tug_first_tooltip));
+
+    ImGui::TableNextColumn();
+    if (ImGui::Checkbox("##tug_starts_next_plane",
+                        (bool *)&tug_starts_next_plane)) {
+      (void)conf_set_b(bp_conf, "tug_starts_next_plane",
+                       tug_starts_next_plane);
     }
 
     ImGui::TableNextRow();
