@@ -678,7 +678,7 @@ void SettingsWindow::buildInterface() {
 
     ImGui::TableNextRow();
     ImGui::TableNextColumn();
-    ImGui::Text("%s", _("Tug started near the aircraft"));
+    ImGui::Text("%s", _("Tug starts near the aircraft"));
     Tooltip(_(always_connect_tug_first_tooltip));
 
     ImGui::TableNextColumn();
