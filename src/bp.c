@@ -190,6 +190,9 @@ static XPWidgetID bp_hint_status = NULL;
 const char *bp_hint_status_str = NULL;
 const char *bp_hint_previous_status_str = NULL;
 
+static int previous_beacon = 0;
+bool_t tug_pending_mode = B_FALSE;
+
 static bool_t read_acf_file_info(void);
 
 static float bp_run(float elapsed, float elapsed2, int counter, void *refcon);
@@ -2712,7 +2715,12 @@ main_win_click(XPLMWindowID inWindowID, int mx, int my, XPLMMouseStatus inMouse,
     }    
     
     if (button_hit == 2) {
-        XPLMCommandOnce(start_pb);
+         if (tug_pending_mode) {
+            tug_pending_mode = B_FALSE;
+        }
+        else {    
+            XPLMCommandOnce(start_pb);
+        }
         return (1);
     }    
 
@@ -2803,6 +2811,22 @@ main_intf_show(void) {
     bool_t always_connect_tug_first = B_FALSE;
     (void) conf_get_b(bp_conf,"always_connect_tug_first", &always_connect_tug_first);
 
+    bool_t tug_starts_next_plane = B_FALSE;
+    (void) conf_get_b(bp_conf,"tug_starts_next_plane", &tug_starts_next_plane);
+
+    bool_t tug_auto_start = B_FALSE;
+    (void) conf_get_b(bp_conf,"tug_auto_start", &tug_auto_start);
+
+    if(start_pb_enable) {
+        int beacon_light = dr_geti(&drs.beacon_light);
+        if ( (previous_beacon == 0) && (beacon_light) ) {
+            previous_beacon = beacon_light;
+            tug_pending_mode = B_TRUE;
+            XPLMCommandOnce(conn_first);
+        }
+        previous_beacon = beacon_light; 
+    }
+
     if ((bp_ls.planner_win == NULL) && (bp_ls.start_pb_win == NULL) && (bp_ls.conn_tug_first == NULL) && (bp_ls.pb_status_win == NULL) ) {
         initMonitorOrigin();
     }
@@ -2865,7 +2889,7 @@ main_intf_show(void) {
     }
     magic_buttons[0].wind_id = (!bp_started && !always_connect_tug_first) ? bp_ls.planner_win : NULL;
     magic_buttons[1].wind_id = (!bp_started && !always_connect_tug_first) ? bp_ls.conn_tug_first : NULL;
-    magic_buttons[2].wind_id =  !bp_started  || ( ( bp.step == PB_STEP_LIFTING) && late_plan_requested) ? bp_ls.start_pb_win : NULL;
+    magic_buttons[2].wind_id = tug_pending_mode  || !bp_started  || ( ( bp.step == PB_STEP_LIFTING) && late_plan_requested) ? bp_ls.start_pb_win : NULL;
     magic_buttons[3].wind_id = bp_started ? bp_ls.pb_status_win : NULL;
 }
 
@@ -3272,8 +3296,10 @@ bp_run(float elapsed, float elapsed2, int counter, void *refcon) {
                 return (0);
             break;
         case PB_STEP_START:
+          if (!tug_pending_mode) {
             bp_hint_status_str = _("Push-back called");
             pb_step_start();
+          }
             break;
         case PB_STEP_DRIVING_UP_CLOSE:
             bp_hint_status_str = _("Driving to the aircraft");

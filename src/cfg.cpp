@@ -56,7 +56,7 @@ static bool_t gui_inited = B_FALSE;
 bool_t setup_view_callback_is_alive = B_FALSE;
 
 #define MAIN_WINDOW_W 800
-#define MAIN_WINDOW_H 650
+#define MAIN_WINDOW_H 700
 
 #define ROUNDED 8.0f
 #define TOOLTIP_BG_COLOR ImVec4(0.2f, 0.3f, 0.8f, 1.0f)
@@ -132,6 +132,8 @@ const char *always_connect_tug_first_tooltip =
     "command.";
 const char *tug_starts_next_plane_tooltip =
     "The tug appears next to the plane avoiding in certain case the tug travelling inside the buildings.";
+const char *tug_auto_start_tooltip =
+    "The tug will appear once the beacon light is on.";
 const char *ignore_park_brake_tooltip =
     "Never check \"set parking brake\".\n"
     "Some aircraft stuck on this check.\n"
@@ -250,6 +252,7 @@ private:
   bool_t xp11_only;
   bool_t is_destroy;
   bool_t tug_starts_next_plane;
+  bool_t tug_auto_start;
   int monitor_id;
   int for_credit;
   int magic_squares_height;
@@ -315,7 +318,10 @@ void SettingsWindow::LoadConfig(void) {
                    &always_connect_tug_first);
   
   tug_starts_next_plane = B_FALSE;
-        (void) conf_get_b(bp_conf,"tug_starts_next_plane", &tug_starts_next_plane);
+  (void) conf_get_b(bp_conf,"tug_starts_next_plane", &tug_starts_next_plane);
+
+  tug_auto_start = B_FALSE;
+  (void) conf_get_b(bp_conf,"tug_auto_start", &tug_auto_start);      
 
   initMonitorOrigin();
 
@@ -679,7 +685,7 @@ void SettingsWindow::buildInterface() {
     ImGui::TableNextRow();
     ImGui::TableNextColumn();
     ImGui::Text("%s", _("Tug starts near the aircraft"));
-    Tooltip(_(always_connect_tug_first_tooltip));
+    Tooltip(_(tug_starts_next_plane_tooltip));
 
     ImGui::TableNextColumn();
     if (ImGui::Checkbox("##tug_starts_next_plane",
@@ -687,6 +693,22 @@ void SettingsWindow::buildInterface() {
       (void)conf_set_b(bp_conf, "tug_starts_next_plane",
                        tug_starts_next_plane);
     }
+
+    ImGui::TableNextRow();
+    ImGui::TableNextColumn();
+    ImGui::Text("%s", _("Tug auto start"));
+    Tooltip(_(tug_auto_start_tooltip));
+
+    ImGui::TableNextColumn();
+    if (ImGui::Checkbox("##tug_auto_start",
+                        (bool *)&tug_auto_start)) {
+      (void)conf_set_b(bp_conf, "tug_auto_start",
+                       tug_auto_start);
+    }
+
+  tug_auto_start = B_FALSE;
+  (void) conf_get_b(bp_conf,"tug_auto_start", &tug_auto_start);      
+
 
     ImGui::TableNextRow();
     ImGui::TableNextColumn();
