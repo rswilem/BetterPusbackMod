@@ -300,6 +300,13 @@ start_pb_handler_(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon)
     UNUSED(cmd);
     UNUSED(refcon);
 
+    if (phase != xplm_CommandEnd )
+        return (1);
+
+   if (tug_pending_mode) {
+        tug_pending_mode = B_FALSE;
+        return (1);
+    }
     if (phase != xplm_CommandEnd || !bp_init())
         return (1);
 
@@ -311,6 +318,8 @@ start_pb_handler_(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon)
         logMsg(BP_WARN_LOG "Command \"BetterPushback/start\" is currently disabled");
         return (1);
     }
+
+ 
 
     stop_cam_handler(NULL, xplm_CommandEnd, NULL); // synchronously stop a possible open cam
 
@@ -1048,6 +1057,12 @@ bp_priv_enable(void)
     XPLMAppendMenuSeparator(root_menu);
     prefs_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
                                                     _("Preferences..."), pref_cmd);
+
+    tug_starts_next_plane = B_FALSE;
+    (void) conf_get_b(bp_conf,"tug_starts_next_plane", &tug_starts_next_plane);
+
+    tug_auto_start = B_FALSE;
+    (void) conf_get_b(bp_conf,"tug_auto_start", &tug_auto_start);
 
     prefs_enable = B_TRUE;
     start_pb_enable = B_TRUE;

@@ -131,7 +131,8 @@ const char *always_connect_tug_first_tooltip =
     "The process will proceed by triggering again the 'start pushback' "
     "command.";
 const char *tug_starts_next_plane_tooltip =
-    "The tug appears next to the plane avoiding in certain case the tug travelling inside the buildings.";
+    "The tug appears next to the plane avoiding in certain case the tug "
+    "travelling inside the buildings.";
 const char *tug_auto_start_tooltip =
     "The tug will appear once the beacon light is on.";
 const char *ignore_park_brake_tooltip =
@@ -316,12 +317,12 @@ void SettingsWindow::LoadConfig(void) {
   always_connect_tug_first = B_FALSE;
   (void)conf_get_b(bp_conf, "always_connect_tug_first",
                    &always_connect_tug_first);
-  
+
   tug_starts_next_plane = B_FALSE;
-  (void) conf_get_b(bp_conf,"tug_starts_next_plane", &tug_starts_next_plane);
+  (void)conf_get_b(bp_conf, "tug_starts_next_plane", &tug_starts_next_plane);
 
   tug_auto_start = B_FALSE;
-  (void) conf_get_b(bp_conf,"tug_auto_start", &tug_auto_start);      
+  (void)conf_get_b(bp_conf, "tug_auto_start", &tug_auto_start);
 
   initMonitorOrigin();
 
@@ -400,7 +401,7 @@ void SettingsWindow::plugin_comboList_init(comboList_t *list) {
     if ((strstr(plg_signature, "pluginadmin") != NULL) ||
         (strstr(plg_signature, BP_PLUGIN_SIG) != NULL) ||
         (strstr(plg_signature, "skiselkov.xraas2") != NULL) ||
-        (strstr(plg_signature, "Navigraph") != NULL)) { 
+        (strstr(plg_signature, "Navigraph") != NULL)) {
       continue;
     }
     if (strstr(path, "Resources/plugins/") != NULL) {
@@ -690,25 +691,26 @@ void SettingsWindow::buildInterface() {
     ImGui::TableNextColumn();
     if (ImGui::Checkbox("##tug_starts_next_plane",
                         (bool *)&tug_starts_next_plane)) {
-      (void)conf_set_b(bp_conf, "tug_starts_next_plane",
-                       tug_starts_next_plane);
+      (void)conf_set_b(bp_conf, "tug_starts_next_plane", tug_starts_next_plane);
     }
 
+    if (!tug_starts_next_plane) {
+      ImGui::BeginDisabled();
+      tug_auto_start = B_FALSE;
+      (void)conf_set_b(bp_conf, "tug_auto_start", tug_auto_start);
+    }
     ImGui::TableNextRow();
     ImGui::TableNextColumn();
-    ImGui::Text("%s", _("Tug auto start"));
+    ImGui::Text("%s", _("Tug called by activating the beacon"));
     Tooltip(_(tug_auto_start_tooltip));
 
     ImGui::TableNextColumn();
-    if (ImGui::Checkbox("##tug_auto_start",
-                        (bool *)&tug_auto_start)) {
-      (void)conf_set_b(bp_conf, "tug_auto_start",
-                       tug_auto_start);
+    if (ImGui::Checkbox("##tug_auto_start", (bool *)&tug_auto_start)) {
+      (void)conf_set_b(bp_conf, "tug_auto_start", tug_auto_start);
     }
-
-  tug_auto_start = B_FALSE;
-  (void) conf_get_b(bp_conf,"tug_auto_start", &tug_auto_start);      
-
+    if (!tug_starts_next_plane) {
+      ImGui::EndDisabled();
+    }
 
     ImGui::TableNextRow();
     ImGui::TableNextColumn();
@@ -721,9 +723,8 @@ void SettingsWindow::buildInterface() {
       if (plg_list.selected == 0) {
         conf_set_str(bp_conf, "plg_to_exclude", NULL);
       } else {
-        conf_set_str(
-            bp_conf, "plg_to_exclude",
-            plg_list.combo_list[plg_list.selected].value);
+        conf_set_str(bp_conf, "plg_to_exclude",
+                     plg_list.combo_list[plg_list.selected].value);
       }
     }
 

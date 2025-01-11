@@ -186,12 +186,14 @@ static bool_t cfg_disco_when_done = B_FALSE;
 
 static bool_t cfg_ignore_park_break = B_FALSE;
 
+bool_t tug_starts_next_plane = B_FALSE;
+bool_t tug_auto_start = B_FALSE;
+static int previous_beacon;
+bool_t tug_pending_mode;
+
 static XPWidgetID bp_hint_status = NULL;
 const char *bp_hint_status_str = NULL;
 const char *bp_hint_previous_status_str = NULL;
-
-static int previous_beacon = 0;
-bool_t tug_pending_mode = B_FALSE;
 
 static bool_t read_acf_file_info(void);
 
@@ -1439,6 +1441,9 @@ bp_init(void) {
     cfg_ignore_park_break = B_FALSE;
     conf_get_b_per_acf("ignore_park_brake", &cfg_ignore_park_break);
 
+
+
+    previous_beacon = dr_geti(&drs.beacon_light);
 
     doors_refs_init();
     
@@ -2715,12 +2720,7 @@ main_win_click(XPLMWindowID inWindowID, int mx, int my, XPLMMouseStatus inMouse,
     }    
     
     if (button_hit == 2) {
-         if (tug_pending_mode) {
-            tug_pending_mode = B_FALSE;
-        }
-        else {    
-            XPLMCommandOnce(start_pb);
-        }
+        XPLMCommandOnce(start_pb);
         return (1);
     }    
 
@@ -2811,13 +2811,7 @@ main_intf_show(void) {
     bool_t always_connect_tug_first = B_FALSE;
     (void) conf_get_b(bp_conf,"always_connect_tug_first", &always_connect_tug_first);
 
-    bool_t tug_starts_next_plane = B_FALSE;
-    (void) conf_get_b(bp_conf,"tug_starts_next_plane", &tug_starts_next_plane);
-
-    bool_t tug_auto_start = B_FALSE;
-    (void) conf_get_b(bp_conf,"tug_auto_start", &tug_auto_start);
-
-    if(start_pb_enable) {
+    if ((start_pb_enable) && (tug_auto_start && tug_starts_next_plane) && acf_doors_closed(B_TRUE)) {
         int beacon_light = dr_geti(&drs.beacon_light);
         if ( (previous_beacon == 0) && (beacon_light) ) {
             previous_beacon = beacon_light;
@@ -2887,9 +2881,15 @@ main_intf_show(void) {
             XPLMBringWindowToFront(bp_ls.pb_status_win);
         }
     }
+    if (tug_starts_next_plane && tug_auto_start) {
+    magic_buttons[0].wind_id =  NULL;
+    magic_buttons[1].wind_id =  NULL;
+    magic_buttons[2].wind_id = tug_pending_mode || ( ( bp.step == PB_STEP_LIFTING) && late_plan_requested) ? bp_ls.start_pb_win : NULL;
+    } else {
     magic_buttons[0].wind_id = (!bp_started && !always_connect_tug_first) ? bp_ls.planner_win : NULL;
     magic_buttons[1].wind_id = (!bp_started && !always_connect_tug_first) ? bp_ls.conn_tug_first : NULL;
-    magic_buttons[2].wind_id = tug_pending_mode  || !bp_started  || ( ( bp.step == PB_STEP_LIFTING) && late_plan_requested) ? bp_ls.start_pb_win : NULL;
+    magic_buttons[2].wind_id = !bp_started  || ( ( bp.step == PB_STEP_LIFTING) && late_plan_requested) ? bp_ls.start_pb_win : NULL;
+    }
     magic_buttons[3].wind_id = bp_started ? bp_ls.pb_status_win : NULL;
 }
 
@@ -3294,9 +3294,13 @@ bp_run(float elapsed, float elapsed2, int counter, void *refcon) {
             ASSERT3P(bp_ls.tug, ==, NULL);
             if (!pb_step_tug_load())
                 return (0);
+            tug_pending_mode = (tug_auto_start && tug_starts_next_plane);
             break;
         case PB_STEP_START:
-          if (!tug_pending_mode) {
+            if (tug_pending_mode) {
+                bp_hint_status_str = _("Push-back waiting to be called");
+            }
+          if (!tug_pending_mode || !tug_auto_start || !tug_starts_next_plane) {
             bp_hint_status_str = _("Push-back called");
             pb_step_start();
           }

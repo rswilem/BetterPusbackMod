@@ -199,6 +199,10 @@ void main_intf_hide(void);
 
 extern bool_t late_plan_requested;
 
+extern bool_t tug_starts_next_plane;
+extern bool_t tug_auto_start;
+extern bool_t tug_pending_mode;
+
 #ifdef    __cplusplus
 }
 #endif
