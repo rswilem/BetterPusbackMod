@@ -171,6 +171,7 @@ static struct {
 	const char	acf_filename[64];
 	const char	studio[64];
     bool_t      info_valid;
+    bool_t      info_initialised;
 	int		    nb_doors;
 	char	    dr[MAX_DOOR][64];
 	bool_t	    dr_neg[MAX_DOOR];
@@ -469,6 +470,8 @@ doors_refs_init(void)
 	bool_t		skip = B_FALSE;
 
     memset(&doors_info, 0, sizeof(doors_info));
+    // we flag here that doors_refs_init was executed
+    doors_info.info_initialised = B_TRUE;
 	fdr_find(&icao_dr, "sim/aircraft/view/acf_ICAO");
 	fdr_find(&auth_dr, "sim/aircraft/view/acf_author");
 
@@ -625,6 +628,10 @@ dr_door_check_vf32(char *dr) {
 bool_t
 acf_doors_closed(bool_t with_cfg_flag) {
     bool_t result = B_TRUE;
+
+    if  (!doors_info.info_initialised) {
+        doors_refs_init();
+    }
 
     if (with_cfg_flag) {
         bool_t ignore_doors_check = B_FALSE;
