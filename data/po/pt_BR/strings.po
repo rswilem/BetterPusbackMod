@@ -567,3 +567,21 @@ msgstr "O processo de reboque e sempre interrompido quando o rebocador esta no n
 
 msgid "Audio settings"
 msgstr "Configurações de áudio"
+
+msgid   "Push-back waiting to be called"
+msgstr  "Reboque aguardando para ser chamado"
+
+msgid "The tug appears next to the plane avoiding in certain case that he is "
+    "travelling inside the buildings."
+msgstr  "O reboque aparece ao lado do avião, evitando em alguns casos que ele passe por dentro dos prédios."
+
+msgid "The tug will appear once the beacon light is switched from off to on "
+      "then the process will proceed as 'connect the tug first'."
+msgstr  "O reboque aparecerá assim que a luz do beacon for ligada, "
+        "então o processo continuará com 'conectar o reboque primeiro'."
+
+msgid "Tug starts near the aircraft"
+msgstr  "O reboque começa próximo à aeronave"
+
+msgid "Tug called by activating the beacon"
+msgstr  "O reboque é acionado ao ativar o beacon"

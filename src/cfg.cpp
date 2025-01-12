@@ -131,10 +131,11 @@ const char *always_connect_tug_first_tooltip =
     "The process will proceed by triggering again the 'start pushback' "
     "command.";
 const char *tug_starts_next_plane_tooltip =
-    "The tug appears next to the plane avoiding in certain case the tug "
+    "The tug appears next to the plane avoiding in certain case that he is "
     "travelling inside the buildings.";
 const char *tug_auto_start_tooltip =
-    "The tug will appear once the beacon light is on.";
+    "The tug will appear once the beacon light is switched from off to on "
+    "then the process will proceed as 'connect the tug first'.";
 const char *ignore_park_brake_tooltip =
     "Never check \"set parking brake\".\n"
     "Some aircraft stuck on this check.\n"

@@ -422,3 +422,21 @@ msgstr "Certains plugins avec Eye tracking  (suivi occulaire) utilisent le syst�
 
 msgid  "None"
 msgstr  "Aucun"
+
+msgid   "Push-back waiting to be called"
+msgstr  "Repoussage en attente d'être appelé"
+
+msgid "The tug appears next to the plane avoiding in certain case that he is "
+    "travelling inside the buildings."
+msgstr  "Le tracteur apparaît à côté de l'avion, évitant dans certains cas que celui passe à travers les bâtiments."
+
+msgid "The tug will appear once the beacon light is switched from off to on "
+      "then the process will proceed as 'connect the tug first'."
+msgstr  "Le tracteur apparaîtra une fois que l'anti-collision sera allumée, "
+        "puis le processus se poursuivra en suivant l'étape 'connecter d'abord le tracteur'."
+
+msgid "Tug starts near the aircraft"
+msgstr  "Le tracteur démarre près de l'avion"
+
+msgid "Tug called by activating the beacon"
+msgstr  "Le tracteur est appelé en activant l'anti-collision"

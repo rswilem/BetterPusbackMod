@@ -271,3 +271,22 @@ msgstr "Dispositivo di uscita audio"
 
 msgid "Audio settings"
 msgstr "Impostazioni audio"
+
+msgid   "Push-back waiting to be called"
+msgstr  "Push-back in attesa di essere chiamato"
+
+msgid "The tug appears next to the plane avoiding in certain case that he is "
+    "travelling inside the buildings."
+msgstr  "Il trattore appare accanto all'aereo, evitando in alcuni casi di attraversare gli edifici."
+
+msgid "The tug will appear once the beacon light is switched from off to on "
+      "then the process will proceed as 'connect the tug first'."
+msgstr  "Il trattore apparirà una volta che la luce del faro sarà accesa, "
+        "poi il processo proseguirà con 'collegare prima il trattore'."
+       
+
+msgid "Tug starts near the aircraft"
+msgstr  "Il trattore inizia vicino all'aereo"
+
+msgid "Tug called by activating the beacon"
+msgstr  "Il trattore viene chiamato attivando il faro"

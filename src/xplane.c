@@ -360,7 +360,7 @@ start_pb_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon)
     bool_t always_connect_tug_first = B_FALSE;
     (void)conf_get_b(bp_conf, "always_connect_tug_first", &always_connect_tug_first);
 
-    if (always_connect_tug_first && !bp_started)
+    if ( ((tug_auto_start && tug_starts_next_plane) || always_connect_tug_first) && !bp_started)
     {
         return conn_first_handler(cmd, phase, refcon);
     }

@@ -1612,6 +1612,7 @@ bp_stop(void) {
         bp.last_seg_is_back = seg->backward;
     bp_delete_all_segs();
     late_plan_requested = B_FALSE;
+    tug_pending_mode = B_FALSE;
 
     return (B_TRUE);
 }

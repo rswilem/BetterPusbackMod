@@ -265,3 +265,21 @@ msgstr "BetterPushback是開源軟件。請參閱COPYING以獲取更多信息。
 
 msgid "Hint: hover your mouse cursor over any label to show a short description of what it does."
 msgstr "提示：將鼠標光標懸停在任何標籤上以顯示其功能的簡短描述。"
+
+msgid   "Push-back waiting to be called"
+msgstr  "推机等待被呼叫"
+
+msgid "The tug appears next to the plane avoiding in certain case that he is "
+    "travelling inside the buildings."
+msgstr  "拖车出现在飞机旁，避免在某些情况下穿过建筑物内部。"
+
+msgid "The tug will appear once the beacon light is switched from off to on "
+      "then the process will proceed as 'connect the tug first'."
+msgstr  "拖车将在信标灯从关闭切换到开启时出现，"
+        "然后按照'首先连接拖车'的步骤继续进行。"
+
+msgid "Tug starts near the aircraft"
+msgstr  "拖车从飞机附近开始"
+
+msgid "Tug called by activating the beacon"
+msgstr  "通过激活信标呼叫拖车"

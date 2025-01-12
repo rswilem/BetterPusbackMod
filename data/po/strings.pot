@@ -7,7 +7,7 @@
 msgid   ""
 msgstr  "Project-Id-Version: PACKAGE VERSION\n"
         "Report-Msgid-Bugs-To: \n"
-        "POT-Creation-Date: 2025-01-11 18:32+0200\n"
+        "POT-Creation-Date: 2025-01-12 08:59+0200\n"
         "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
         "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
         "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -89,25 +89,25 @@ msgid   "Pushback failure: please first plan your pushback to tell me where "
 msgstr  ""
 
 #: src/bp.c:1863 src/bp.c:1864 src/bp.c:1866 src/bp.c:1867 src/bp.c:1871
-#: src/bp.c:1873 src/bp.c:1874 src/bp.c:1884 src/bp.c:1879
+#: src/bp.c:1873 src/bp.c:1874 src/bp.c:1884 src/bp.c:1879 src/bp.c:1880
 #, c-format
 msgid   "ERROR: master requested tug \"%s\", which we don't have in our in "
         "our library. Please sync your tug libraries before trying again."
 msgstr  ""
 
 #: src/bp.c:1965 src/bp.c:1966 src/bp.c:1992 src/bp.c:1994 src/bp.c:1993
-#: src/bp.c:1997 src/bp.c:1990 src/bp.c:2003 src/bp.c:1998
+#: src/bp.c:1997 src/bp.c:1990 src/bp.c:2003 src/bp.c:1998 src/bp.c:1999
 msgid   "Pushback warning: unable to remove your chocks. Remove them "
         "yourself, or else I won't be able to push your aircraft."
 msgstr  ""
 
 #: src/bp.c:2233 src/bp.c:2234 src/bp.c:2260 src/bp.c:2262 src/bp.c:2261
-#: src/bp.c:2265 src/bp.c:2258 src/bp.c:2271 src/bp.c:2266
+#: src/bp.c:2265 src/bp.c:2258 src/bp.c:2271 src/bp.c:2266 src/bp.c:2267
 msgid   "Hey! Quit blinding me with your landing lights! Turn them off!"
 msgstr  ""
 
 #: src/bp.c:2236 src/bp.c:2237 src/bp.c:2263 src/bp.c:2265 src/bp.c:2264
-#: src/bp.c:2268 src/bp.c:2261 src/bp.c:2274 src/bp.c:2269
+#: src/bp.c:2268 src/bp.c:2261 src/bp.c:2274 src/bp.c:2269 src/bp.c:2270
 msgid   "Hey! Quit blinding me with your taxi light! Turn it off!"
 msgstr  ""
 
@@ -416,7 +416,7 @@ msgid   "Slide this bar to move the magic squares up or down."
 msgstr  ""
 
 #: src/bp.c:2186 src/bp.c:2187 src/bp.c:2213 src/bp.c:2215 src/bp.c:2214
-#: src/bp.c:2218 src/bp.c:2211 src/bp.c:2224 src/bp.c:2219
+#: src/bp.c:2218 src/bp.c:2211 src/bp.c:2224 src/bp.c:2219 src/bp.c:2220
 msgid   "Waiting for the parking brakes release"
 msgstr  ""
 
@@ -424,7 +424,7 @@ msgstr  ""
 #: src/bp.c:3317 src/bp.c:2360 src/bp.c:3319 src/bp.c:2359 src/bp.c:3318
 #: src/bp.c:2363 src/bp.c:3324 src/bp.c:3326 src/bp.c:2356 src/bp.c:3315
 #: src/bp.c:3335 src/bp.c:3336 src/bp.c:3341 src/bp.c:2369 src/bp.c:3353
-#: src/bp.c:2364 src/bp.c:3348 src/bp.c:3346 src/bp.c:3345
+#: src/bp.c:2364 src/bp.c:3348 src/bp.c:3346 src/bp.c:3345 src/bp.c:2365
 msgid   "Waiting for the parking brakes set"
 msgstr  ""
 
@@ -543,7 +543,7 @@ msgid   "Driving the tug away back to his station"
 msgstr  ""
 
 #: src/bp.c:2153 src/bp.c:2154 src/bp.c:2180 src/bp.c:2182 src/bp.c:2181
-#: src/bp.c:2185 src/bp.c:2178 src/bp.c:2191 src/bp.c:2186
+#: src/bp.c:2185 src/bp.c:2178 src/bp.c:2191 src/bp.c:2186 src/bp.c:2187
 msgid   "Connected to the aircraft, waiting for clearance"
 msgstr  ""
 
@@ -573,10 +573,20 @@ msgstr  ""
 msgid   "Open preference window."
 msgstr  ""
 
-#: src/bp.c:3302
-msgid   "Push-back will be called once the beacon will be to on"
-msgstr  ""
-
 #: src/bp.c:3302 src/bp.c:3301
 msgid   "Push-back waiting to be called"
+msgstr  ""
+
+msgid   "The tug appears next to the plane avoiding in certain case that he "
+        "is travelling inside the buildings."
+msgstr  ""
+
+msgid   "The tug will appear once the beacon light is switched from off to on "
+        "then the process will proceed as 'connect the tug first'."
+msgstr  ""
+
+msgid   "Tug starts near the aircraft"
+msgstr  ""
+
+msgid   "Tug called by activating the beacon"
 msgstr  ""
