@@ -93,7 +93,7 @@
 #define    MAX_DRIVING_AWAY_DELAY    30    /* seconds */
 
 #define    TUG_APPCH_LONG_DIST    (6 * bp_ls.tug->veh.wheelbase)
-#define    TUG_APPCH_SHORT_DIST    (4 * bp_ls.tug->veh.wheelbase)
+#define    TUG_APPCH_SHORT_DIST    (2 * bp_ls.tug->veh.wheelbase)
 
 #define    MIN_RADIO_VOLUME_THRESH    0.1
 #define    MIN_STEP_TIME        0.001    /* minimum simulation step in secs */
@@ -1899,7 +1899,7 @@ pb_step_tug_load(void) {
         dir = hdg2dir(bp.cur_pos.hdg);
         if (tug_starts_next_plane) {
             p_start = vect2_add(bp.cur_pos.pos, vect2_scmul(dir,
-                                                            TUG_APPCH_SHORT_DIST));
+                                                            -bp.acf.nw_z + TUG_APPCH_SHORT_DIST));
             tug_set_pos(bp_ls.tug, p_start, normalize_hdg(bp.cur_pos.hdg), 0);
         } else {
             p_start = vect2_add(bp.cur_pos.pos, vect2_scmul(dir,
@@ -1929,7 +1929,7 @@ pb_step_start(void) {
 
         if (tug_starts_next_plane) {
             left_off = vect2_add(bp.cur_pos.pos, vect2_scmul(dir,
-                                                            TUG_APPCH_SHORT_DIST));
+                                                            -bp.acf.nw_z + TUG_APPCH_SHORT_DIST));
             tug_set_pos(bp_ls.tug, left_off, normalize_hdg(bp.cur_pos.hdg), 0.1 * bp_ls.tug->veh.max_fwd_spd);                                                
             p_end = vect2_add(bp.cur_pos.pos, vect2_scmul(dir,
                                                         (-bp.acf.nw_z) + bp_ls.tug->info->apch_dist));
