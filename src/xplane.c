@@ -1062,7 +1062,9 @@ bp_priv_enable(void)
     (void) conf_get_b(bp_conf,"tug_starts_next_plane", &tug_starts_next_plane);
 
     tug_auto_start = B_FALSE;
-    (void) conf_get_b(bp_conf,"tug_auto_start", &tug_auto_start);
+    // feature disabled for now.. waiting for a better UI paradigm
+    //(void) conf_get_b(bp_conf,"tug_auto_start", &tug_auto_start);
+    //
 
     prefs_enable = B_TRUE;
     start_pb_enable = B_TRUE;

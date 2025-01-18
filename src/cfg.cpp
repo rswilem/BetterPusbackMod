@@ -322,8 +322,9 @@ void SettingsWindow::LoadConfig(void) {
   tug_starts_next_plane = B_FALSE;
   (void)conf_get_b(bp_conf, "tug_starts_next_plane", &tug_starts_next_plane);
 
-  tug_auto_start = B_FALSE;
-  (void)conf_get_b(bp_conf, "tug_auto_start", &tug_auto_start);
+// feature disabled for now
+//  tug_auto_start = B_FALSE;
+//  (void)conf_get_b(bp_conf, "tug_auto_start", &tug_auto_start);
 
   initMonitorOrigin();
 
@@ -695,6 +696,7 @@ void SettingsWindow::buildInterface() {
       (void)conf_set_b(bp_conf, "tug_starts_next_plane", tug_starts_next_plane);
     }
 
+/*
     if (!tug_starts_next_plane) {
       ImGui::BeginDisabled();
       tug_auto_start = B_FALSE;
@@ -712,7 +714,7 @@ void SettingsWindow::buildInterface() {
     if (!tug_starts_next_plane) {
       ImGui::EndDisabled();
     }
-
+*/
     ImGui::TableNextRow();
     ImGui::TableNextColumn();
     ImGui::Text("%s", _("Eye Tracker Plugin Exclusion"));
