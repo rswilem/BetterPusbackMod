@@ -78,6 +78,8 @@ char * getPluginUpdateStatus(void);
 
 void initMonitorOrigin(void);
 
+void cfg_cleanup(void);
+
 #ifdef    __cplusplus
 }
 #endif

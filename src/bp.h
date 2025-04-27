@@ -160,8 +160,19 @@ typedef struct {
     acf_outline_t *outline;    /* size & outline of aircraft shape */
 } bp_long_state_t;
 
+typedef struct {
+    bool_t active;
+    bool_t pause;
+    float angle;
+    bool_t reverse;
+    bool_t with_yoke;
+} push_manual_t;
+
 extern bp_state_t bp;
 extern bp_long_state_t bp_ls;
+extern push_manual_t push_manual;
+
+
 
 void bp_boot_init(void);
 
@@ -196,6 +207,9 @@ bool_t audio_sys_init(void);
 void main_intf(bool_t);
 
 void main_intf_hide(void);
+
+void manual_bp_start(bool_t);
+void manual_bp_stop(void);
 
 extern bool_t late_plan_requested;
 

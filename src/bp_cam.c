@@ -115,6 +115,7 @@ static XPLMObjectRef cam_lamp_obj = NULL;
 static XPLMInstanceRef cam_lamp_inst = NULL;
 static const char *cam_lamp_drefs[] = {NULL};
 int bp_plan_callback_is_alive = CAMERA_IS_OFF;
+static char current_icao[8] = {0};
 
 static int key_sniffer(char inChar, XPLMKeyFlags inFlags, char inVirtualKey,
                        void *refcon);
@@ -1264,12 +1265,18 @@ bp_cam_start(void)
         return (B_FALSE);
     }
 
-    // reload here the voices according the current airport i.e after landing
-    msg_fini();
-    logMsg(BP_INFO_LOG "RE-Initialising messages languages");
-    audio_sys_init();
 
     (void)find_nearest_airport(icao);
+    if (strcmp(icao, current_icao) != 0 ) {
+        // reload here the voices if at a new airport i.e after landing
+        msg_fini();
+        logMsg(BP_INFO_LOG "At new airport %s, re-initialising messages languages", icao);
+        strlcpy(current_icao, icao, sizeof(current_icao));
+        audio_sys_init();
+    } else {
+        logMsg(BP_INFO_LOG "Still at airport %s, NOT re-initialising messages languages", icao);
+    }
+
     if (acf_is_airliner())
         read_acf_airline(airline);
     if (!tug_available(dr_getf(&drs.mtow), bp.acf.nw_len, bp.acf.tirrad,

@@ -161,6 +161,7 @@ static struct {
     dr_t taxi_light_on;
 
     dr_t beacon_light;
+    dr_t joystick;
     dr_t author;
     dr_t sim_paused;
 } drs;
@@ -192,6 +193,8 @@ bool_t tug_auto_start = B_FALSE;
 static int previous_beacon;
 bool_t tug_pending_mode;
 
+push_manual_t push_manual = {0};
+
 static XPWidgetID bp_hint_status = NULL;
 const char *bp_hint_status_str = NULL;
 const char *bp_hint_previous_status_str = NULL;
@@ -213,6 +216,8 @@ void main_intf_hide(void);
 static int disco_handler(XPLMCommandRef, XPLMCommandPhase, void *);
 
 static int recon_handler(XPLMCommandRef, XPLMCommandPhase, void *);
+
+static bool_t bp_run_push_manual(void);
 
 static bool_t radio_volume_warn = B_FALSE;
 
@@ -1421,6 +1426,7 @@ bp_init(void) {
 
     fdr_find(&drs.beacon_light, "sim/cockpit2/switches/beacon_on");
 
+    fdr_find(&drs.joystick, "sim/joystick/joy_mapped_axis_value");
 
     XPLMRegisterCommandHandler(disco_cmd, disco_handler, 1, NULL);
     XPLMRegisterCommandHandler(recon_cmd, recon_handler, 1, NULL);
@@ -1530,14 +1536,17 @@ bp_can_start(const char **reason) {
     }
 
 
-
-    seg = list_head(&bp.segs);
-    if (seg == NULL && !late_plan_requested && !slave_mode) {
-        if (reason != NULL) {
-            *reason = _("Pushback failure: please first plan your "
-                        "pushback to tell me where you want to go.");
+    if (!push_manual.active) {
+        seg = list_head(&bp.segs);
+        if (seg == NULL && !late_plan_requested && !slave_mode) {
+            if (reason != NULL) {
+                *reason = _("Pushback failure: please first plan your "
+                            "pushback to tell me where you want to go.");
+            }
+            return (B_FALSE);
         }
-        return (B_FALSE);
+    } else {
+        logMsg("Manual push engaged, not checking the pre-plan");
     }
 
     return (B_TRUE);
@@ -1586,7 +1595,7 @@ bp_start(void) {
         bp_floop = XPLMCreateFlightLoop(&floop);
     XPLMScheduleFlightLoop(bp_floop, -1, 1);
 
-    if (!slave_mode && !late_plan_requested)
+    if (!slave_mode && !late_plan_requested && !push_manual.active)
         route_save(&bp.segs);
 
     bp_started = B_TRUE;
@@ -1705,6 +1714,11 @@ corr_acf_pos(void) {
 
 static bool_t
 bp_run_push(void) {
+
+    if ( push_manual.active) {
+        return bp_run_push_manual();
+    }
+
     seg_t *seg = list_head(&bp.segs);
     /*
      * We memorize the direction of this segment in case we flip segments
@@ -1772,6 +1786,88 @@ bp_run_push(void) {
 
     return (seg != NULL);
 }
+
+static bool_t
+bp_run_push_manual(void) {
+    double speed = 0;
+    float angle = 0;
+
+    /* Pilot pressed brake pedals or set parking brake or manual pause, stop */
+    if (dr_getf(&drs.lbrake) >= BRAKE_PEDAL_THRESH ||
+        dr_getf(&drs.rbrake) >= BRAKE_PEDAL_THRESH ||
+        push_manual.pause ||
+        pbrake_is_set()) {
+        tug_set_TE_snd(bp_ls.tug, 0, bp.d_t);
+        dr_setf(&drs.axial_force, 0);
+        dr_setf(&drs.rot_force_N, 0);
+        bp.last_force = 0;
+    }
+    /*
+        * If we have reversed direction, wait a little to simulate
+        * the driver changing gear and flipping around.
+        */
+    if (bp.reverse_t != 0.0) {
+        if (bp.cur_t - bp.reverse_t < 2 * STATE_TRANS_DELAY) {
+            push_at_speed(0, bp.veh.max_accel, B_TRUE,
+                            B_FALSE);
+        }
+        bp.reverse_t = 0.0;
+    }
+
+
+    if (push_manual.with_yoke) { 
+        dr_getvf32(&drs.joystick, &angle, 2, 1);
+    } else {
+        angle = push_manual.angle/100.0;
+    }
+    angle *= bp.veh.max_steer;
+
+
+    if (push_manual.with_yoke) {
+        float speed_;
+        dr_getvf32(&drs.joystick, &speed_, 1, 1);
+        speed = bp.veh.max_fwd_spd * (double)speed_;
+    } else {
+        //without yoke, always at "full" speed
+        speed = -bp.veh.max_fwd_spd;
+        if (push_manual.reverse){
+            speed = -speed; 
+        }
+    }
+    // if in reverse (by default the max speed is the forward speed) , limiting also at the max reverse speed
+    if ( speed < -bp.veh.max_rev_spd) {
+        speed = -bp.veh.max_rev_spd;
+    }
+    // for high angle the forward speed is limit to the max rev speed value 
+    if ( speed > bp.veh.max_rev_spd) {
+        if ( fabs(angle)> MIN_STEER_ANGLE) {
+        speed = bp.veh.max_rev_spd;
+    }   
+}
+
+    turn_nosewheel((double) angle);
+   
+    // reducing the speed using the angle of the tug
+    speed *= MAX(cos(DEG2RAD(fabs(angle))), 0.1);
+    push_at_speed(speed, bp.veh.max_accel, B_TRUE, false);
+    //logMsg("angle %f, cos(ang) %f speed = %f", angle, cos(DEG2RAD(fabs(angle))), speed);
+
+    return (push_manual.active);
+}
+
+
+void manual_bp_start(bool_t with_yoke) {
+    push_manual.active = true;
+    push_manual.pause = false;
+    push_manual.reverse = false;
+    push_manual.angle = 0;
+    push_manual.with_yoke = with_yoke;
+}
+
+void manual_bp_stop(void) {
+    push_manual.active = false;
+}
+
 
 /*
  * Tears down a pushback session. This resets all state variables, unloads the
@@ -2227,15 +2323,18 @@ pb_step_connected(void) {
         bp_hint_status_str = _("Waiting for the parking brakes release");
     } else if (bp.cur_t - bp.step_start_t >= STATE_TRANS_DELAY) {
         if (!slave_mode) {
-            seg_t *seg = list_head(&bp.segs);
-
-            ASSERT(seg != NULL);
+            bool_t backward = true; 
+            if (!push_manual.active) {
+                seg_t *seg = list_head(&bp.segs);
+                ASSERT(seg != NULL);
+                backward = seg->backward;
+            }
             if (dr_geti(&drs.num_engns) == 0 ||
                 eng_is_running() || !eng_ok2start()) {
-                msg_play(seg->backward ? MSG_START_PB_NOSTART :
+                msg_play(backward ? MSG_START_PB_NOSTART :
                          MSG_START_TOW_NOSTART);
             } else {
-                msg_play(seg->backward ? MSG_START_PB :
+                msg_play(backward ? MSG_START_PB :
                          MSG_START_TOW);
             }
         } else {
@@ -3240,7 +3339,7 @@ bp_run(float elapsed, float elapsed2, int counter, void *refcon) {
      * just disappear. If we have, jump to the stopping state.
      */
     if (!late_plan_requested &&
-        ((!slave_mode && list_head(&bp.segs) == NULL) ||
+        ((!slave_mode && ((list_head(&bp.segs) == NULL) && !push_manual.active )) ||
          (slave_mode && op_complete))) {
         if (bp.step < PB_STEP_GRABBING) {
             bp_complete();
@@ -3379,17 +3478,22 @@ bp_run(float elapsed, float elapsed2, int counter, void *refcon) {
                 bp.step++;
                 bp.step_start_t = bp.cur_t;
             } else if (!slave_mode) {
-                seg_t *seg = list_tail(&bp.segs);
-                ASSERT(seg != NULL);
-                bp.last_seg_is_back = seg->backward;
-                /*
-                 * Try to straighten out if we don't end
-                 * in a straight segment.
-                 */
-                if (seg->type == SEG_TYPE_TURN)
-                    bp.last_hdg = seg->end_hdg;
-                else
-                    bp.last_hdg = NAN;
+                if (!push_manual.active) {
+                    seg_t *seg = list_tail(&bp.segs);
+                    ASSERT(seg != NULL);
+                    bp.last_seg_is_back = seg->backward;
+                    /*
+                    * Try to straighten out if we don't end
+                    * in a straight segment.
+                    */
+                    if (seg->type == SEG_TYPE_TURN)
+                        bp.last_hdg = seg->end_hdg;
+                    else
+                        bp.last_hdg = NAN;
+                } else {
+                    push_manual.angle = 0;
+                    push_manual.pause = false;
+                }
                 turn_nosewheel(0);
                 push_at_speed(0, bp.veh.max_accel, B_FALSE, B_FALSE);
             }

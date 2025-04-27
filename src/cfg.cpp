@@ -125,6 +125,8 @@ const char *save_prefs_tooltip = "Save current preferences to disk.";
 const char *disco_when_done_tooltip =
     "Never ask and always automatically disconnect "
     "the tug when the pushback operation is complete.";
+const char *per_aircraft_is_global_tooltip =
+    "When enabled, all per aircraft settings becomes global.";
 const char *always_connect_tug_first_tooltip =
     "The push process is always halted when the tug is at the nose of the "
     "aircraft.\n"
@@ -251,6 +253,7 @@ private:
   bool_t hide_magic_squares;
   bool_t dont_hide;
   bool_t always_connect_tug_first;
+  bool_t per_aircraft_is_global;
   bool_t xp11_only;
   bool_t is_destroy;
   bool_t tug_starts_next_plane;
@@ -263,6 +266,7 @@ private:
   void sound_comboList_init(comboList_t *list);
   void plugin_comboList_init(comboList_t *list);
   void comboList_free(comboList_t *list);
+  void initPerAircraftSettings(void);
 
 protected:
   void buildInterface() override;
@@ -279,6 +283,24 @@ SettingsWindow::SettingsWindow(WndMode _mode)
   setup_view_callback_is_alive = B_TRUE;
 }
 
+void SettingsWindow::initPerAircraftSettings(void) {
+  disco_when_done = B_FALSE;
+  (void)conf_get_b_per_acf((char *)"disco_when_done", &disco_when_done);
+
+  ignore_park_brake = B_FALSE;
+  (void)conf_get_b_per_acf((char *)"ignore_park_brake", &ignore_park_brake);
+
+  ignore_doors_check = B_FALSE;
+  (void)conf_get_b_per_acf((char *)"ignore_doors_check", &ignore_doors_check);
+
+  hide_magic_squares = B_FALSE;
+  (void)conf_get_b_per_acf((char *)"hide_magic_squares", &hide_magic_squares);
+
+  magic_squares_height = 50;
+  (void)conf_get_i_per_acf((char *)"magic_squares_height",
+                           &magic_squares_height);
+
+}
 void SettingsWindow::LoadConfig(void) {
 
   lang = NULL;
@@ -299,17 +321,10 @@ void SettingsWindow::LoadConfig(void) {
   conf_get_i(bp_conf, "lang_pref", (int *)&lang_pref);
   crew_lang_list.selected = lang_pref;
 
-  disco_when_done = B_FALSE;
-  (void)conf_get_b_per_acf((char *)"disco_when_done", &disco_when_done);
+  initPerAircraftSettings();
 
-  ignore_park_brake = B_FALSE;
-  (void)conf_get_b_per_acf((char *)"ignore_park_brake", &ignore_park_brake);
-
-  ignore_doors_check = B_FALSE;
-  (void)conf_get_b_per_acf((char *)"ignore_doors_check", &ignore_doors_check);
-
-  hide_magic_squares = B_FALSE;
-  (void)conf_get_b_per_acf((char *)"hide_magic_squares", &hide_magic_squares);
+  per_aircraft_is_global = B_FALSE;
+  (void)conf_get_b(bp_conf, "per_aircraft_is_global", &per_aircraft_is_global);
 
   xp11_only = (bp_xp_ver >= 11000 && bp_xp_ver < 12000);
   dont_hide = B_FALSE;
@@ -339,10 +354,6 @@ void SettingsWindow::LoadConfig(void) {
   if (monitor_list.selected > MAX_MONITOR_COUNT) {
     monitor_list.selected = 0;
   }
-
-  magic_squares_height = 50;
-  (void)conf_get_i_per_acf((char *)"magic_squares_height",
-                           &magic_squares_height);
 
   radio_dev = NULL;
   sound_comboList_init(&radio_device_list);
@@ -594,6 +605,17 @@ void SettingsWindow::buildInterface() {
         rowBottomStart, rowBottomEnd, LINE_COLOR,
         LINE_THICKNESS); // White line, 1.0f thickness
 
+    /*  Disabling for now, feature not enough mature  
+    ImGui::TableNextRow();
+    ImGui::TableNextColumn();
+    ImGui::Text("%s", _("Per aircraft settings are global"));
+    Tooltip(_(per_aircraft_is_global_tooltip));
+
+    ImGui::TableNextColumn();
+    if (ImGui::Checkbox("##per_aircraft_is_global", (bool *)&per_aircraft_is_global)) {
+      conf_set_b(bp_conf, (char *)"per_aircraft_is_global", per_aircraft_is_global);
+      initPerAircraftSettings();
+    } */
     ImGui::TableNextRow();
     ImGui::TableNextColumn();
     ImGui::Text("%s", _("Auto disconnect when done"));
@@ -969,8 +991,11 @@ void key_sanity(char *key) {
 
 bool_t conf_get_b_per_acf(char *my_key, bool_t *value) {
   char my_acf[512], my_path[512];
+  bool_t per_aircraft_is_global = B_FALSE;
+  (void) conf_get_b(bp_conf, "per_aircraft_is_global", &per_aircraft_is_global);
   XPLMGetNthAircraftModel(0, my_acf, my_path);
-  if (strlen(my_acf) == 0) {
+  if (per_aircraft_is_global || (strlen(my_acf) == 0)) {
+    // if per_aircraft_is_global , the setting is read as global setting
     // if not aircraft found (should never happened), try the generic key
     return conf_get_b(bp_conf, my_key, value);
   } else {
@@ -993,8 +1018,11 @@ bool_t conf_get_b_per_acf(char *my_key, bool_t *value) {
 
 void conf_set_b_per_acf(char *my_key, bool_t value) {
   char my_acf[512], my_path[512];
+  bool_t per_aircraft_is_global = B_FALSE;
+  (void) conf_get_b(bp_conf, "per_aircraft_is_global", &per_aircraft_is_global);
   XPLMGetNthAircraftModel(0, my_acf, my_path);
-  if (strlen(my_acf) == 0) {
+  if (per_aircraft_is_global || (strlen(my_acf) == 0)) {
+    // if per_aircraft_is_global , the setting is written as global setting
     // if not aircraft found (should never happened), try the generic key
     (void)conf_set_b(bp_conf, my_key, value);
   } else {
@@ -1011,8 +1039,11 @@ void conf_set_b_per_acf(char *my_key, bool_t value) {
 
 bool_t conf_get_i_per_acf(char *my_key, int *value) {
   char my_acf[512], my_path[512];
+  bool_t per_aircraft_is_global = B_FALSE;
+  (void) conf_get_b(bp_conf, "per_aircraft_is_global", &per_aircraft_is_global);
   XPLMGetNthAircraftModel(0, my_acf, my_path);
-  if (strlen(my_acf) == 0) {
+  if (per_aircraft_is_global || (strlen(my_acf) == 0)) {
+    // if per_aircraft_is_global , the setting is written as global setting
     // if not aircraft found (should never happened), try the generic key
     return conf_get_i(bp_conf, my_key, value);
   } else {
@@ -1035,8 +1066,11 @@ bool_t conf_get_i_per_acf(char *my_key, int *value) {
 
 void conf_set_i_per_acf(char *my_key, int value) {
   char my_acf[512], my_path[512];
+  bool_t per_aircraft_is_global = B_FALSE;
+  (void) conf_get_b(bp_conf, "per_aircraft_is_global", &per_aircraft_is_global);
   XPLMGetNthAircraftModel(0, my_acf, my_path);
-  if (strlen(my_acf) == 0) {
+  if (per_aircraft_is_global || (strlen(my_acf) == 0)) {
+    // if per_aircraft_is_global , the setting is written as global setting
     // if not aircraft found (should never happened), try the generic key
     (void)conf_set_i(bp_conf, my_key, value);
   } else {
@@ -1304,4 +1338,8 @@ void bp_conf_open() {
   setup_window = new SettingsWindow();
   setup_window->SetVisible(B_TRUE);
   set_pref_widget_status(B_TRUE);
+}
+
+void cfg_cleanup() {
+  XPImgWindowCleanup();
 }

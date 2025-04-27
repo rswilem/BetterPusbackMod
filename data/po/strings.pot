@@ -7,7 +7,7 @@
 msgid   ""
 msgstr  "Project-Id-Version: PACKAGE VERSION\n"
         "Report-Msgid-Bugs-To: \n"
-        "POT-Creation-Date: 2025-01-18 20:55+0200\n"
+        "POT-Creation-Date: 2025-04-27 17:17+0300\n"
         "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
         "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
         "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,6 +18,7 @@ msgstr  "Project-Id-Version: PACKAGE VERSION\n"
 
 #: src/bp.c:1103 src/bp.c:1104 src/bp.c:1105 src/bp.c:1107 src/bp.c:1108
 #: src/bp.c:1110 src/bp.c:1117 src/bp.c:1119 src/bp.c:1125 src/bp.c:1127
+#: src/bp.c:1118 src/bp.c:1120 src/bp.c:1122
 #, c-format
 msgid   "Pushback failure: X-Plane version too old. This plugin requires at "
         "least X-Plane %s to operate."
@@ -25,42 +26,57 @@ msgstr  ""
 
 #: src/bp.c:1113 src/bp.c:1114 src/bp.c:1115 src/bp.c:1117 src/bp.c:1118
 #: src/bp.c:1120 src/bp.c:1127 src/bp.c:1129 src/bp.c:1135 src/bp.c:1137
+#: src/bp.c:1128 src/bp.c:1130 src/bp.c:1132
 msgid   "Pushback failure: error reading aircraft files from disk."
 msgstr  ""
 
 #: src/bp.c:1178 src/bp.c:1179 src/bp.c:1180 src/bp.c:1182 src/bp.c:1183
 #: src/bp.c:1185 src/bp.c:1192 src/bp.c:1194 src/bp.c:1200 src/bp.c:1202
+#: src/bp.c:1197 src/bp.c:1198 src/bp.c:1201 src/bp.c:1203 src/bp.c:1193
+#: src/bp.c:1195
 msgid   "Pushback failure: error initialising audio messages. Please "
         "reinstall BetterPushback."
 msgstr  ""
 
 #: src/bp.c:1191 src/bp.c:1192 src/bp.c:1193 src/bp.c:1195 src/bp.c:1196
 #: src/bp.c:1198 src/bp.c:1205 src/bp.c:1207 src/bp.c:1213 src/bp.c:1215
+#: src/bp.c:1211 src/bp.c:1212 src/bp.c:1216 src/bp.c:1217 src/bp.c:1218
+#: src/bp.c:1220 src/bp.c:1206 src/bp.c:1208 src/bp.c:1210
 msgid   "Pushback failure: aircraft not on ground."
 msgstr  ""
 
 #: src/bp.c:1199 src/bp.c:1200 src/bp.c:1201 src/bp.c:1203 src/bp.c:1204
 #: src/bp.c:1206 src/bp.c:1213 src/bp.c:1215 src/bp.c:1221 src/bp.c:1223
+#: src/bp.c:1219 src/bp.c:1220 src/bp.c:1224 src/bp.c:1225 src/bp.c:1226
+#: src/bp.c:1228 src/bp.c:1214 src/bp.c:1216 src/bp.c:1218
 msgid   "Pushback failure: aircraft not stationary."
 msgstr  ""
 
 #: src/bp.c:1206 src/bp.c:1207 src/bp.c:1208 src/bp.c:1210 src/bp.c:1211
 #: src/bp.c:1213 src/bp.c:1220 src/bp.c:1222 src/bp.c:1228 src/bp.c:1230
+#: src/bp.c:1226 src/bp.c:1227 src/bp.c:1231 src/bp.c:1232 src/bp.c:1233
+#: src/bp.c:1235 src/bp.c:1221 src/bp.c:1223 src/bp.c:1225
 msgid   "Pushback failure: gear not extended."
 msgstr  ""
 
 #: src/bp.c:1224 src/bp.c:1225 src/bp.c:1226 src/bp.c:1228 src/bp.c:1229
 #: src/bp.c:1231 src/bp.c:1238 src/bp.c:1240 src/bp.c:1246 src/bp.c:1248
+#: src/bp.c:1244 src/bp.c:1245 src/bp.c:1249 src/bp.c:1250 src/bp.c:1251
+#: src/bp.c:1253 src/bp.c:1239 src/bp.c:1241 src/bp.c:1243
 msgid   "Disconnect tow + headset and switch to hand signals."
 msgstr  ""
 
 #: src/bp.c:1226 src/bp.c:1227 src/bp.c:1228 src/bp.c:1230 src/bp.c:1231
 #: src/bp.c:1233 src/bp.c:1240 src/bp.c:1242 src/bp.c:1248 src/bp.c:1250
+#: src/bp.c:1246 src/bp.c:1247 src/bp.c:1251 src/bp.c:1252 src/bp.c:1253
+#: src/bp.c:1255 src/bp.c:1241 src/bp.c:1243 src/bp.c:1245
 msgid   "Reconnect tow and await further instructions."
 msgstr  ""
 
 #: src/bp.c:1321 src/bp.c:1322 src/bp.c:1323 src/bp.c:1325 src/bp.c:1326
 #: src/bp.c:1328 src/bp.c:1335 src/bp.c:1337 src/bp.c:1343 src/bp.c:1345
+#: src/bp.c:1341 src/bp.c:1342 src/bp.c:1346 src/bp.c:1347 src/bp.c:1348
+#: src/bp.c:1350 src/bp.c:1336 src/bp.c:1338 src/bp.c:1340
 msgid   "Pushback advisory: you have your radio volume turned very low and "
         "may not be able to hear ground crew. Please increase your radio "
         "volume in the X-Plane sound preferences."
@@ -68,13 +84,15 @@ msgstr  ""
 
 #: src/bp.c:1495 src/bp.c:1496 src/bp.c:1500 src/bp.c:1502 src/bp.c:1503
 #: src/bp.c:1513 src/bp.c:1508 src/bp.c:1515 src/bp.c:1517 src/bp.c:1523
-#: src/bp.c:1525
+#: src/bp.c:1525 src/bp.c:1521 src/bp.c:1522 src/bp.c:1526 src/bp.c:1527
+#: src/bp.c:1528 src/bp.c:1530 src/bp.c:1516 src/bp.c:1520
 msgid   "Pushback failure: aircraft is not compatible with BetterPushback."
 msgstr  ""
 
 #: src/bp.c:1505 src/bp.c:1506 src/bp.c:1510 src/bp.c:1512 src/bp.c:1513
 #: src/bp.c:1523 src/bp.c:1518 src/bp.c:1525 src/bp.c:1527 src/bp.c:1533
-#: src/bp.c:1535
+#: src/bp.c:1535 src/bp.c:1531 src/bp.c:1532 src/bp.c:1536 src/bp.c:1537
+#: src/bp.c:1538 src/bp.c:1540 src/bp.c:1526 src/bp.c:1530
 msgid   "Pushback failure: cannot push this aircraft with engines running. "
         "Shutdown engines first."
 msgstr  ""
@@ -86,14 +104,19 @@ msgstr  ""
 
 #: src/bp.c:1517 src/bp.c:1518 src/bp.c:1522 src/bp.c:1524 src/bp.c:1525
 #: src/bp.c:1535 src/bp.c:1530 src/bp.c:1537 src/bp.c:1539 src/bp.c:1545
-#: src/bp.c:1547
+#: src/bp.c:1547 src/bp.c:1543 src/bp.c:1544 src/bp.c:1548 src/bp.c:1549
+#: src/bp.c:1550 src/bp.c:1552 src/bp.c:1538 src/bp.c:1542
 msgid   "Pushback failure: please first plan your pushback to tell me where "
         "you want to go."
 msgstr  ""
 
 #: src/bp.c:1863 src/bp.c:1864 src/bp.c:1866 src/bp.c:1867 src/bp.c:1871
 #: src/bp.c:1873 src/bp.c:1874 src/bp.c:1884 src/bp.c:1879 src/bp.c:1880
-#: src/bp.c:1887 src/bp.c:1889 src/bp.c:1895 src/bp.c:1897
+#: src/bp.c:1887 src/bp.c:1889 src/bp.c:1895 src/bp.c:1897 src/bp.c:1893
+#: src/bp.c:1894 src/bp.c:1898 src/bp.c:1899 src/bp.c:1900 src/bp.c:1902
+#: src/bp.c:1890 src/bp.c:1891 src/bp.c:1896 src/bp.c:1975 src/bp.c:1976
+#: src/bp.c:1985 src/bp.c:1991 src/bp.c:1994 src/bp.c:2007 src/bp.c:2008
+#: src/bp.c:1979 src/bp.c:1982 src/bp.c:1980 src/bp.c:1983
 #, c-format
 msgid   "ERROR: master requested tug \"%s\", which we don't have in our in "
         "our library. Please sync your tug libraries before trying again."
@@ -101,45 +124,64 @@ msgstr  ""
 
 #: src/bp.c:1965 src/bp.c:1966 src/bp.c:1992 src/bp.c:1994 src/bp.c:1993
 #: src/bp.c:1997 src/bp.c:1990 src/bp.c:2003 src/bp.c:1998 src/bp.c:1999
-#: src/bp.c:2006 src/bp.c:2008 src/bp.c:2014 src/bp.c:2016
+#: src/bp.c:2006 src/bp.c:2008 src/bp.c:2014 src/bp.c:2016 src/bp.c:2012
+#: src/bp.c:2013 src/bp.c:2017 src/bp.c:2018 src/bp.c:2019 src/bp.c:2021
+#: src/bp.c:2009 src/bp.c:2010 src/bp.c:2015 src/bp.c:2094 src/bp.c:2095
+#: src/bp.c:2104 src/bp.c:2110 src/bp.c:2113 src/bp.c:2126 src/bp.c:2127
+#: src/bp.c:2098 src/bp.c:2101 src/bp.c:2099 src/bp.c:2102
 msgid   "Pushback warning: unable to remove your chocks. Remove them "
         "yourself, or else I won't be able to push your aircraft."
 msgstr  ""
 
 #: src/bp.c:2233 src/bp.c:2234 src/bp.c:2260 src/bp.c:2262 src/bp.c:2261
 #: src/bp.c:2265 src/bp.c:2258 src/bp.c:2271 src/bp.c:2266 src/bp.c:2267
-#: src/bp.c:2274 src/bp.c:2276 src/bp.c:2282 src/bp.c:2284
+#: src/bp.c:2274 src/bp.c:2276 src/bp.c:2282 src/bp.c:2284 src/bp.c:2280
+#: src/bp.c:2281 src/bp.c:2285 src/bp.c:2286 src/bp.c:2287 src/bp.c:2289
+#: src/bp.c:2277 src/bp.c:2278 src/bp.c:2283 src/bp.c:2362 src/bp.c:2363
+#: src/bp.c:2366 src/bp.c:2375 src/bp.c:2381 src/bp.c:2384 src/bp.c:2397
+#: src/bp.c:2398 src/bp.c:2369 src/bp.c:2372 src/bp.c:2370 src/bp.c:2373
 msgid   "Hey! Quit blinding me with your landing lights! Turn them off!"
 msgstr  ""
 
 #: src/bp.c:2236 src/bp.c:2237 src/bp.c:2263 src/bp.c:2265 src/bp.c:2264
 #: src/bp.c:2268 src/bp.c:2261 src/bp.c:2274 src/bp.c:2269 src/bp.c:2270
-#: src/bp.c:2277 src/bp.c:2279 src/bp.c:2285 src/bp.c:2287
+#: src/bp.c:2277 src/bp.c:2279 src/bp.c:2285 src/bp.c:2287 src/bp.c:2283
+#: src/bp.c:2284 src/bp.c:2288 src/bp.c:2289 src/bp.c:2290 src/bp.c:2292
+#: src/bp.c:2280 src/bp.c:2281 src/bp.c:2286 src/bp.c:2365 src/bp.c:2366
+#: src/bp.c:2369 src/bp.c:2378 src/bp.c:2384 src/bp.c:2387 src/bp.c:2400
+#: src/bp.c:2401 src/bp.c:2372 src/bp.c:2375 src/bp.c:2373 src/bp.c:2376
 msgid   "Hey! Quit blinding me with your taxi light! Turn it off!"
 msgstr  ""
 
 #: src/bp.c:3160 src/bp.c:3161 src/bp.c:3187 src/bp.c:3189 src/bp.c:3188
 #: src/bp.c:3192 src/bp.c:3185 src/bp.c:3201 src/bp.c:3202 src/bp.c:3209
 #: src/bp.c:3220 src/bp.c:3215 src/bp.c:3210 src/bp.c:3217 src/bp.c:3219
-#: src/bp.c:3225 src/bp.c:3227
+#: src/bp.c:3225 src/bp.c:3227 src/bp.c:3223 src/bp.c:3224 src/bp.c:3228
+#: src/bp.c:3229 src/bp.c:3230 src/bp.c:3232 src/bp.c:3221 src/bp.c:3226
+#: src/bp.c:3305 src/bp.c:3306 src/bp.c:3309 src/bp.c:3318 src/bp.c:3324
+#: src/bp.c:3327 src/bp.c:3340 src/bp.c:3341 src/bp.c:3312 src/bp.c:3315
+#: src/bp.c:3313 src/bp.c:3316
 msgid   "Pushback failure: your flight controls are preventing me from "
         "steering the aircraft. Unbind any buttons you have set to \"toggle "
         "nosewheel steering\"."
 msgstr  ""
 
-#: src/bp_cam.c:1175 src/bp_cam.c:1174 src/bp_cam.c:1262
+#: src/bp_cam.c:1175 src/bp_cam.c:1174 src/bp_cam.c:1262 src/bp_cam.c:1263
 msgid   "Pushback failure: aircraft is incompatible with BetterPushback."
 msgstr  ""
 
-#: src/bp_cam.c:1190 src/bp_cam.c:1189 src/bp_cam.c:1278
+#: src/bp_cam.c:1190 src/bp_cam.c:1189 src/bp_cam.c:1278 src/bp_cam.c:1286
+#: src/bp_cam.c:1285
 msgid   "Pushback failure: no suitable tug for your aircraft."
 msgstr  ""
 
-#: src/bp_cam.c:1198 src/bp_cam.c:1197 src/bp_cam.c:1287
+#: src/bp_cam.c:1198 src/bp_cam.c:1197 src/bp_cam.c:1287 src/bp_cam.c:1295
+#: src/bp_cam.c:1294
 msgid   "Can't start planner: aircraft not stationary."
 msgstr  ""
 
-#: src/bp_cam.c:1203 src/bp_cam.c:1202 src/bp_cam.c:1293
+#: src/bp_cam.c:1203 src/bp_cam.c:1202 src/bp_cam.c:1293 src/bp_cam.c:1301
+#: src/bp_cam.c:1300
 msgid   "Can't start planner: pushback already in progress. Please stop the "
         "pushback operation first."
 msgstr  ""
@@ -233,6 +275,9 @@ msgstr  ""
 #: src/xplane.c:510 src/xplane.c:514 src/xplane.c:517 src/xplane.c:519
 #: src/xplane.c:511 src/xplane.c:513 src/xplane.c:512 src/xplane.c:508
 #: src/xplane.c:553 src/xplane.c:552 src/xplane.c:557 src/xplane.c:561
+#: src/xplane.c:564 src/xplane.c:578 src/xplane.c:580 src/xplane.c:582
+#: src/xplane.c:586 src/xplane.c:588 src/xplane.c:605 src/xplane.c:618
+#: src/xplane.c:620 src/xplane.c:631 src/xplane.c:635
 msgid   "ERROR: Unable to select pushback tug view at this time."
 msgstr  ""
 
@@ -243,7 +288,12 @@ msgstr  ""
 #: src/xplane.c:664 src/xplane.c:690 src/xplane.c:681 src/xplane.c:707
 #: src/xplane.c:679 src/xplane.c:705 src/xplane.c:729 src/xplane.c:761
 #: src/xplane.c:728 src/xplane.c:760 src/xplane.c:733 src/xplane.c:765
-#: src/xplane.c:737 src/xplane.c:769
+#: src/xplane.c:737 src/xplane.c:769 src/xplane.c:740 src/xplane.c:772
+#: src/xplane.c:754 src/xplane.c:786 src/xplane.c:756 src/xplane.c:788
+#: src/xplane.c:758 src/xplane.c:790 src/xplane.c:762 src/xplane.c:794
+#: src/xplane.c:764 src/xplane.c:796 src/xplane.c:781 src/xplane.c:813
+#: src/xplane.c:826 src/xplane.c:828 src/xplane.c:807 src/xplane.c:839
+#: src/xplane.c:811 src/xplane.c:843
 msgid   "Pushback failure: smartcopilot attempted to switch master/slave or "
         "network connection lost. Stopping operation."
 msgstr  ""
@@ -255,7 +305,12 @@ msgstr  ""
 #: src/xplane.c:679 src/xplane.c:701 src/xplane.c:696 src/xplane.c:718
 #: src/xplane.c:694 src/xplane.c:716 src/xplane.c:747 src/xplane.c:775
 #: src/xplane.c:746 src/xplane.c:774 src/xplane.c:751 src/xplane.c:779
-#: src/xplane.c:755 src/xplane.c:783
+#: src/xplane.c:755 src/xplane.c:783 src/xplane.c:758 src/xplane.c:786
+#: src/xplane.c:772 src/xplane.c:800 src/xplane.c:802 src/xplane.c:776
+#: src/xplane.c:804 src/xplane.c:780 src/xplane.c:808 src/xplane.c:782
+#: src/xplane.c:810 src/xplane.c:799 src/xplane.c:827 src/xplane.c:812
+#: src/xplane.c:840 src/xplane.c:814 src/xplane.c:842 src/xplane.c:825
+#: src/xplane.c:853 src/xplane.c:829 src/xplane.c:857
 msgid   "Pushback failure: Shared Flight attempted to switch pilot flying or "
         "network connection lost. Stopping operation."
 msgstr  ""
@@ -267,7 +322,12 @@ msgstr  ""
 #: src/xplane.c:790 src/xplane.c:807 src/xplane.c:973 src/xplane.c:805
 #: src/xplane.c:971 src/xplane.c:870 src/xplane.c:1043 src/xplane.c:869
 #: src/xplane.c:1042 src/xplane.c:874 src/xplane.c:1047 src/xplane.c:878
-#: src/xplane.c:1051
+#: src/xplane.c:1051 src/xplane.c:1052 src/xplane.c:881 src/xplane.c:1063
+#: src/xplane.c:895 src/xplane.c:1083 src/xplane.c:897 src/xplane.c:1085
+#: src/xplane.c:899 src/xplane.c:1087 src/xplane.c:903 src/xplane.c:1091
+#: src/xplane.c:905 src/xplane.c:1093 src/xplane.c:922 src/xplane.c:1113
+#: src/xplane.c:935 src/xplane.c:1126 src/xplane.c:937 src/xplane.c:1128
+#: src/xplane.c:948 src/xplane.c:1139 src/xplane.c:1143
 msgid   "Start pushback"
 msgstr  ""
 
@@ -278,84 +338,122 @@ msgstr  ""
 #: src/xplane.c:792 src/xplane.c:809 src/xplane.c:975 src/xplane.c:807
 #: src/xplane.c:973 src/xplane.c:872 src/xplane.c:1045 src/xplane.c:871
 #: src/xplane.c:1044 src/xplane.c:876 src/xplane.c:1049 src/xplane.c:880
-#: src/xplane.c:1053
+#: src/xplane.c:1053 src/xplane.c:1054 src/xplane.c:883 src/xplane.c:1065
+#: src/xplane.c:897 src/xplane.c:1085 src/xplane.c:899 src/xplane.c:1087
+#: src/xplane.c:901 src/xplane.c:1089 src/xplane.c:905 src/xplane.c:1093
+#: src/xplane.c:907 src/xplane.c:1095 src/xplane.c:924 src/xplane.c:1115
+#: src/xplane.c:937 src/xplane.c:1128 src/xplane.c:939 src/xplane.c:1130
+#: src/xplane.c:950 src/xplane.c:1141 src/xplane.c:1145
 msgid   "Stop pushback"
 msgstr  ""
 
 #: src/xplane.c:795 src/xplane.c:799 src/xplane.c:802 src/xplane.c:804
 #: src/xplane.c:796 src/xplane.c:797 src/xplane.c:800 src/xplane.c:798
 #: src/xplane.c:794 src/xplane.c:811 src/xplane.c:809 src/xplane.c:874
-#: src/xplane.c:873 src/xplane.c:878 src/xplane.c:882
+#: src/xplane.c:873 src/xplane.c:878 src/xplane.c:882 src/xplane.c:885
+#: src/xplane.c:899 src/xplane.c:901 src/xplane.c:903 src/xplane.c:907
+#: src/xplane.c:909 src/xplane.c:926 src/xplane.c:939 src/xplane.c:941
+#: src/xplane.c:952 src/xplane.c:956
 msgid   "Start pushback planner"
 msgstr  ""
 
 #: src/xplane.c:797 src/xplane.c:801 src/xplane.c:804 src/xplane.c:806
 #: src/xplane.c:798 src/xplane.c:799 src/xplane.c:802 src/xplane.c:800
 #: src/xplane.c:796 src/xplane.c:813 src/xplane.c:811 src/xplane.c:876
-#: src/xplane.c:875 src/xplane.c:880 src/xplane.c:884
+#: src/xplane.c:875 src/xplane.c:880 src/xplane.c:884 src/xplane.c:887
+#: src/xplane.c:901 src/xplane.c:903 src/xplane.c:905 src/xplane.c:909
+#: src/xplane.c:911 src/xplane.c:928 src/xplane.c:941 src/xplane.c:943
+#: src/xplane.c:954 src/xplane.c:958
 msgid   "Stop pushback planner"
 msgstr  ""
 
 #: src/xplane.c:799 src/xplane.c:803 src/xplane.c:806 src/xplane.c:808
 #: src/xplane.c:800 src/xplane.c:801 src/xplane.c:804 src/xplane.c:802
 #: src/xplane.c:798 src/xplane.c:815 src/xplane.c:813 src/xplane.c:878
-#: src/xplane.c:877 src/xplane.c:882 src/xplane.c:886
+#: src/xplane.c:877 src/xplane.c:882 src/xplane.c:886 src/xplane.c:889
+#: src/xplane.c:903 src/xplane.c:905 src/xplane.c:907 src/xplane.c:911
+#: src/xplane.c:913 src/xplane.c:930 src/xplane.c:943 src/xplane.c:945
+#: src/xplane.c:956 src/xplane.c:960
 msgid   "Connect tug before entering pushback plan"
 msgstr  ""
 
 #: src/xplane.c:801 src/xplane.c:805 src/xplane.c:808 src/xplane.c:810
 #: src/xplane.c:802 src/xplane.c:803 src/xplane.c:806 src/xplane.c:804
 #: src/xplane.c:800 src/xplane.c:817 src/xplane.c:815 src/xplane.c:880
-#: src/xplane.c:879 src/xplane.c:884 src/xplane.c:888
+#: src/xplane.c:879 src/xplane.c:884 src/xplane.c:888 src/xplane.c:891
+#: src/xplane.c:905 src/xplane.c:907 src/xplane.c:909 src/xplane.c:913
+#: src/xplane.c:915 src/xplane.c:932 src/xplane.c:945 src/xplane.c:947
+#: src/xplane.c:958 src/xplane.c:962
 msgid   "View from tug's cab."
 msgstr  ""
 
 #: src/xplane.c:804 src/xplane.c:808 src/xplane.c:811 src/xplane.c:813
 #: src/xplane.c:805 src/xplane.c:806 src/xplane.c:809 src/xplane.c:807
 #: src/xplane.c:803 src/xplane.c:820 src/xplane.c:818 src/xplane.c:883
-#: src/xplane.c:882 src/xplane.c:887 src/xplane.c:891
+#: src/xplane.c:882 src/xplane.c:887 src/xplane.c:891 src/xplane.c:894
+#: src/xplane.c:908 src/xplane.c:910 src/xplane.c:912 src/xplane.c:916
+#: src/xplane.c:918 src/xplane.c:935 src/xplane.c:948 src/xplane.c:950
+#: src/xplane.c:961 src/xplane.c:965
 msgid   "Recreate scenery routes from WED files."
 msgstr  ""
 
 #: src/xplane.c:807 src/xplane.c:811 src/xplane.c:814 src/xplane.c:816
 #: src/xplane.c:808 src/xplane.c:809 src/xplane.c:812 src/xplane.c:810
 #: src/xplane.c:806 src/xplane.c:826 src/xplane.c:824 src/xplane.c:889
-#: src/xplane.c:888 src/xplane.c:893 src/xplane.c:897
+#: src/xplane.c:888 src/xplane.c:893 src/xplane.c:897 src/xplane.c:900
+#: src/xplane.c:914 src/xplane.c:916 src/xplane.c:918 src/xplane.c:922
+#: src/xplane.c:924 src/xplane.c:941 src/xplane.c:954 src/xplane.c:956
+#: src/xplane.c:967 src/xplane.c:971
 msgid   "Abort pushback during coupled push"
 msgstr  ""
 
 #: src/xplane.c:945 src/xplane.c:949 src/xplane.c:952 src/xplane.c:954
 #: src/xplane.c:946 src/xplane.c:947 src/xplane.c:955 src/xplane.c:948
 #: src/xplane.c:967 src/xplane.c:965 src/xplane.c:1037 src/xplane.c:1036
-#: src/xplane.c:1041 src/xplane.c:1045
+#: src/xplane.c:1041 src/xplane.c:1045 src/xplane.c:1046 src/xplane.c:1057
+#: src/xplane.c:1077 src/xplane.c:1079 src/xplane.c:1081 src/xplane.c:1085
+#: src/xplane.c:1087 src/xplane.c:1107 src/xplane.c:1120 src/xplane.c:1122
+#: src/xplane.c:1133 src/xplane.c:1137
 msgid   "Pre-plan pushback"
 msgstr  ""
 
 #: src/xplane.c:947 src/xplane.c:951 src/xplane.c:954 src/xplane.c:956
 #: src/xplane.c:948 src/xplane.c:949 src/xplane.c:957 src/xplane.c:950
 #: src/xplane.c:969 src/xplane.c:967 src/xplane.c:1039 src/xplane.c:1038
-#: src/xplane.c:1043 src/xplane.c:1047
+#: src/xplane.c:1043 src/xplane.c:1047 src/xplane.c:1048 src/xplane.c:1059
+#: src/xplane.c:1079 src/xplane.c:1081 src/xplane.c:1083 src/xplane.c:1087
+#: src/xplane.c:1089 src/xplane.c:1109 src/xplane.c:1122 src/xplane.c:1124
+#: src/xplane.c:1135 src/xplane.c:1139
 msgid   "Close pushback planner"
 msgstr  ""
 
 #: src/xplane.c:949 src/xplane.c:953 src/xplane.c:956 src/xplane.c:958
 #: src/xplane.c:950 src/xplane.c:951 src/xplane.c:959 src/xplane.c:952
 #: src/xplane.c:971 src/xplane.c:969 src/xplane.c:1041 src/xplane.c:1040
-#: src/xplane.c:1045 src/xplane.c:1049
+#: src/xplane.c:1045 src/xplane.c:1049 src/xplane.c:1050 src/xplane.c:1061
+#: src/xplane.c:1081 src/xplane.c:1083 src/xplane.c:1085 src/xplane.c:1089
+#: src/xplane.c:1091 src/xplane.c:1111 src/xplane.c:1124 src/xplane.c:1126
+#: src/xplane.c:1137 src/xplane.c:1141
 msgid   "Connect tug first"
 msgstr  ""
 
 #: src/xplane.c:959 src/xplane.c:963 src/xplane.c:966 src/xplane.c:968
 #: src/xplane.c:960 src/xplane.c:961 src/xplane.c:970 src/xplane.c:971
 #: src/xplane.c:962 src/xplane.c:983 src/xplane.c:979 src/xplane.c:1051
-#: src/xplane.c:1050 src/xplane.c:1055 src/xplane.c:1059
+#: src/xplane.c:1050 src/xplane.c:1055 src/xplane.c:1059 src/xplane.c:1060
+#: src/xplane.c:1071 src/xplane.c:1091 src/xplane.c:1093 src/xplane.c:1095
+#: src/xplane.c:1099 src/xplane.c:1101 src/xplane.c:1121 src/xplane.c:1134
+#: src/xplane.c:1136 src/xplane.c:1147 src/xplane.c:1151
 msgid   "Preferences..."
 msgstr  ""
 
 #: src/xplane.c:955 src/xplane.c:959 src/xplane.c:962 src/xplane.c:964
 #: src/xplane.c:956 src/xplane.c:957 src/xplane.c:965 src/xplane.c:958
 #: src/xplane.c:977 src/xplane.c:975 src/xplane.c:1047 src/xplane.c:1046
-#: src/xplane.c:1051 src/xplane.c:1055
+#: src/xplane.c:1051 src/xplane.c:1055 src/xplane.c:1056 src/xplane.c:1067
+#: src/xplane.c:1087 src/xplane.c:1089 src/xplane.c:1091 src/xplane.c:1095
+#: src/xplane.c:1097 src/xplane.c:1117 src/xplane.c:1130 src/xplane.c:1132
+#: src/xplane.c:1143 src/xplane.c:1147
 msgid   "Tug cab view"
 msgstr  ""
 
@@ -425,7 +523,11 @@ msgstr  ""
 
 #: src/bp.c:2186 src/bp.c:2187 src/bp.c:2213 src/bp.c:2215 src/bp.c:2214
 #: src/bp.c:2218 src/bp.c:2211 src/bp.c:2224 src/bp.c:2219 src/bp.c:2220
-#: src/bp.c:2227 src/bp.c:2229 src/bp.c:2235 src/bp.c:2237
+#: src/bp.c:2227 src/bp.c:2229 src/bp.c:2235 src/bp.c:2237 src/bp.c:2233
+#: src/bp.c:2234 src/bp.c:2238 src/bp.c:2239 src/bp.c:2240 src/bp.c:2242
+#: src/bp.c:2230 src/bp.c:2231 src/bp.c:2236 src/bp.c:2315 src/bp.c:2316
+#: src/bp.c:2325 src/bp.c:2331 src/bp.c:2334 src/bp.c:2347 src/bp.c:2348
+#: src/bp.c:2319 src/bp.c:2322 src/bp.c:2320 src/bp.c:2323
 msgid   "Waiting for the parking brakes release"
 msgstr  ""
 
@@ -435,21 +537,37 @@ msgstr  ""
 #: src/bp.c:3335 src/bp.c:3336 src/bp.c:3341 src/bp.c:2369 src/bp.c:3353
 #: src/bp.c:2364 src/bp.c:3348 src/bp.c:3346 src/bp.c:3345 src/bp.c:2365
 #: src/bp.c:2372 src/bp.c:2374 src/bp.c:3355 src/bp.c:2380 src/bp.c:3361
-#: src/bp.c:2382 src/bp.c:3363
+#: src/bp.c:2382 src/bp.c:3363 src/bp.c:2378 src/bp.c:3359 src/bp.c:2379
+#: src/bp.c:3360 src/bp.c:2383 src/bp.c:3364 src/bp.c:2384 src/bp.c:3365
+#: src/bp.c:2385 src/bp.c:3366 src/bp.c:2387 src/bp.c:3368 src/bp.c:2375
+#: src/bp.c:3356 src/bp.c:2376 src/bp.c:3357 src/bp.c:2381 src/bp.c:3362
+#: src/bp.c:2460 src/bp.c:3441 src/bp.c:2461 src/bp.c:3442 src/bp.c:2464
+#: src/bp.c:3445 src/bp.c:2473 src/bp.c:3454 src/bp.c:2479 src/bp.c:3460
+#: src/bp.c:2482 src/bp.c:3463 src/bp.c:2495 src/bp.c:3476 src/bp.c:2496
+#: src/bp.c:3477 src/bp.c:2467 src/bp.c:3448 src/bp.c:2470 src/bp.c:3451
+#: src/bp.c:2468 src/bp.c:3449 src/bp.c:2471 src/bp.c:3452
 msgid   "Waiting for the parking brakes set"
 msgstr  ""
 
 #: src/bp.c:3250 src/bp.c:3251 src/bp.c:3277 src/bp.c:3279 src/bp.c:3278
 #: src/bp.c:3284 src/bp.c:3285 src/bp.c:3275 src/bp.c:3294 src/bp.c:3295
 #: src/bp.c:3300 src/bp.c:3312 src/bp.c:3307 src/bp.c:3305 src/bp.c:3304
-#: src/bp.c:3314 src/bp.c:3320 src/bp.c:3322
+#: src/bp.c:3314 src/bp.c:3320 src/bp.c:3322 src/bp.c:3318 src/bp.c:3319
+#: src/bp.c:3323 src/bp.c:3324 src/bp.c:3325 src/bp.c:3327 src/bp.c:3315
+#: src/bp.c:3316 src/bp.c:3321 src/bp.c:3400 src/bp.c:3401 src/bp.c:3404
+#: src/bp.c:3413 src/bp.c:3419 src/bp.c:3422 src/bp.c:3435 src/bp.c:3436
+#: src/bp.c:3407 src/bp.c:3410 src/bp.c:3408 src/bp.c:3411
 msgid   "Push-back called"
 msgstr  ""
 
 #: src/bp.c:3254 src/bp.c:3255 src/bp.c:3281 src/bp.c:3283 src/bp.c:3282
 #: src/bp.c:3288 src/bp.c:3290 src/bp.c:3279 src/bp.c:3299 src/bp.c:3300
 #: src/bp.c:3305 src/bp.c:3317 src/bp.c:3312 src/bp.c:3310 src/bp.c:3309
-#: src/bp.c:3319 src/bp.c:3325 src/bp.c:3327
+#: src/bp.c:3319 src/bp.c:3325 src/bp.c:3327 src/bp.c:3323 src/bp.c:3324
+#: src/bp.c:3328 src/bp.c:3329 src/bp.c:3330 src/bp.c:3332 src/bp.c:3320
+#: src/bp.c:3321 src/bp.c:3326 src/bp.c:3405 src/bp.c:3406 src/bp.c:3409
+#: src/bp.c:3418 src/bp.c:3424 src/bp.c:3427 src/bp.c:3440 src/bp.c:3441
+#: src/bp.c:3412 src/bp.c:3415 src/bp.c:3413 src/bp.c:3416
 msgid   "Driving to the aircraft"
 msgstr  ""
 
@@ -459,91 +577,153 @@ msgstr  ""
 #: src/bp.c:3303 src/bp.c:3307 src/bp.c:3304 src/bp.c:3308 src/bp.c:3309
 #: src/bp.c:3313 src/bp.c:3321 src/bp.c:3325 src/bp.c:3316 src/bp.c:3320
 #: src/bp.c:3314 src/bp.c:3318 src/bp.c:3317 src/bp.c:3323 src/bp.c:3327
-#: src/bp.c:3329 src/bp.c:3333 src/bp.c:3331 src/bp.c:3335
+#: src/bp.c:3329 src/bp.c:3333 src/bp.c:3331 src/bp.c:3335 src/bp.c:3328
+#: src/bp.c:3332 src/bp.c:3336 src/bp.c:3337 src/bp.c:3334 src/bp.c:3338
+#: src/bp.c:3340 src/bp.c:3324 src/bp.c:3330 src/bp.c:3409 src/bp.c:3413
+#: src/bp.c:3410 src/bp.c:3414 src/bp.c:3417 src/bp.c:3422 src/bp.c:3426
+#: src/bp.c:3428 src/bp.c:3432 src/bp.c:3431 src/bp.c:3435 src/bp.c:3444
+#: src/bp.c:3448 src/bp.c:3445 src/bp.c:3449 src/bp.c:3416 src/bp.c:3420
+#: src/bp.c:3419 src/bp.c:3423 src/bp.c:3421 src/bp.c:3424
 msgid   "Waiting for doors/GPU/ASU closed/disconnected"
 msgstr  ""
 
 #: src/bp.c:3264 src/bp.c:3265 src/bp.c:3291 src/bp.c:3293 src/bp.c:3292
 #: src/bp.c:3298 src/bp.c:3300 src/bp.c:3289 src/bp.c:3309 src/bp.c:3310
 #: src/bp.c:3315 src/bp.c:3327 src/bp.c:3322 src/bp.c:3320 src/bp.c:3319
-#: src/bp.c:3329 src/bp.c:3335 src/bp.c:3337
+#: src/bp.c:3329 src/bp.c:3335 src/bp.c:3337 src/bp.c:3333 src/bp.c:3334
+#: src/bp.c:3338 src/bp.c:3339 src/bp.c:3340 src/bp.c:3342 src/bp.c:3330
+#: src/bp.c:3331 src/bp.c:3336 src/bp.c:3415 src/bp.c:3416 src/bp.c:3419
+#: src/bp.c:3428 src/bp.c:3434 src/bp.c:3437 src/bp.c:3450 src/bp.c:3451
+#: src/bp.c:3422 src/bp.c:3425 src/bp.c:3423 src/bp.c:3426
 msgid   "Opening the cradle"
 msgstr  ""
 
 #: src/bp.c:3294 src/bp.c:3295 src/bp.c:3321 src/bp.c:3323 src/bp.c:3322
 #: src/bp.c:3328 src/bp.c:3330 src/bp.c:3319 src/bp.c:3339 src/bp.c:3340
 #: src/bp.c:3345 src/bp.c:3357 src/bp.c:3352 src/bp.c:3350 src/bp.c:3349
-#: src/bp.c:3359 src/bp.c:3365 src/bp.c:3367
+#: src/bp.c:3359 src/bp.c:3365 src/bp.c:3367 src/bp.c:3363 src/bp.c:3364
+#: src/bp.c:3368 src/bp.c:3369 src/bp.c:3370 src/bp.c:3372 src/bp.c:3360
+#: src/bp.c:3361 src/bp.c:3366 src/bp.c:3445 src/bp.c:3446 src/bp.c:3449
+#: src/bp.c:3458 src/bp.c:3464 src/bp.c:3467 src/bp.c:3480 src/bp.c:3481
+#: src/bp.c:3452 src/bp.c:3455 src/bp.c:3453 src/bp.c:3456
 msgid   "Connecting to the aircraft"
 msgstr  ""
 
 #: src/bp.c:3306 src/bp.c:3307 src/bp.c:3333 src/bp.c:3335 src/bp.c:3334
 #: src/bp.c:3340 src/bp.c:3342 src/bp.c:3331 src/bp.c:3351 src/bp.c:3352
 #: src/bp.c:3357 src/bp.c:3369 src/bp.c:3364 src/bp.c:3362 src/bp.c:3361
-#: src/bp.c:3371 src/bp.c:3377 src/bp.c:3379
+#: src/bp.c:3371 src/bp.c:3377 src/bp.c:3379 src/bp.c:3375 src/bp.c:3376
+#: src/bp.c:3380 src/bp.c:3381 src/bp.c:3382 src/bp.c:3384 src/bp.c:3372
+#: src/bp.c:3373 src/bp.c:3378 src/bp.c:3457 src/bp.c:3458 src/bp.c:3461
+#: src/bp.c:3470 src/bp.c:3476 src/bp.c:3479 src/bp.c:3492 src/bp.c:3493
+#: src/bp.c:3464 src/bp.c:3467 src/bp.c:3465 src/bp.c:3468
 msgid   "Connected to the aircraft"
 msgstr  ""
 
 #: src/bp.c:3310 src/bp.c:3311 src/bp.c:3337 src/bp.c:3339 src/bp.c:3338
 #: src/bp.c:3344 src/bp.c:3346 src/bp.c:3335 src/bp.c:3355 src/bp.c:3356
 #: src/bp.c:3361 src/bp.c:3373 src/bp.c:3368 src/bp.c:3366 src/bp.c:3365
-#: src/bp.c:3375 src/bp.c:3381 src/bp.c:3383
+#: src/bp.c:3375 src/bp.c:3381 src/bp.c:3383 src/bp.c:3379 src/bp.c:3380
+#: src/bp.c:3384 src/bp.c:3385 src/bp.c:3386 src/bp.c:3388 src/bp.c:3376
+#: src/bp.c:3377 src/bp.c:3382 src/bp.c:3461 src/bp.c:3462 src/bp.c:3465
+#: src/bp.c:3474 src/bp.c:3480 src/bp.c:3483 src/bp.c:3496 src/bp.c:3497
+#: src/bp.c:3468 src/bp.c:3471 src/bp.c:3469 src/bp.c:3472
 msgid   "Push-back started"
 msgstr  ""
 
 #: src/bp.c:3335 src/bp.c:3336 src/bp.c:3362 src/bp.c:3364 src/bp.c:3363
 #: src/bp.c:3369 src/bp.c:3371 src/bp.c:3360 src/bp.c:3380 src/bp.c:3381
 #: src/bp.c:3386 src/bp.c:3398 src/bp.c:3393 src/bp.c:3391 src/bp.c:3390
-#: src/bp.c:3400 src/bp.c:3406 src/bp.c:3408
+#: src/bp.c:3400 src/bp.c:3406 src/bp.c:3408 src/bp.c:3404 src/bp.c:3405
+#: src/bp.c:3409 src/bp.c:3410 src/bp.c:3411 src/bp.c:3413 src/bp.c:3401
+#: src/bp.c:3402 src/bp.c:3407 src/bp.c:3412 src/bp.c:3488 src/bp.c:3489
+#: src/bp.c:3492 src/bp.c:3495 src/bp.c:3504 src/bp.c:3510 src/bp.c:3513
+#: src/bp.c:3526 src/bp.c:3527 src/bp.c:3498 src/bp.c:3501 src/bp.c:3499
+#: src/bp.c:3502
 msgid   "Push-back in progress"
 msgstr  ""
 
 #: src/bp.c:3339 src/bp.c:3340 src/bp.c:3366 src/bp.c:3368 src/bp.c:3367
 #: src/bp.c:3373 src/bp.c:3375 src/bp.c:3364 src/bp.c:3384 src/bp.c:3385
 #: src/bp.c:3390 src/bp.c:3402 src/bp.c:3397 src/bp.c:3395 src/bp.c:3394
-#: src/bp.c:3404 src/bp.c:3410 src/bp.c:3412
+#: src/bp.c:3404 src/bp.c:3410 src/bp.c:3412 src/bp.c:3408 src/bp.c:3409
+#: src/bp.c:3413 src/bp.c:3414 src/bp.c:3415 src/bp.c:3417 src/bp.c:3405
+#: src/bp.c:3406 src/bp.c:3411 src/bp.c:3416 src/bp.c:3492 src/bp.c:3493
+#: src/bp.c:3496 src/bp.c:3499 src/bp.c:3508 src/bp.c:3514 src/bp.c:3517
+#: src/bp.c:3530 src/bp.c:3531 src/bp.c:3502 src/bp.c:3505 src/bp.c:3503
+#: src/bp.c:3506
 msgid   "Push-back stopping"
 msgstr  ""
 
 #: src/bp.c:3343 src/bp.c:3344 src/bp.c:3370 src/bp.c:3372 src/bp.c:3371
 #: src/bp.c:3377 src/bp.c:3379 src/bp.c:3368 src/bp.c:3388 src/bp.c:3389
 #: src/bp.c:3394 src/bp.c:3406 src/bp.c:3401 src/bp.c:3399 src/bp.c:3398
-#: src/bp.c:3408 src/bp.c:3414 src/bp.c:3416
+#: src/bp.c:3408 src/bp.c:3414 src/bp.c:3416 src/bp.c:3412 src/bp.c:3413
+#: src/bp.c:3417 src/bp.c:3418 src/bp.c:3419 src/bp.c:3421 src/bp.c:3409
+#: src/bp.c:3410 src/bp.c:3415 src/bp.c:3420 src/bp.c:3496 src/bp.c:3497
+#: src/bp.c:3500 src/bp.c:3503 src/bp.c:3512 src/bp.c:3518 src/bp.c:3521
+#: src/bp.c:3534 src/bp.c:3535 src/bp.c:3506 src/bp.c:3509 src/bp.c:3507
+#: src/bp.c:3510
 msgid   "Push-back stopped"
 msgstr  ""
 
 #: src/bp.c:3347 src/bp.c:3348 src/bp.c:3374 src/bp.c:3376 src/bp.c:3375
 #: src/bp.c:3381 src/bp.c:3383 src/bp.c:3372 src/bp.c:3392 src/bp.c:3393
 #: src/bp.c:3398 src/bp.c:3410 src/bp.c:3405 src/bp.c:3403 src/bp.c:3402
-#: src/bp.c:3412 src/bp.c:3418 src/bp.c:3420
+#: src/bp.c:3412 src/bp.c:3418 src/bp.c:3420 src/bp.c:3416 src/bp.c:3417
+#: src/bp.c:3421 src/bp.c:3422 src/bp.c:3423 src/bp.c:3425 src/bp.c:3413
+#: src/bp.c:3414 src/bp.c:3419 src/bp.c:3424 src/bp.c:3500 src/bp.c:3501
+#: src/bp.c:3504 src/bp.c:3507 src/bp.c:3516 src/bp.c:3522 src/bp.c:3525
+#: src/bp.c:3538 src/bp.c:3539 src/bp.c:3510 src/bp.c:3513 src/bp.c:3511
+#: src/bp.c:3514
 msgid   "Lowering the nose"
 msgstr  ""
 
 #: src/bp.c:3351 src/bp.c:3352 src/bp.c:3378 src/bp.c:3380 src/bp.c:3379
 #: src/bp.c:3385 src/bp.c:3387 src/bp.c:3376 src/bp.c:3396 src/bp.c:3397
 #: src/bp.c:3402 src/bp.c:3414 src/bp.c:3409 src/bp.c:3407 src/bp.c:3406
-#: src/bp.c:3416 src/bp.c:3422 src/bp.c:3424
+#: src/bp.c:3416 src/bp.c:3422 src/bp.c:3424 src/bp.c:3420 src/bp.c:3421
+#: src/bp.c:3425 src/bp.c:3426 src/bp.c:3427 src/bp.c:3429 src/bp.c:3417
+#: src/bp.c:3418 src/bp.c:3423 src/bp.c:3428 src/bp.c:3504 src/bp.c:3505
+#: src/bp.c:3508 src/bp.c:3511 src/bp.c:3520 src/bp.c:3526 src/bp.c:3529
+#: src/bp.c:3542 src/bp.c:3543 src/bp.c:3514 src/bp.c:3517 src/bp.c:3515
+#: src/bp.c:3518
 msgid   "Ungrabbing the nose"
 msgstr  ""
 
 #: src/bp.c:3355 src/bp.c:3356 src/bp.c:3382 src/bp.c:3384 src/bp.c:3383
 #: src/bp.c:3389 src/bp.c:3391 src/bp.c:3380 src/bp.c:3400 src/bp.c:3401
 #: src/bp.c:3406 src/bp.c:3418 src/bp.c:3413 src/bp.c:3411 src/bp.c:3410
-#: src/bp.c:3420 src/bp.c:3426 src/bp.c:3428
+#: src/bp.c:3420 src/bp.c:3426 src/bp.c:3428 src/bp.c:3424 src/bp.c:3425
+#: src/bp.c:3429 src/bp.c:3430 src/bp.c:3431 src/bp.c:3433 src/bp.c:3421
+#: src/bp.c:3422 src/bp.c:3427 src/bp.c:3432 src/bp.c:3508 src/bp.c:3509
+#: src/bp.c:3512 src/bp.c:3515 src/bp.c:3524 src/bp.c:3530 src/bp.c:3533
+#: src/bp.c:3546 src/bp.c:3547 src/bp.c:3518 src/bp.c:3521 src/bp.c:3519
+#: src/bp.c:3522
 msgid   "Waiting the OK to disconnect"
 msgstr  ""
 
 #: src/bp.c:3359 src/bp.c:3360 src/bp.c:3386 src/bp.c:3388 src/bp.c:3387
 #: src/bp.c:3393 src/bp.c:3395 src/bp.c:3384 src/bp.c:3404 src/bp.c:3405
 #: src/bp.c:3410 src/bp.c:3422 src/bp.c:3417 src/bp.c:3415 src/bp.c:3414
-#: src/bp.c:3424 src/bp.c:3430 src/bp.c:3432
+#: src/bp.c:3424 src/bp.c:3430 src/bp.c:3432 src/bp.c:3428 src/bp.c:3429
+#: src/bp.c:3433 src/bp.c:3434 src/bp.c:3435 src/bp.c:3437 src/bp.c:3425
+#: src/bp.c:3426 src/bp.c:3431 src/bp.c:3436 src/bp.c:3512 src/bp.c:3513
+#: src/bp.c:3516 src/bp.c:3519 src/bp.c:3528 src/bp.c:3534 src/bp.c:3537
+#: src/bp.c:3550 src/bp.c:3551 src/bp.c:3522 src/bp.c:3525 src/bp.c:3523
+#: src/bp.c:3526
 msgid   "Disconnecting the tug away from the aircraft"
 msgstr  ""
 
 #: src/bp.c:3400 src/bp.c:3401 src/bp.c:3427 src/bp.c:3429 src/bp.c:3428
 #: src/bp.c:3434 src/bp.c:3436 src/bp.c:3425 src/bp.c:3445 src/bp.c:3446
 #: src/bp.c:3451 src/bp.c:3463 src/bp.c:3458 src/bp.c:3456 src/bp.c:3455
-#: src/bp.c:3465 src/bp.c:3471 src/bp.c:3473
+#: src/bp.c:3465 src/bp.c:3471 src/bp.c:3473 src/bp.c:3469 src/bp.c:3470
+#: src/bp.c:3474 src/bp.c:3475 src/bp.c:3476 src/bp.c:3478 src/bp.c:3466
+#: src/bp.c:3467 src/bp.c:3472 src/bp.c:3477 src/bp.c:3553 src/bp.c:3554
+#: src/bp.c:3557 src/bp.c:3560 src/bp.c:3569 src/bp.c:3575 src/bp.c:3578
+#: src/bp.c:3591 src/bp.c:3592 src/bp.c:3563 src/bp.c:3566 src/bp.c:3564
+#: src/bp.c:3567
 msgid   "Closing the cradle"
 msgstr  ""
 
@@ -553,41 +733,70 @@ msgstr  ""
 #: src/bp.c:3449 src/bp.c:3453 src/bp.c:3450 src/bp.c:3454 src/bp.c:3455
 #: src/bp.c:3459 src/bp.c:3467 src/bp.c:3471 src/bp.c:3462 src/bp.c:3466
 #: src/bp.c:3460 src/bp.c:3464 src/bp.c:3463 src/bp.c:3469 src/bp.c:3473
-#: src/bp.c:3475 src/bp.c:3479 src/bp.c:3477 src/bp.c:3481
+#: src/bp.c:3475 src/bp.c:3479 src/bp.c:3477 src/bp.c:3481 src/bp.c:3474
+#: src/bp.c:3478 src/bp.c:3482 src/bp.c:3483 src/bp.c:3480 src/bp.c:3484
+#: src/bp.c:3486 src/bp.c:3470 src/bp.c:3476 src/bp.c:3485 src/bp.c:3557
+#: src/bp.c:3561 src/bp.c:3558 src/bp.c:3562 src/bp.c:3565 src/bp.c:3564
+#: src/bp.c:3568 src/bp.c:3573 src/bp.c:3577 src/bp.c:3579 src/bp.c:3583
+#: src/bp.c:3582 src/bp.c:3586 src/bp.c:3595 src/bp.c:3599 src/bp.c:3596
+#: src/bp.c:3600 src/bp.c:3567 src/bp.c:3571 src/bp.c:3570 src/bp.c:3574
+#: src/bp.c:3572 src/bp.c:3575
 msgid   "Moving to the side of the aircraft"
 msgstr  ""
 
 #: src/bp.c:3415 src/bp.c:3416 src/bp.c:3442 src/bp.c:3444 src/bp.c:3443
 #: src/bp.c:3449 src/bp.c:3451 src/bp.c:3440 src/bp.c:3460 src/bp.c:3461
 #: src/bp.c:3466 src/bp.c:3478 src/bp.c:3473 src/bp.c:3471 src/bp.c:3470
-#: src/bp.c:3480 src/bp.c:3486 src/bp.c:3488
+#: src/bp.c:3480 src/bp.c:3486 src/bp.c:3488 src/bp.c:3484 src/bp.c:3485
+#: src/bp.c:3489 src/bp.c:3490 src/bp.c:3491 src/bp.c:3493 src/bp.c:3481
+#: src/bp.c:3482 src/bp.c:3487 src/bp.c:3492 src/bp.c:3568 src/bp.c:3569
+#: src/bp.c:3572 src/bp.c:3575 src/bp.c:3584 src/bp.c:3590 src/bp.c:3593
+#: src/bp.c:3606 src/bp.c:3607 src/bp.c:3578 src/bp.c:3581 src/bp.c:3579
+#: src/bp.c:3582
 msgid   "Showing the pin and the clear signal"
 msgstr  ""
 
 #: src/bp.c:3419 src/bp.c:3420 src/bp.c:3446 src/bp.c:3448 src/bp.c:3447
 #: src/bp.c:3453 src/bp.c:3455 src/bp.c:3444 src/bp.c:3464 src/bp.c:3465
 #: src/bp.c:3470 src/bp.c:3482 src/bp.c:3477 src/bp.c:3475 src/bp.c:3474
-#: src/bp.c:3484 src/bp.c:3490 src/bp.c:3492
+#: src/bp.c:3484 src/bp.c:3490 src/bp.c:3492 src/bp.c:3488 src/bp.c:3489
+#: src/bp.c:3493 src/bp.c:3494 src/bp.c:3495 src/bp.c:3497 src/bp.c:3485
+#: src/bp.c:3486 src/bp.c:3491 src/bp.c:3496 src/bp.c:3572 src/bp.c:3573
+#: src/bp.c:3576 src/bp.c:3579 src/bp.c:3588 src/bp.c:3594 src/bp.c:3597
+#: src/bp.c:3610 src/bp.c:3611 src/bp.c:3582 src/bp.c:3585 src/bp.c:3583
+#: src/bp.c:3586
 msgid   "Driving the tug away back to his station"
 msgstr  ""
 
 #: src/bp.c:2153 src/bp.c:2154 src/bp.c:2180 src/bp.c:2182 src/bp.c:2181
 #: src/bp.c:2185 src/bp.c:2178 src/bp.c:2191 src/bp.c:2186 src/bp.c:2187
-#: src/bp.c:2194 src/bp.c:2196 src/bp.c:2202 src/bp.c:2204
+#: src/bp.c:2194 src/bp.c:2196 src/bp.c:2202 src/bp.c:2204 src/bp.c:2200
+#: src/bp.c:2201 src/bp.c:2205 src/bp.c:2206 src/bp.c:2207 src/bp.c:2209
+#: src/bp.c:2197 src/bp.c:2198 src/bp.c:2203 src/bp.c:2282 src/bp.c:2283
+#: src/bp.c:2292 src/bp.c:2298 src/bp.c:2301 src/bp.c:2314 src/bp.c:2315
+#: src/bp.c:2286 src/bp.c:2289 src/bp.c:2287 src/bp.c:2290
 msgid   "Connected to the aircraft, waiting for clearance"
 msgstr  ""
 
 #: src/bp.c:3302 src/bp.c:3303 src/bp.c:3329 src/bp.c:3331 src/bp.c:3330
 #: src/bp.c:3336 src/bp.c:3338 src/bp.c:3327 src/bp.c:3347 src/bp.c:3348
 #: src/bp.c:3353 src/bp.c:3365 src/bp.c:3360 src/bp.c:3358 src/bp.c:3357
-#: src/bp.c:3367 src/bp.c:3373 src/bp.c:3375
+#: src/bp.c:3367 src/bp.c:3373 src/bp.c:3375 src/bp.c:3371 src/bp.c:3372
+#: src/bp.c:3376 src/bp.c:3377 src/bp.c:3378 src/bp.c:3380 src/bp.c:3368
+#: src/bp.c:3369 src/bp.c:3374 src/bp.c:3453 src/bp.c:3454 src/bp.c:3457
+#: src/bp.c:3466 src/bp.c:3472 src/bp.c:3475 src/bp.c:3488 src/bp.c:3489
+#: src/bp.c:3460 src/bp.c:3463 src/bp.c:3461 src/bp.c:3464
 msgid   "Lifting the aircraft"
 msgstr  ""
 
 #: src/bp.c:3298 src/bp.c:3299 src/bp.c:3325 src/bp.c:3327 src/bp.c:3326
 #: src/bp.c:3332 src/bp.c:3334 src/bp.c:3323 src/bp.c:3343 src/bp.c:3344
 #: src/bp.c:3349 src/bp.c:3361 src/bp.c:3356 src/bp.c:3354 src/bp.c:3353
-#: src/bp.c:3363 src/bp.c:3369 src/bp.c:3371
+#: src/bp.c:3363 src/bp.c:3369 src/bp.c:3371 src/bp.c:3367 src/bp.c:3368
+#: src/bp.c:3372 src/bp.c:3373 src/bp.c:3374 src/bp.c:3376 src/bp.c:3364
+#: src/bp.c:3365 src/bp.c:3370 src/bp.c:3449 src/bp.c:3450 src/bp.c:3453
+#: src/bp.c:3462 src/bp.c:3468 src/bp.c:3471 src/bp.c:3484 src/bp.c:3485
+#: src/bp.c:3456 src/bp.c:3459 src/bp.c:3457 src/bp.c:3460
 msgid   "Grabbing the aircraft"
 msgstr  ""
 
@@ -601,12 +810,19 @@ msgid   "The push process is always halted when the tug is at the nose of the "
 msgstr  ""
 
 #: src/xplane.c:823 src/xplane.c:821 src/xplane.c:886 src/xplane.c:885
-#: src/xplane.c:890 src/xplane.c:894
+#: src/xplane.c:890 src/xplane.c:894 src/xplane.c:897 src/xplane.c:911
+#: src/xplane.c:913 src/xplane.c:915 src/xplane.c:919 src/xplane.c:921
+#: src/xplane.c:938 src/xplane.c:951 src/xplane.c:953 src/xplane.c:964
+#: src/xplane.c:968
 msgid   "Open preference window."
 msgstr  ""
 
 #: src/bp.c:3302 src/bp.c:3301 src/bp.c:3309 src/bp.c:3311 src/bp.c:3317
-#: src/bp.c:3319
+#: src/bp.c:3319 src/bp.c:3315 src/bp.c:3316 src/bp.c:3320 src/bp.c:3321
+#: src/bp.c:3322 src/bp.c:3324 src/bp.c:3312 src/bp.c:3313 src/bp.c:3318
+#: src/bp.c:3397 src/bp.c:3398 src/bp.c:3401 src/bp.c:3410 src/bp.c:3416
+#: src/bp.c:3419 src/bp.c:3432 src/bp.c:3433 src/bp.c:3404 src/bp.c:3407
+#: src/bp.c:3405 src/bp.c:3408
 msgid   "Push-back waiting to be called"
 msgstr  ""
 
@@ -622,4 +838,52 @@ msgid   "Tug starts near the aircraft"
 msgstr  ""
 
 msgid   "Tug called by activating the beacon"
+msgstr  ""
+
+#: src/xplane.c:903
+msgid   "Rotate the tug 5deg to the left"
+msgstr  ""
+
+#: src/xplane.c:905
+msgid   "Rotate the tug 5deg to the right"
+msgstr  ""
+
+#: src/xplane.c:903 src/xplane.c:917 src/xplane.c:919 src/xplane.c:921
+#: src/xplane.c:925 src/xplane.c:927 src/xplane.c:944 src/xplane.c:957
+#: src/xplane.c:959 src/xplane.c:970 src/xplane.c:974
+msgid   "Turn the tug 5deg to the left"
+msgstr  ""
+
+#: src/xplane.c:905 src/xplane.c:919 src/xplane.c:921 src/xplane.c:923
+#: src/xplane.c:927 src/xplane.c:929 src/xplane.c:946 src/xplane.c:959
+#: src/xplane.c:961 src/xplane.c:972 src/xplane.c:976
+msgid   "Turn the tug 5deg to the right"
+msgstr  ""
+
+#: src/xplane.c:921 src/xplane.c:923 src/xplane.c:925 src/xplane.c:929
+#: src/xplane.c:931 src/xplane.c:948 src/xplane.c:961 src/xplane.c:963
+msgid   "Pause the push back"
+msgstr  ""
+
+#: src/xplane.c:923 src/xplane.c:925 src/xplane.c:927 src/xplane.c:931
+#: src/xplane.c:933
+msgid   "Start the manual push back"
+msgstr  ""
+
+#: src/xplane.c:933 src/xplane.c:950 src/xplane.c:963 src/xplane.c:965
+#: src/xplane.c:976
+msgid   "Start/Pause the manual push back"
+msgstr  ""
+
+#: src/xplane.c:952 src/xplane.c:965 src/xplane.c:967 src/xplane.c:978
+#: src/xplane.c:982
+msgid   "Start/Pause the manual push back (yoke not used)"
+msgstr  ""
+
+#: src/xplane.c:974 src/xplane.c:978
+msgid   "Reverse the trajectory of the push back"
+msgstr  ""
+
+#: src/xplane.c:980
+msgid   "Start/Pause the manual push back with yoke"
 msgstr  ""

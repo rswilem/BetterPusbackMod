@@ -67,6 +67,8 @@ XPLMCommandRef start_pb, start_cam, conn_first, stop_pb;
 static XPLMCommandRef stop_cam;
 static XPLMCommandRef cab_cam, recreate_routes;
 static XPLMCommandRef abort_push, pref_cmd;
+static XPLMCommandRef manual_push_start, manual_push_start_no_yoke;
+static XPLMCommandRef manual_push_left, manual_push_right, manual_push_reverse;
 static XPLMMenuID root_menu;
 static int plugins_menu_item;
 static int start_pb_plan_menu_item, stop_pb_plan_menu_item;
@@ -97,6 +99,13 @@ static int cab_cam_handler(XPLMCommandRef, XPLMCommandPhase, void *);
 static int recreate_routes_handler(XPLMCommandRef, XPLMCommandPhase, void *);
 
 static int abort_push_handler(XPLMCommandRef, XPLMCommandPhase, void *);
+
+static int manual_push_left_handler(XPLMCommandRef, XPLMCommandPhase, void *);
+static int manual_push_right_handler(XPLMCommandRef, XPLMCommandPhase, void *);
+static int manual_push_reverse_handler(XPLMCommandRef, XPLMCommandPhase, void *);
+static int manual_push_start_handler(XPLMCommandRef, XPLMCommandPhase, void *);
+static int manual_push_start_no_yoke_handler(XPLMCommandRef, XPLMCommandPhase, void *);
+static int manual_push_reverse_handler(XPLMCommandRef, XPLMCommandPhase, void *);
 
 static bool_t start_after_cam = B_FALSE;
 
@@ -326,8 +335,10 @@ start_pb_handler_(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon)
     // if late_plan_requested always present plan for final review
     if ((late_plan_requested || bp_num_segs() == 0) && !slave_mode)
     {
-        if (!bp_cam_start())
+        if (!push_manual.active) {
+            if (!bp_cam_start())
             return (1);
+        }
         prefs_enable = B_FALSE;
         start_pb_plan_enable = B_FALSE;
         stop_pb_plan_enable = B_TRUE;
@@ -335,9 +346,11 @@ start_pb_handler_(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon)
         conn_first_enable = B_FALSE;
         stop_pb_enable = B_FALSE;
         enable_menu_items();
-        msg_play(MSG_PLAN_START);
         start_after_cam = B_TRUE;
-        return (1);
+        if (!push_manual.active) {
+            msg_play(MSG_PLAN_START);
+            return (1);
+        }
     }
     op_complete = B_FALSE;
     late_plan_requested = B_FALSE;
@@ -357,6 +370,9 @@ start_pb_handler_(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon)
 static int
 start_pb_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon)
 {
+    if (phase != xplm_CommandEnd )
+    return (1);
+
     bool_t always_connect_tug_first = B_FALSE;
     (void)conf_get_b(bp_conf, "always_connect_tug_first", &always_connect_tug_first);
 
@@ -369,6 +385,42 @@ start_pb_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon)
         return start_pb_handler_(cmd, phase, refcon);
     }
 }
+
+static int
+manual_push_start_handler_(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon, bool_t with_yoke)
+{
+    if (phase != xplm_CommandEnd )
+        return (1);
+
+    if (!push_manual.active) {
+        manual_bp_start(with_yoke);
+        logMsg("Manual push  engaged,  with_yoke %d", (int)with_yoke);
+        return start_pb_handler_(cmd, phase, refcon);
+    } else {
+        push_manual.pause = !push_manual.pause;
+        logMsg("Manual push status %d", (int)push_manual.pause );
+        return (1);
+    }
+}
+
+static int
+manual_push_start_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon)
+{
+    if (phase != xplm_CommandEnd )
+        return (1);
+    
+    return manual_push_start_handler_(cmd, phase, refcon, true);
+}
+
+static int
+manual_push_start_no_yoke_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon)
+{
+    if (phase != xplm_CommandEnd )
+        return (1);
+    
+    return manual_push_start_handler_(cmd, phase, refcon, false);
+}
+
 static int
 stop_pb_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon)
 {
@@ -384,6 +436,10 @@ stop_pb_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon)
         return (1);
     }
 
+    if (push_manual.active) {
+        manual_bp_stop();
+    }
+
     (void)bp_stop();
     op_complete = B_TRUE;
     if (!slave_mode)
@@ -397,6 +453,24 @@ stop_pb_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon)
     }
     return (1);
 }
+
+static int
+manual_push_reverse_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon)
+{
+    UNUSED(cmd);
+    UNUSED(refcon);
+    if (phase != xplm_CommandEnd)
+        return (0);
+
+        if (push_manual.active && !push_manual.with_yoke)  {
+        push_manual.reverse = !push_manual.reverse;
+        logMsg("Manual push  engaged,  reverse %d", (int)push_manual.reverse);
+    } else {
+        logMsg("Manual push not engaged, manual speed reverse disabled");
+    }
+    return (1);
+}
+
 
 static int
 start_cam_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon)
@@ -896,6 +970,17 @@ XPluginStart(char *name, char *sig, char *desc)
     abort_push = XPLMCreateCommand("BetterPushback/abort_push",
                                    _("Abort pushback during coupled push"));
 
+    manual_push_left = XPLMCreateCommand("BetterPushback/manual_push_left",
+    _("Turn the tug 5deg to the left"));
+    manual_push_right = XPLMCreateCommand("BetterPushback/manual_push_right",
+        _("Turn the tug 5deg to the right"));
+    manual_push_reverse = XPLMCreateCommand("BetterPushback/manual_push_reverse",
+        _("Reverse the trajectory of the push back"));
+    manual_push_start = XPLMCreateCommand("BetterPushback/manual_push_start",
+        _("Start/Pause the manual push back with yoke"));
+    manual_push_start_no_yoke = XPLMCreateCommand("BetterPushback/manual_push_start_no_yoke",
+        _("Start/Pause the manual push back (yoke not used)"));    
+        
     bp_boot_init();
 
     dr_create_i(&bp_started_dr, (int *)&bp_started, B_FALSE,
@@ -929,6 +1014,7 @@ XPluginStart(char *name, char *sig, char *desc)
 PLUGIN_API void
 XPluginStop(void)
 {
+    cfg_cleanup();
     bp_conf_fini();
     acfutils_xlate_fini();
     tug_glob_fini();
@@ -1036,6 +1122,12 @@ bp_priv_enable(void)
                                1, NULL);
     XPLMRegisterCommandHandler(abort_push, abort_push_handler, 1, NULL);
 
+    XPLMRegisterCommandHandler(manual_push_left, manual_push_left_handler, 1, NULL);
+    XPLMRegisterCommandHandler(manual_push_right, manual_push_right_handler, 1, NULL);
+    XPLMRegisterCommandHandler(manual_push_reverse, manual_push_reverse_handler, 1, NULL);
+    XPLMRegisterCommandHandler(manual_push_start, manual_push_start_handler, 1, NULL);
+    XPLMRegisterCommandHandler(manual_push_start_no_yoke, manual_push_start_no_yoke_handler, 1, NULL);
+
     plugins_menu_item = XPLMAppendMenuItem(XPLMFindPluginsMenu(),
                                            "Better Pushback", NULL, 1);
     root_menu = XPLMCreateMenu("Better Pushback", XPLMFindPluginsMenu(),
@@ -1119,6 +1211,11 @@ bp_priv_disable(void)
     XPLMUnregisterCommandHandler(recreate_routes, recreate_routes_handler,
                                  1, NULL);
     XPLMUnregisterCommandHandler(abort_push, abort_push_handler, 1, NULL);
+    XPLMUnregisterCommandHandler(manual_push_left, manual_push_left_handler, 1, NULL);
+    XPLMUnregisterCommandHandler(manual_push_right, manual_push_right_handler, 1, NULL);
+    XPLMUnregisterCommandHandler(manual_push_reverse, manual_push_reverse_handler, 1, NULL);
+    XPLMUnregisterCommandHandler(manual_push_start, manual_push_start_handler, 1, NULL);
+    XPLMUnregisterCommandHandler(manual_push_start_no_yoke, manual_push_start_no_yoke_handler, 1, NULL);
     XPLMUnregisterCommandHandler(pref_cmd, preference_window_handler, 1, NULL);
 
     bp_fini();
@@ -1171,6 +1268,52 @@ abort_push_handler(XPLMCommandRef cmd, XPLMCommandPhase phase,
     logMsg("bp_fini called from abort_push_handler, bp_started = %d", bp_started);
     slave_mode = B_FALSE;
     coupled_state_change();
+    return (1);
+}
+
+static void manual_push_handler(bool_t to_the_left)
+{
+// simulation joystick position    
+#define STEER_INCR 10
+#define STEER_MAX 100
+
+    if (push_manual.active) {
+        float angle =  to_the_left ? push_manual.angle + STEER_INCR : push_manual.angle - STEER_INCR;
+
+        if (angle > STEER_MAX) {
+            angle = STEER_MAX;
+        }
+        if (angle < -STEER_MAX) {
+            angle = -STEER_MAX;
+        }
+        push_manual.angle = angle;
+        logMsg("Manual push engaged, steer %f", angle);
+        return;
+    }
+    logMsg("Manual push not engaged, manual nose tug rotation disabled");
+}
+
+static int
+manual_push_left_handler(XPLMCommandRef cmd, XPLMCommandPhase phase,
+                   void *refcon)
+{
+    UNUSED(cmd);
+    UNUSED(refcon);
+    if (phase != xplm_CommandEnd)
+        return (0);
+    manual_push_handler(true);
+    return (1);
+}
+
+static int
+manual_push_right_handler(XPLMCommandRef cmd, XPLMCommandPhase phase,
+                   void *refcon)
+{
+    UNUSED(cmd);
+    UNUSED(refcon);
+    if (phase != xplm_CommandEnd)
+        return (0);
+    manual_push_handler(false);
     return (1);
 }
 
