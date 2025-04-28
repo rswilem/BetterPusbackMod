@@ -462,7 +462,7 @@ manual_push_reverse_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *re
     if (phase != xplm_CommandEnd)
         return (0);
 
-        if (push_manual.active && !push_manual.with_yoke)  {
+    if (push_manual.active && !push_manual.with_yoke)  {
         push_manual.reverse = !push_manual.reverse;
         logMsg("Manual push  engaged,  reverse %d", (int)push_manual.reverse);
     } else {
@@ -971,9 +971,9 @@ XPluginStart(char *name, char *sig, char *desc)
                                    _("Abort pushback during coupled push"));
 
     manual_push_left = XPLMCreateCommand("BetterPushback/manual_push_left",
-    _("Turn the tug 5deg to the left"));
+    _("Turn the tug to the left"));
     manual_push_right = XPLMCreateCommand("BetterPushback/manual_push_right",
-        _("Turn the tug 5deg to the right"));
+        _("Turn the tug to the right"));
     manual_push_reverse = XPLMCreateCommand("BetterPushback/manual_push_reverse",
         _("Reverse the trajectory of the push back"));
     manual_push_start = XPLMCreateCommand("BetterPushback/manual_push_start",
@@ -1278,6 +1278,10 @@ static void manual_push_handler(bool_t to_the_left)
 #define STEER_MAX 100
 
     if (push_manual.active) {
+        if (push_manual.with_yoke) {
+            logMsg("Manual push with yoke support engaged, manual nose tug rotation disabled");
+            return;
+        }
         float angle =  to_the_left ? push_manual.angle + STEER_INCR : push_manual.angle - STEER_INCR;
 
         if (angle > STEER_MAX) {
@@ -1289,8 +1293,9 @@ static void manual_push_handler(bool_t to_the_left)
         push_manual.angle = angle;
         logMsg("Manual push engaged, steer %f", angle);
         return;
+    } else {
+        logMsg("Manual push not engaged, manual nose tug rotation disabled");
     }
-    logMsg("Manual push not engaged, manual nose tug rotation disabled");
 }
 
 static int

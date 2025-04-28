@@ -1801,6 +1801,7 @@ bp_run_push_manual(void) {
         dr_setf(&drs.axial_force, 0);
         dr_setf(&drs.rot_force_N, 0);
         bp.last_force = 0;
+        return (push_manual.active);
     }
     /*
         * If we have reversed direction, wait a little to simulate
@@ -1810,6 +1811,7 @@ bp_run_push_manual(void) {
         if (bp.cur_t - bp.reverse_t < 2 * STATE_TRANS_DELAY) {
             push_at_speed(0, bp.veh.max_accel, B_TRUE,
                             B_FALSE);
+            return (push_manual.active);                
         }
         bp.reverse_t = 0.0;
     }

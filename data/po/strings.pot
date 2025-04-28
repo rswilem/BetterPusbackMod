@@ -7,7 +7,7 @@
 msgid   ""
 msgstr  "Project-Id-Version: PACKAGE VERSION\n"
         "Report-Msgid-Bugs-To: \n"
-        "POT-Creation-Date: 2025-04-27 17:17+0300\n"
+        "POT-Creation-Date: 2025-04-28 07:50+0300\n"
         "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
         "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
         "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -886,4 +886,12 @@ msgstr  ""
 
 #: src/xplane.c:980
 msgid   "Start/Pause the manual push back with yoke"
+msgstr  ""
+
+#: src/xplane.c:974
+msgid   "Turn the tug to the left"
+msgstr  ""
+
+#: src/xplane.c:976
+msgid   "Turn the tug to the right"
 msgstr  ""
