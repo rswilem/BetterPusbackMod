@@ -162,6 +162,7 @@ typedef struct {
 
 typedef struct {
     bool_t active;
+    bool_t requested;
     bool_t pause;
     float angle;
     bool_t reverse;
@@ -208,7 +209,8 @@ void main_intf(bool_t);
 
 void main_intf_hide(void);
 
-void manual_bp_start(bool_t);
+void manual_bp_start(void);
+void manual_bp_request(bool_t);
 void manual_bp_stop(void);
 
 extern bool_t late_plan_requested;

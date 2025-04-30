@@ -118,6 +118,7 @@ cab_view_init(void)
 {
 	d_pos = ZERO_VECT3;
 	d_orient = ZERO_VECT2;
+	d_orient.x = 180;
 	zoom = 1.0;
 	fdr_find(&view_is_external_dr, "sim/graphics/view/view_is_external");
 }
@@ -208,6 +209,17 @@ win_draw(XPLMWindowID inWindowID, void *inRefcon)
 	if (hintbar != NULL && microclock() - hintbar_start > HINTBAR_TIMEOUT) {
 		XPDestroyWidget(hintbar, 1);
 		hintbar = NULL;
+	}
+
+	if ( bp_ls.tug->pos.spd > 0.1 ) {
+		if  ( (d_orient.x > 90 ) && ( d_orient.x < 270 ) ) {
+			d_orient.x = 0;
+		}
+	}
+	if ( bp_ls.tug->pos.spd < -0.1 ) {
+		if  ( (d_orient.x < 90 ) || ( d_orient.x > 270 ) ) {
+			d_orient.x = 180;
+		}
 	}
 }
 

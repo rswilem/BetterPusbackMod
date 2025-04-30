@@ -325,9 +325,15 @@ start_pb_handler_(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon)
     if (!start_pb_enable)
     {
         logMsg(BP_WARN_LOG "Command \"BetterPushback/start\" is currently disabled");
+        if (push_manual.requested) {
+            manual_bp_stop();
+        }
         return (1);
     }
 
+    if (push_manual.requested) {
+        manual_bp_start();
+    }
  
 
     stop_cam_handler(NULL, xplm_CommandEnd, NULL); // synchronously stop a possible open cam
@@ -393,12 +399,11 @@ manual_push_start_handler_(XPLMCommandRef cmd, XPLMCommandPhase phase, void *ref
         return (1);
 
     if (!push_manual.active) {
-        manual_bp_start(with_yoke);
-        logMsg("Manual push  engaged,  with_yoke %d", (int)with_yoke);
+        manual_bp_request(with_yoke);
         return start_pb_handler_(cmd, phase, refcon);
     } else {
         push_manual.pause = !push_manual.pause;
-        logMsg("Manual push status %d", (int)push_manual.pause );
+        logMsg("Manual push: Status %s", push_manual.pause ? "paused" : "pushing");
         return (1);
     }
 }
@@ -464,9 +469,9 @@ manual_push_reverse_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *re
 
     if (push_manual.active && !push_manual.with_yoke)  {
         push_manual.reverse = !push_manual.reverse;
-        logMsg("Manual push  engaged,  reverse %d", (int)push_manual.reverse);
+        logMsg("Manual push:  Toggling direction to %s", push_manual.reverse ? "forward" : "backward");
     } else {
-        logMsg("Manual push not engaged, manual speed reverse disabled");
+        logMsg("Manual push:  Not in progress, toggling direction is disabled");
     }
     return (1);
 }
@@ -974,8 +979,8 @@ XPluginStart(char *name, char *sig, char *desc)
     _("Turn the tug to the left"));
     manual_push_right = XPLMCreateCommand("BetterPushback/manual_push_right",
         _("Turn the tug to the right"));
-    manual_push_reverse = XPLMCreateCommand("BetterPushback/manual_push_reverse",
-        _("Reverse the trajectory of the push back"));
+    manual_push_reverse = XPLMCreateCommand("BetterPushback/manual_push_toggle",
+        _("Toggle the trajectory of the push back"));
     manual_push_start = XPLMCreateCommand("BetterPushback/manual_push_start",
         _("Start/Pause the manual push back with yoke"));
     manual_push_start_no_yoke = XPLMCreateCommand("BetterPushback/manual_push_start_no_yoke",
@@ -1279,10 +1284,10 @@ static void manual_push_handler(bool_t to_the_left)
 
     if (push_manual.active) {
         if (push_manual.with_yoke) {
-            logMsg("Manual push with yoke support engaged, manual nose tug rotation disabled");
+            logMsg("Manual push:  Manual nose tug rotation disabled (yoke support enabled)");
             return;
         }
-        float angle =  to_the_left ? push_manual.angle + STEER_INCR : push_manual.angle - STEER_INCR;
+        float angle =  to_the_left ? push_manual.angle - STEER_INCR : push_manual.angle + STEER_INCR;
 
         if (angle > STEER_MAX) {
             angle = STEER_MAX;
@@ -1291,10 +1296,10 @@ static void manual_push_handler(bool_t to_the_left)
             angle = -STEER_MAX;
         }
         push_manual.angle = angle;
-        logMsg("Manual push engaged, steer %f", angle);
+        logMsg("Manual push: New steer angle %f", angle);
         return;
     } else {
-        logMsg("Manual push not engaged, manual nose tug rotation disabled");
+        logMsg("Manual push: Manual nose tug rotation disabled (manual push not active)");
     }
 }
 

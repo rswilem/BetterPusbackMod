@@ -1546,7 +1546,7 @@ bp_can_start(const char **reason) {
             return (B_FALSE);
         }
     } else {
-        logMsg("Manual push engaged, not checking the pre-plan");
+        logMsg("Manual push: Just started, not checking the pre-plan");
     }
 
     return (B_TRUE);
@@ -1795,7 +1795,6 @@ bp_run_push_manual(void) {
     /* Pilot pressed brake pedals or set parking brake or manual pause, stop */
     if (dr_getf(&drs.lbrake) >= BRAKE_PEDAL_THRESH ||
         dr_getf(&drs.rbrake) >= BRAKE_PEDAL_THRESH ||
-        push_manual.pause ||
         pbrake_is_set()) {
         tug_set_TE_snd(bp_ls.tug, 0, bp.d_t);
         dr_setf(&drs.axial_force, 0);
@@ -1844,30 +1843,37 @@ bp_run_push_manual(void) {
     if ( speed > bp.veh.max_rev_spd) {
         if ( fabs(angle)> MIN_STEER_ANGLE) {
         speed = bp.veh.max_rev_spd;
-    }   
-}
+        }   
+    }
 
     turn_nosewheel((double) angle);
    
-    // reducing the speed using the angle of the tug
-    speed *= MAX(cos(DEG2RAD(fabs(angle))), 0.1);
+    // reducing the speed using the angle of the tug or set to 0 if paused
+    speed *= push_manual.pause ? 0 : MAX(cos(DEG2RAD(fabs(angle))), 0.1);
     push_at_speed(speed, bp.veh.max_accel, B_TRUE, false);
-    //logMsg("angle %f, cos(ang) %f speed = %f", angle, cos(DEG2RAD(fabs(angle))), speed);
 
     return (push_manual.active);
 }
 
 
-void manual_bp_start(bool_t with_yoke) {
+void manual_bp_start() {
     push_manual.active = true;
+    push_manual.requested = false;
     push_manual.pause = false;
     push_manual.reverse = false;
     push_manual.angle = 0;
+    logMsg("Manual push:  Starting %s yoke support", push_manual.with_yoke ? "with" : "without");
+}
+
+void manual_bp_request(bool_t with_yoke) {
+    push_manual.active = false;
+    push_manual.requested = true;
     push_manual.with_yoke = with_yoke;
 }
 
 void manual_bp_stop(void) {
     push_manual.active = false;
+    push_manual.requested = false;
 }
 
 
@@ -2391,6 +2397,7 @@ pb_step_pushing(void) {
             bp.step++;
             bp.step_start_t = bp.cur_t;
             op_complete = B_TRUE;
+            manual_bp_stop();
         }
     } else {
         /*
