@@ -1360,7 +1360,11 @@ bp_init(void) {
     } else {
         drs.pbrake_is_custom = B_TRUE;
     }
-    fdr_find(&drs.pbrake_rat, "sim/cockpit2/controls/parking_brake_ratio");
+    if (bp_xp_ver >= 12200) {
+        fdr_find(&drs.pbrake_rat, "sim/cockpit2/controls/wheel_brake_ratio");
+    } else {
+        fdr_find(&drs.pbrake_rat, "sim/cockpit2/controls/parking_brake_ratio");
+    }
     fdr_find(&drs.rot_force_M, "sim/flightmodel/forces/M_plug_acf");
     fdr_find(&drs.rot_force_N, "sim/flightmodel/forces/N_plug_acf");
     fdr_find(&drs.axial_force, "sim/flightmodel/forces/faxil_plug_acf");
@@ -1827,14 +1831,23 @@ bp_run_push_manual(void) {
     if (push_manual.with_yoke) {
         float speed_;
         dr_getvf32(&drs.joystick, &speed_, 1, 1);
+        // pushing the yoke forward as accelerator
+        // dr is negative when pushin forward
+        speed_ = -speed_ ;
+        if (speed_ < 0) {
+            speed_ = 0;
+        }
         speed = bp.veh.max_fwd_spd * (double)speed_;
     } else {
         //without yoke, always at "full" speed
-        speed = -bp.veh.max_fwd_spd;
-        if (push_manual.reverse){
-            speed = -speed; 
-        }
+        speed = bp.veh.max_fwd_spd;
     }
+
+    if (!push_manual.forward_direction){
+        speed = -speed; 
+    }
+
+
     // if in reverse (by default the max speed is the forward speed) , limiting also at the max reverse speed
     if ( speed < -bp.veh.max_rev_spd) {
         speed = -bp.veh.max_rev_spd;
@@ -1860,7 +1873,7 @@ void manual_bp_start() {
     push_manual.active = true;
     push_manual.requested = false;
     push_manual.pause = false;
-    push_manual.reverse = false;
+    push_manual.forward_direction = false;
     push_manual.angle = 0;
     logMsg("Manual push:  Starting %s yoke support", push_manual.with_yoke ? "with" : "without");
 }

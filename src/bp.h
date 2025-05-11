@@ -165,7 +165,7 @@ typedef struct {
     bool_t requested;
     bool_t pause;
     float angle;
-    bool_t reverse;
+    bool_t forward_direction;
     bool_t with_yoke;
 } push_manual_t;
 

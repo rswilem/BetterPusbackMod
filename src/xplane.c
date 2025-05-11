@@ -467,9 +467,13 @@ manual_push_reverse_handler(XPLMCommandRef cmd, XPLMCommandPhase phase, void *re
     if (phase != xplm_CommandEnd)
         return (0);
 
-    if (push_manual.active && !push_manual.with_yoke)  {
-        push_manual.reverse = !push_manual.reverse;
-        logMsg("Manual push:  Toggling direction to %s", push_manual.reverse ? "forward" : "backward");
+    if (push_manual.active)  {
+        if ((bp_ls.tug->pos.spd > 0.1) || (bp_ls.tug->pos.spd < -0.1)) {
+            logMsg("Manual push:  in progress, tug is moving to fast toggling direction is not yet possibe");
+            return (1);
+        }
+        push_manual.forward_direction = !push_manual.forward_direction;
+        logMsg("Manual push:  Toggling direction to %s", push_manual.forward_direction ? "forward" : "backward");
     } else {
         logMsg("Manual push:  Not in progress, toggling direction is disabled");
     }
