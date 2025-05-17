@@ -17,3 +17,8 @@ src/.cmake
 src/Testing
 build_release_ob
 src/CMakeLists.txt
+build.sh
+.gitignore
+Dockerfile.linux
+docker-compose.yml
+Dockerfile.windows
