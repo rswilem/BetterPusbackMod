@@ -73,6 +73,8 @@ static XPLMMenuID root_menu;
 static int plugins_menu_item;
 static int start_pb_plan_menu_item, stop_pb_plan_menu_item;
 static int start_pb_menu_item, stop_pb_menu_item, conn_first_menu_item;
+static int manual_push_start_menu_item, manual_push_start_no_yoke_menu_item, manual_push_reverse_menu_item;
+static int manual_push_left_menu_item, manual_push_right_menu_item;
 static int cab_cam_menu_item, prefs_menu_item;
 static bool_t prefs_enable, stop_pb_plan_enable,
     stop_pb_enable, conn_first_enable, cab_cam_enable;
@@ -301,6 +303,14 @@ enable_menu_items()
     XPLMEnableMenuItem(root_menu, stop_pb_plan_menu_item, stop_pb_plan_enable);
     XPLMEnableMenuItem(root_menu, conn_first_menu_item, conn_first_enable);
     XPLMEnableMenuItem(root_menu, cab_cam_menu_item, cab_cam_enable);
+
+    XPLMEnableMenuItem(root_menu, manual_push_start_menu_item, start_pb_enable);
+    XPLMEnableMenuItem(root_menu, manual_push_start_no_yoke_menu_item, start_pb_enable);
+    XPLMEnableMenuItem(root_menu, manual_push_reverse_menu_item, stop_pb_enable && push_manual.active);
+    XPLMEnableMenuItem(root_menu, manual_push_left_menu_item, stop_pb_enable && push_manual.active);
+    XPLMEnableMenuItem(root_menu, manual_push_right_menu_item, stop_pb_enable && push_manual.active);
+
+
 }
 
 static int
@@ -1155,6 +1165,17 @@ bp_priv_enable(void)
     cab_cam_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
                                                       _("Tug cab view"), cab_cam);
 
+    XPLMAppendMenuSeparator(root_menu);
+    manual_push_start_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
+                                                      _("Manual push: Start/Pause with yoke"), manual_push_start);
+    manual_push_start_no_yoke_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
+                                                      _("Manual push: Start/Pause (yoke not used)"), manual_push_start_no_yoke);
+    manual_push_reverse_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
+                                                      _("Manual push:Toggle the trajectory"), manual_push_reverse);
+    manual_push_left_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
+                                                      _("Manual push: turn to the left"), manual_push_left);
+    manual_push_right_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
+                                                      _("Manual push: turn to the right"), manual_push_right);
     XPLMAppendMenuSeparator(root_menu);
     prefs_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
                                                     _("Preferences..."), pref_cmd);
