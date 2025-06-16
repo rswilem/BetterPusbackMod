@@ -73,8 +73,6 @@ static XPLMMenuID root_menu;
 static int plugins_menu_item;
 static int start_pb_plan_menu_item, stop_pb_plan_menu_item;
 static int start_pb_menu_item, stop_pb_menu_item, conn_first_menu_item;
-static int manual_push_start_menu_item, manual_push_start_no_yoke_menu_item, manual_push_reverse_menu_item;
-static int manual_push_left_menu_item, manual_push_right_menu_item;
 static int cab_cam_menu_item, prefs_menu_item;
 static bool_t prefs_enable, stop_pb_plan_enable,
     stop_pb_enable, conn_first_enable, cab_cam_enable;
@@ -176,8 +174,10 @@ static XPLMFlightLoopID reload_floop_ID = NULL;
  *  then bp/parking_brake_set will be used instead of the local parking brake.
  */
 static dr_t bp_started_dr, bp_connected_dr, slave_mode_dr, op_complete_dr;
+static dr_cfg_t slave_mode_dr_cfg ;
 static dr_t plan_complete_dr, bp_tug_name_dr;
 static dr_t pb_set_remote_dr, pb_set_override_dr;
+static dr_cfg_t pb_set_remote_dr_cfg, pb_set_override_dr_cfg;
 bool_t bp_started = B_FALSE;
 bool_t bp_connected = B_FALSE;
 bool_t slave_mode = B_FALSE;
@@ -303,14 +303,6 @@ enable_menu_items()
     XPLMEnableMenuItem(root_menu, stop_pb_plan_menu_item, stop_pb_plan_enable);
     XPLMEnableMenuItem(root_menu, conn_first_menu_item, conn_first_enable);
     XPLMEnableMenuItem(root_menu, cab_cam_menu_item, cab_cam_enable);
-
-    XPLMEnableMenuItem(root_menu, manual_push_start_menu_item, start_pb_enable);
-    XPLMEnableMenuItem(root_menu, manual_push_start_no_yoke_menu_item, start_pb_enable);
-    XPLMEnableMenuItem(root_menu, manual_push_reverse_menu_item, stop_pb_enable && push_manual.active);
-    XPLMEnableMenuItem(root_menu, manual_push_left_menu_item, stop_pb_enable && push_manual.active);
-    XPLMEnableMenuItem(root_menu, manual_push_right_menu_item, stop_pb_enable && push_manual.active);
-
-
 }
 
 static int
@@ -1006,9 +998,12 @@ XPluginStart(char *name, char *sig, char *desc)
                 "bp/started");
     dr_create_i(&bp_connected_dr, (int *)&bp_connected, B_FALSE,
                 "bp/connected");
-    dr_create_i(&slave_mode_dr, (int *)&slave_mode, B_TRUE,
+    
+    slave_mode_dr_cfg.write_cb = slave_mode_cb;    
+    slave_mode_dr_cfg.writable = B_TRUE;    
+    dr_create_i_cfg(&slave_mode_dr, (int *)&slave_mode, slave_mode_dr_cfg,
                 "bp/slave_mode");
-    slave_mode_dr.write_cb = slave_mode_cb;
+    //slave_mode_dr.write_cb = slave_mode_cb;
     dr_create_i(&op_complete_dr, (int *)&op_complete, B_TRUE,
                 "bp/op_complete");
     dr_create_i(&plan_complete_dr, (int *)&plan_complete, B_TRUE,
@@ -1016,12 +1011,17 @@ XPluginStart(char *name, char *sig, char *desc)
     dr_create_b(&bp_tug_name_dr, bp_tug_name, sizeof(bp_tug_name),
                 B_TRUE, "bp/tug_name");
 
-    dr_create_i(&pb_set_remote_dr, (int *)&pb_set_remote, B_FALSE,
+    pb_set_remote_dr_cfg.write_cb = pb_set_remote_cb;    
+    pb_set_remote_dr_cfg.writable = B_FALSE;    
+    dr_create_i_cfg(&pb_set_remote_dr, (int *)&pb_set_remote, pb_set_remote_dr_cfg,
                 "bp/parking_brake_set");
-    pb_set_remote_dr.write_cb = pb_set_remote_cb;
-    dr_create_i(&pb_set_override_dr, (int *)&pb_set_override, B_FALSE,
+ //   pb_set_remote_dr.write_cb = pb_set_remote_cb;
+
+    pb_set_override_dr_cfg.write_cb = pb_set_override_cb;    
+    pb_set_override_dr_cfg.writable = B_FALSE;    
+    dr_create_i_cfg(&pb_set_override_dr, (int *)&pb_set_override, pb_set_override_dr_cfg,
                 "bp/parking_brake_override");
-    pb_set_override_dr.write_cb = pb_set_override_cb;
+//    pb_set_override_dr.write_cb = pb_set_override_cb;
 
     XPLMGetVersions(&bp_xp_ver, &bp_xplm_ver, &bp_host_id);
 
@@ -1165,17 +1165,6 @@ bp_priv_enable(void)
     cab_cam_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
                                                       _("Tug cab view"), cab_cam);
 
-    XPLMAppendMenuSeparator(root_menu);
-    manual_push_start_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
-                                                      _("Manual push: Start/Pause with yoke"), manual_push_start);
-    manual_push_start_no_yoke_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
-                                                      _("Manual push: Start/Pause (yoke not used)"), manual_push_start_no_yoke);
-    manual_push_reverse_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
-                                                      _("Manual push:Toggle the trajectory"), manual_push_reverse);
-    manual_push_left_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
-                                                      _("Manual push: turn to the left"), manual_push_left);
-    manual_push_right_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
-                                                      _("Manual push: turn to the right"), manual_push_right);
     XPLMAppendMenuSeparator(root_menu);
     prefs_menu_item = XPLMAppendMenuItemWithCommand(root_menu,
                                                     _("Preferences..."), pref_cmd);

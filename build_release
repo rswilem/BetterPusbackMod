@@ -25,6 +25,7 @@ version="${version//V/}"
 ZIP_DELIVERY_FILE="BetterPushback_V${version}.zip"
 
 rm -rf BetterPushback_*.zip
+rm -rf mac_x64
 rm -rf win_x64
 rm -rf lin_x64
 
@@ -128,7 +129,7 @@ function install_tug_files() {
 }
 
 function install_po_files() {
-	xgettext --keyword=_ --language=C  -j --no-location -i -o data/po/strings.pot src/*.c
+	xgettext --keyword=_ --language=C  -j -i -o data/po/strings.pot src/*.c
 	FILES=( $( find data/po -iname '*.po' ) )
 	for FILE in ${FILES[@]}; do
 		install_xtra_file "$FILE" ""
@@ -182,40 +183,14 @@ mkdir -p BetterPushback
 
 set -e
 
-# We'll try to build on N+1 CPUs we have available. The extra +1 is to allow
-# for one make instance to be blocking on disk.
-HOST_OS="$(uname)"
-if [[ "$HOST_OS" = "Darwin" ]]; then
-	NCPUS=$(( $(sysctl -n hw.ncpu) + 1 ))
-else
-	NCPUS=$(( $(grep 'processor[[:space:]]\+:' /proc/cpuinfo  | wc -l) + \
-	    1 ))
-fi
+./build_xpl.sh -f
 
-case `uname` in
-Linux)
-	( cd src && rm -f CMakeCache.txt && \
-	    cmake $CMAKE_OPTS_COMMON -DCMAKE_TOOLCHAIN_FILE=XCompile.cmake \
-	    -DHOST=x86_64-w64-mingw32 . && make clean && make -j${NCPUS} &&
-	    rm -f libBetterPushback.xpl.dll.a )
-	( cd src && rm -f CMakeCache.txt && cmake $CMAKE_OPTS_COMMON . \
-	    && make clean && make -j${NCPUS} )
-	strip {win_x64,lin_x64}/BetterPushback.xpl
-	cp -r {win_x64,lin_x64} BetterPushback
-	;;
-Darwin)
-	( cd src && rm -f CMakeCache.txt && cmake $CMAKE_OPTS_COMMON . \
-	    && make clean && make -j${NCPUS} )
+if [[ $(uname) = "Darwin" ]]; then
 	if [ -n "$notarize" ]; then
 		make -f notarize/notarize.make notarize
-	fi
-	cp -r mac_x64 BetterPushback
-	;;
-*)
-	echo "Unsupported platform" >&2
-	exit 1
-	;;
-esac
+	fi			
+fi
+
 
 install_xtra_files
 install_po_files

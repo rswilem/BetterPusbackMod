@@ -18,6 +18,7 @@ cmake_minimum_required(VERSION 3.0)
 project(bp)
 
 set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_C_STANDARD 11)
 
 # Platform-specific variables
 if(APPLE)
@@ -93,7 +94,7 @@ include_directories(bp PUBLIC
     )
 
 # Compiler flags
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror --std=c99 \
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror --std=c99 -Wno-type-limits\
     -Wno-unused-local-typedefs -fvisibility=hidden")
 if(APPLE)
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -arch x86_64 -arch arm64 \
@@ -119,7 +120,7 @@ execute_process(COMMAND git describe --abbrev=0 --tags
 string(REGEX REPLACE "\n$" "" BP_PLUGIN_VERSION "${BP_PLUGIN_VERSION}")
 
 add_definitions(-DBP_PLUGIN_VERSION="${BP_PLUGIN_VERSION}")
-add_definitions(-DXPLM200=1 -DXPLM210=1 -DXPLM300=1 -DXPLM301=1 -DXPLM302=1)
+add_definitions(-DXPLM200=1 -DXPLM210=1 -DXPLM300=1 -DXPLM301=1 -DXPLM303=1)
 if(APPLE)
 	add_definitions(-DAPL=1 -DIBM=0 -DLIN=0)
 elseif(WIN32)
@@ -196,7 +197,9 @@ elseif(WIN32)
 	    "-lwinmm"
 	    "-ldbghelp"
 	    "-lpsapi"
-	    "-lcrypt32")
+		"-lbcrypt"
+	    "-lcrypt32"
+		"-lpthread")
 else()
 	set(EXTRA_PLATFORM_LIBS "")
 endif()

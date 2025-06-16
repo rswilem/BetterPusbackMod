@@ -12,156 +12,259 @@
 # CDDL HEADER END
 
 # Copyright 2017 Saso Kiselkov. All rights reserved.
+# Copyright 2017 Wei Shuai. All rights reserved.
 
 msgid ""
 msgstr ""
-"Last-Translator: Ayatsuki Renge <nyanpasu@nanon.net>"
+"Last-Translator: Wei Shuai <cpuwolf@gmail.com>"
+
+# Note: currently X-Plane doesn't properly support simplified Chinese
+# characters in its font, so here we have to use traditional Chinese.
 
 msgid "Can't start planner: aircraft not stationary."
-msgstr "无法规划推出:飞机不在静止状态"
+#msgstr "无法按计划推车：飞机不是静止状态。"
+msgstr  "無法按計劃推車：飛機不是靜止狀態。"
 
 msgid ""
 "Can't start planner: pushback already in progress. Please stop the pushback "
 "operation first."
-msgstr "无法规划推出:当前正在推出中,请先停止推出操作"
+#msgstr "无法按计划推车：正在推车。请先停止推车。"
+msgstr  "無法按計劃推車：正在推車。請先停武推車。"
 
 msgid "Can't start pushback planner: please set the parking brake first."
-msgstr "无法规划推出:请先设置停机刹车"
+#msgstr "无法按计划推车：请先制动手刹。"
+msgstr  "無法按計劃推車：請先制動手剎。"
 
 msgid ""
 "Pushback advisory: you have your radio volume turned very low and may not be "
 "able to hear ground crew. Please increase your radio volume in the X-Plane "
 "sound preferences."
-msgstr ""
-"推出建议:你的无线电音量过低,可能无法听清地勤人员的指示."
-"请考虑在X-Plane的声音设置中提高音量"
+#msgstr "推车建议：你的无线电音量太小，有可能听不见地勤人员的声音。"
+#"请在X-Plane声音设置中，把无线电音量调大"
+msgstr  "推車建議：你的無線電音量太小，有可能聽不見地勤人員的聲音。"
+"請在X-Plane聲音設置中，把無線電音量調大。"
 
 msgid ""
 "Pushback failure: X-Plane version too old. This plugin requires at least X-"
 "Plane %s to operate."
-msgstr ""
-"推出失败:X-Plane版本过低,本插件的需要最低X-Plane版本为%s"
+#msgstr "推车失败：X-Plane的版本太低。本插件需要至少X-Plane %s。"
+msgstr  "推車失敗：X-Plane的版本太低。本插件需要至少X-Plane %s。"
 
 msgid "Pushback failure: aircraft appears to not have any steerable gears."
-msgstr ""
-"推出失败:飞机似乎没有可转向的轮子"
+#msgstr "推车失败：这架飞机机轮似乎没有推把。"
+msgstr  "推車失敗：這架飛機機輪似乎沒有推把。"
 
 msgid ""
 "Pushback failure: aircraft has non-positive wheelbase. Sorry, tail draggers "
 "aren't supported."
-msgstr ""
-"推出失败:这架飞机的轴距为负.抱歉,不支持后轮推车"
+#msgstr "推车失败：这架飞机似乎没有前轮，不好意思，后轮推车不支持。"
+msgstr  "推車失敗：這架飛機似乎沒有前輪，不好意思，後輪推車不支持。"
 
 msgid "Pushback failure: aircraft is incompatible with BetterPushback."
-msgstr ""
-"推出失败:飞机与本插件不兼容"
+#msgstr "推车失败：这架飞机不支持。"
+msgstr  "推車失敗：這架飛機不支持。"
 
 msgid ""
 "Pushback failure: master requested tug \"%s\", which we don't have in our in "
 "our library. Please sync your tug libraries before trying again."
-msgstr ""
-"推出失败:后推车%s不在车库中,请更新车库后重试"
+#msgstr "推车失败：请求的推车 \"%s\" 不在车库里。请更新最新的推车车库。"
+msgstr  "推車失敗：請求的推車 \"%s\" 不在車庫裡。請更新最新的推車車庫。"
 
 msgid "Pushback failure: no suitable tug for your aircraft."
-msgstr ""
-"推出失败:没有合适的后推车"
+#msgstr "推车失败：这架飞机找不到合适的推车。"
+msgstr  "推車失敗：這架飛機找不到合適的推車。"
 
 msgid ""
 "Pushback failure: smartcopilot attempted to switch master/slave or network "
 "connection lost. Stopping operation."
-msgstr ""
-"推出失败:smartcopilot正在切换主从或网络连接断开.停止推车"
+#msgstr "推车失败：smartcopilot插件有干扰，或者网络连接失败。推车停止。"
+msgstr  "推車失敗：smartcopilot插件有乾擾，或者網絡連接失敗。推車停止。"
 
 msgid "Start pushback"
-msgstr "开始推出"
+#msgstr "开始推车"
+msgstr  "開始推車"
 
 msgid "Stop pushback"
-msgstr "停止推出"
+#msgstr "停止推车"
+msgstr  "停止推車"
 
 msgid "Start pushback planner"
-msgstr "开始规划推出"
+#msgstr "启动推车计划"
+msgstr  "啟動推車計劃"
 
 msgid "Stop pushback planner"
-msgstr "停止规划推出"
+#msgstr "停止推车计划"
+msgstr  "停止推車計劃"
 
 msgid "Connect tug before entering pushback plan"
-msgstr "先连接后推车,然后开始规划推出"
+#msgstr "先连接推钩，再开始推车计划"
+msgstr  "先連接推鉤，再開始推車計劃"
 
 msgid "Pre-plan pushback"
-msgstr "规划推出"
+#msgstr "开始设计推车计划"
+msgstr  "開始設計推車計劃"
 
 msgid "Close pushback planner"
-msgstr "关闭推出规划"
+#msgstr "关闭推车计划"
+msgstr  "關閉推車計劃"
 
 msgid "Preferences..."
-msgstr "设置..."
+msgstr "設置..."
 
 msgid "BetterPushback Preferences"
-msgstr "BetterPushback设置"
+msgstr "BetterPushback設置"
 
 msgid "User interface"
-msgstr "用户界面"
+msgstr "界面設置"
 
-msgid "X-Plane's language"
-msgstr "X-Plane语言"
+#msgid "X-Plane's language"
+#msgstr "X-Plane系統語言"
+#msgstr "X-Plane语言"
 
 msgid "Ground crew audio"
-msgstr "地勤语音"
+msgstr "地勤人員聲音"
+
+
+msgid 
+    "My language only at domestic airports:\n"
+    "Ground crew speaks my language only if the country the airport is "
+    "in speaks my language. Otherwise the ground crew speaks English "
+    "with a local accent.\n\n"
+    "My language at all airports:\n"
+    "Ground crew speaks my language irrespective "
+    "of what country the airport is in.\n\n"
+    "English at all airports:\n"
+    "Ground crew always speaks English "
+    "with a local accent."
+msgstr
+"只在國內機場說中文:\n"
+"地面人員只有在說中文的機場時，才會說中文，否則地勤人員會說當地口音英語.\n\n"
+"所有機場說中文:\n"
+"無論機場在哪個國家，地勤人員都會說中文.\n\n"
+"所有機場說英文:\n"
+"地勤人員總是說著帶有當地口音的英語."
+
 
 msgid "My language only at domestic airports"
-msgstr "只在国内机场使用我的语言"
+msgstr "只在國內機場說中文"
 
 msgid "My language at all airports"
-msgstr "所有机场都使用我的语言"
+msgstr "所有機場說中文"
 
 msgid "English at all airports"
-msgstr "所有机场都使用英语"
+msgstr "所有機場說英文"
 
 msgid "Save preferences"
-msgstr "保存设置"
+msgstr "保存設置"
 
 msgid "Ground crew speaks my language only if the country the airport is "
 "in speaks my language. Otherwise the ground crew speaks English "
 "with a local accent."
-msgstr ""
-"地勤人员只在我的国家说我的语言,否则说英语"
+msgstr "地面人員只有在說中文的機場時，才會說中文，否則地勤人員會說當地口音英語"
 
 msgid "Ground crew speaks my language irrespective of what country the "
 "airport is in."
-msgstr ""
-"地勤人员无论在哪都说我的语言"
+msgstr "無論機場在哪個國家，地勤人員都會說中文"
 
 msgid "Ground crew always speaks English with a local accent."
-msgstr ""
-"地勤人员无论在哪都说英语"
+msgstr "地勤人員總是說著帶有當地口音的英語"
 
 msgid "Save current preferences to disk."
-msgstr ""
-"保存当前设置."
+msgstr "保存當前設置."
 
 msgid "Disconnect tow + headset and switch to hand signals."
-msgstr ""
-"断开后推车与耳机,等待手势信号"
+msgstr "斷開拖桿和耳機然後註意手勢"
 
 msgid "Reconnect tow and await further instructions."
-msgstr ""
-"重新连接后推车,等待进一步指示"
+msgstr "重新連接拖桿，等待指令"
 
-msgid "Pushback failure: cannot push this aircraft with engines running. "
-"Shutdown engines first."
-msgstr ""
-"推出失败:飞机发动机运转时无法推出.请先关闭发动机."
+msgid   "Never ask and always automatically disconnect "
+        "the tug when the pushback operation is complete."
+msgstr  "永遠不要詢問，並在推回操作完成時自動斷開 "
+        "拖拉機的連接。"
 
-msgid "Pushback failure: your flight controls are preventing me from steering "
-"the aircraft. Unbind any buttons you have set to\"toggle nosewheel steering\"."
-msgstr ""
-"推出失败:前轮转向受干扰.请先解除绑定所有\"切换前轮转向\"的按钮"
+msgid   "Never check \"set parking brake\".\n"
+        "Some aircraft stuck on this check.\n"
+        "It's on the beginning and on the end.\n"
+        "This should solve this problem for some aircrafts. (KA350 for "
+        "instance)."
+msgstr  "永遠不要檢查「設置停車剎車」。\n"
+        "某些飛機在此檢查中卡住。\n"
+        "這在開始和結束時都會發生。\n"
+        "這應該能解決某些飛機的問題（例如KA350）。"
 
-msgid "Left mouse button to reorient view"
-msgstr "使用鼠标左键来控制视角"
+msgid   "Don't check the doors/GPU/ASU status before starting the push-back."
+msgstr  "在開始推回之前，請勿檢查門/GPU/ASU的狀態。"
 
-msgid "Tug cab view"
-msgstr "后推车视角"
+msgid   "Hides the shortcut buttons on the left side of the screen.\n"
+        "The first button starts the planner and the second starts the push-"
+        "back."
+msgstr  "隱藏屏幕左側的快捷按鈕。\n"
+        "第一個按鈕啟動規劃器，第二個按鈕啟動推回。"
+
+msgid   "Slide this bar to move the magic squares up or down."
+msgstr  "滑動此條以向上或向下移動魔法方塊。"
+
+msgid   "The push process is always halted when the tug is at the nose of the "
+        "aircraft.\n"
+        "The process will proceed by triggering again the 'start pushback' "
+        "command."
+msgstr  "當拖拉機在飛機鼻部時，推回過程會始終暫停。\n"
+        "此過程將通過重新觸發「開始推回」命令繼續進行。"
+
+msgid   "Hides default X-Plane 11 pushback tug.\n"
+        "Restart X-Plane for this change to take effect."
+msgstr  "隱藏預設的X-Plane 11推回拖拉機。\n"
+        "重啟X-Plane以使此更改生效。"
+
+msgid   "Ignore doors/GPU/ASU check"
+msgstr  "忽略門/GPU/ASU檢查。"
+
+msgid   "Hide the magic squares"
+msgstr  "隱藏魔法方塊。"
+
+msgid   "Magic squares position"
+msgstr  "魔法方塊位置。"
+
+msgid   "Hide default X-Plane 11 tug"
+msgstr  "隱藏預設的X-Plane 11拖拉機。"
+
+msgid   "Always connect the tug first"
+msgstr  "始終首先連接拖拉機。"
+
+msgid   "Connect tug first"
+msgstr  "先連接拖拉機。"
+
+msgid   "Tug cab view"
+msgstr  "拖拉機駕駛室視圖。"
+
+msgid "Radio output device"
+msgstr "無線電輸出設備。"
+
+#: cfg.c:658
+msgid "Sound output device"
+msgstr "聲音輸出設備。"
+
+msgid "Audio settings"
+msgstr "音頻設置。"
+
+msgid "Auto disconnect when done"
+msgstr "完成時自動斷開連接。"
+
+msgid "Miscellaneous"
+msgstr "其他。"
+
+msgid "Ignore check parking brake is set"
+msgstr "忽略檢查停車剎車是否已設置。"
+
+msgid "Settings related to the current aircraft"
+msgstr "與當前飛機相關的設置。"
+
+msgid "BetterPushback is open-source software. See COPYING for more information."
+msgstr "BetterPushback是開源軟件。請參閱COPYING以獲取更多信息。"
+
+msgid "Hint: hover your mouse cursor over any label to show a short description of what it does."
+msgstr "提示：將鼠標光標懸停在任何標籤上以顯示其功能的簡短描述。"
 
 msgid   "Push-back waiting to be called"
 msgstr  "推机等待被呼叫"
