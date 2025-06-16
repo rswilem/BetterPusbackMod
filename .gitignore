@@ -22,3 +22,4 @@ build.sh
 Dockerfile.linux
 docker-compose.yml
 Dockerfile.windows
+build_xpl_ob.sh
