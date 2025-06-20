@@ -1,7 +1,27 @@
-# cross-compile to linux,windows from a mac
+# Cross-compile to linux,windows from a mac
 
-just run : 
+## Pre-requisites
+
+- docker for mac 
+
+that's it 
+
+## Settings
+in ```build_xpl.sh``` set the paths of the current project and the libacfutils lib
+
+
 ```
-docker compose run --rm win-lin-build bash -c "cd BetterPusbackMod && ./build_xpl_common.sh"
+# Set here the correct paths
+# docker's internal path /xpl_dev is mapped 1 level up from the current folder
+# the libacfutils folder is expected to be at the same level of this projet, if not
+# modify docket-compose.yml accordingly. 
+
+# Host folders         | Internal docker folders
+# ---------------------|---------------------
+# ../projets/          | /xpl_dev/
+# ├─ libacfutils/      | ├── libacfutils/
+# └─ BetterPusbackMod/ | └── BetterPusbackMod/
+
+PROJECT_PATH='BetterPusbackMod'
 ```
 

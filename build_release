@@ -150,47 +150,14 @@ function install_override_files() {
 	done
 }
 
-while getopts "nh" o; do
-	case "${o}" in
-	n)
-		if [[ $(uname) != "Darwin" ]]; then
-			echo "Codesigning and notarization can only be done" \
-			    "on macOS" >&2
-			exit 1
-		fi
-		notarize=1
-		;;
-	h)
-		cat << EOF
-Usage: $0 [-nh]
-    -n : (macOS-only) Codesign & notarize the resulting XPL after build
-         Note: requires that you create a file named user.make in the
-         notarize directory with DEVELOPER_USERNAME and DEVELOPER_PASSWORD
-         set. See notarize/notarize.make for more information.
-    -h : show this help screen and exit.
-EOF
-		exit
-		;;
-	*)
-		echo "Unknown option $o. Try $0 -h for help." >&2
-		exit 1
-		;;
-	esac
-done
 
 rm -rf BetterPushback
 mkdir -p BetterPushback
 
 set -e
 
-./build_xpl.sh -f
-
-if [[ $(uname) = "Darwin" ]]; then
-	if [ -n "$notarize" ]; then
-		make -f notarize/notarize.make notarize
-	fi			
-fi
-
+set -- -f
+source ./build_xpl.sh 
 
 install_xtra_files
 install_po_files
@@ -199,7 +166,5 @@ install_icon_files
 install_tug_files
 install_override_files
 install_font_files
-# Build Delivery
-zip -r ${ZIP_DELIVERY_FILE} BetterPushback
 
 set +e
