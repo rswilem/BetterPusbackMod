@@ -326,14 +326,8 @@ start_pb_handler_(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon)
 
     if (!start_pb_enable)
     {
-        if (bp.step == PB_STEP_CONNECTED && pbrake_is_set()) {
-            // start_pb_plan_enable = B_TRUE;
-            // stop_pb_plan_enable = B_TRUE;
+        if (bp.step == PB_STEP_CONNECTED) {
             start_pb_enable = B_TRUE;
-            // conn_first_enable = B_TRUE;
-            // stop_pb_enable = B_TRUE;
-            // enable_menu_items();
-            // start_after_cam = B_TRUE;
             late_plan_requested = B_TRUE;
         }
         else {
