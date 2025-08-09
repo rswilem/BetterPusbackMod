@@ -262,7 +262,7 @@ max_steer_angle(void) {
     }
 }
 
-static bool_t
+bool_t
 pbrake_is_set(void) {
     bool_t result;
     
