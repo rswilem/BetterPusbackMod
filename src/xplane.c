@@ -326,11 +326,23 @@ start_pb_handler_(XPLMCommandRef cmd, XPLMCommandPhase phase, void *refcon)
 
     if (!start_pb_enable)
     {
-        logMsg(BP_WARN_LOG "Command \"BetterPushback/start\" is currently disabled");
-        if (push_manual.requested) {
-            manual_bp_stop();
+        if (bp.step == PB_STEP_CONNECTED && pbrake_is_set()) {
+            // start_pb_plan_enable = B_TRUE;
+            // stop_pb_plan_enable = B_TRUE;
+            start_pb_enable = B_TRUE;
+            // conn_first_enable = B_TRUE;
+            // stop_pb_enable = B_TRUE;
+            // enable_menu_items();
+            // start_after_cam = B_TRUE;
+            late_plan_requested = B_TRUE;
         }
-        return (1);
+        else {
+            logMsg(BP_WARN_LOG "Command \"BetterPushback/start\" is currently disabled");
+            if (push_manual.requested) {
+                manual_bp_stop();
+            }
+            return (1);
+        }
     }
 
     if (push_manual.requested) {

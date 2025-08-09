@@ -173,8 +173,6 @@ extern bp_state_t bp;
 extern bp_long_state_t bp_ls;
 extern push_manual_t push_manual;
 
-
-
 void bp_boot_init(void);
 
 void bp_shut_fini(void);
@@ -212,6 +210,8 @@ void main_intf_hide(void);
 void manual_bp_start(void);
 void manual_bp_request(bool_t);
 void manual_bp_stop(void);
+
+bool_t pbrake_is_set(void);
 
 extern bool_t late_plan_requested;
 
