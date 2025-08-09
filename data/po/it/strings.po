@@ -279,6 +279,11 @@ msgid "The tug appears next to the plane avoiding in certain case that he is "
     "travelling inside the buildings."
 msgstr  "Il trattore appare accanto all'aereo, evitando in alcuni casi di attraversare gli edifici."
 
+msgid   "Mutes the message that the GPU is still connected or "
+        "some doors are still open."
+msgstr  "Silenzia il messaggio che la GPU è ancora connessa o "
+        "alcune porte sono ancora aperte."
+
 msgid "The tug will appear once the beacon light is switched from off to on "
       "then the process will proceed as 'connect the tug first'."
 msgstr  "Il trattore apparirà una volta che la luce del faro sarà accesa, "
@@ -287,6 +292,9 @@ msgstr  "Il trattore apparirà una volta che la luce del faro sarà accesa, "
 
 msgid "Tug starts near the aircraft"
 msgstr  "Il trattore inizia vicino all'aereo"
+
+msgid "Mute GPU and doors message"
+msgstr  "Silenzia il messaggio GPU e porte"
 
 msgid "Tug called by activating the beacon"
 msgstr  "Il trattore viene chiamato attivando il faro"

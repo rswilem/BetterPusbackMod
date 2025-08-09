@@ -430,6 +430,11 @@ msgid "The tug appears next to the plane avoiding in certain case that he is "
     "travelling inside the buildings."
 msgstr  "Le tracteur apparaît à côté de l'avion, évitant dans certains cas que celui passe à travers les bâtiments."
 
+msgid   "Mutes the message that the GPU is still connected or "
+        "some doors are still open."
+msgstr  "Silence le message que le GPU est toujours connecté ou "
+        "que certaines portes sont encore ouvertes."
+
 msgid "The tug will appear once the beacon light is switched from off to on "
       "then the process will proceed as 'connect the tug first'."
 msgstr  "Le tracteur apparaîtra une fois que l'anti-collision sera allumée, "
@@ -437,6 +442,9 @@ msgstr  "Le tracteur apparaîtra une fois que l'anti-collision sera allumée, "
 
 msgid "Tug starts near the aircraft"
 msgstr  "Le tracteur démarre près de l'avion"
+
+msgid "Mute GPU and doors message"
+msgstr  "Silence GPU et message des portes"
 
 msgid "Tug called by activating the beacon"
 msgstr  "Le tracteur est appelé en activant l'anti-collision"

@@ -260,6 +260,11 @@ msgid "The tug appears next to the plane avoiding in certain case that he is "
     "travelling inside the buildings."
 msgstr  "O reboque aparece ao lado do avião, evitando em certos casos que ele passe por dentro dos edifícios."
 
+msgid   "Mutes the message that the GPU is still connected or "
+        "some doors are still open."
+msgstr  "Silencia a mensagem de que a GPU ainda está conectada ou "
+        "algumas portas ainda estão abertas."
+
 msgid "The tug will appear once the beacon light is switched from off to on "
       "then the process will proceed as 'connect the tug first'."
 msgstr  "O reboque aparecerá assim que a luz do farol for ligada, "
@@ -267,6 +272,9 @@ msgstr  "O reboque aparecerá assim que a luz do farol for ligada, "
 
 msgid "Tug starts near the aircraft"
 msgstr  "O reboque começa próximo à aeronave"
+
+msgid "Mute GPU and doors message"
+msgstr  "Silenciar mensagem de GPU e portas"
 
 msgid "Tug called by activating the beacon"
 msgstr  "O reboque é chamado ao ativar o beacon"

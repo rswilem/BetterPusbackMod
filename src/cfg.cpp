@@ -135,6 +135,9 @@ const char *always_connect_tug_first_tooltip =
 const char *tug_starts_next_plane_tooltip =
     "The tug appears next to the plane avoiding in certain case that he is "
     "travelling inside the buildings.";
+const char *mute_when_gpu_still_connected_tooltip =
+    "Mutes the message that the GPU is still connected or "
+    "some doors are still open.";
 const char *tug_auto_start_tooltip =
     "The tug will appear once the beacon light is switched from off to on "
     "then the process will proceed as 'connect the tug first'.";
@@ -256,6 +259,7 @@ private:
   bool_t per_aircraft_is_global;
   bool_t xp11_only;
   bool_t is_destroy;
+  bool_t mute_when_gpu_still_connected;
   bool_t tug_starts_next_plane;
   bool_t tug_auto_start;
   int monitor_id;
@@ -336,6 +340,9 @@ void SettingsWindow::LoadConfig(void) {
 
   tug_starts_next_plane = B_FALSE;
   (void)conf_get_b(bp_conf, "tug_starts_next_plane", &tug_starts_next_plane);
+
+  mute_when_gpu_still_connected = B_FALSE;
+  (void)conf_get_b(bp_conf, "mute_when_gpu_still_connected", &mute_when_gpu_still_connected);
 
 // feature disabled for now
 //  tug_auto_start = B_FALSE;
@@ -716,6 +723,17 @@ void SettingsWindow::buildInterface() {
     if (ImGui::Checkbox("##tug_starts_next_plane",
                         (bool *)&tug_starts_next_plane)) {
       (void)conf_set_b(bp_conf, "tug_starts_next_plane", tug_starts_next_plane);
+    }
+
+    ImGui::TableNextRow();
+    ImGui::TableNextColumn();
+    ImGui::Text("%s", _("Mute GPU and doors message"));
+    Tooltip(_(mute_when_gpu_still_connected_tooltip));
+
+    ImGui::TableNextColumn();
+    if (ImGui::Checkbox("##mute_when_gpu_still_connected",
+                        (bool *)&mute_when_gpu_still_connected)) {
+      (void)conf_set_b(bp_conf, "mute_when_gpu_still_connected", mute_when_gpu_still_connected);
     }
 
 /*

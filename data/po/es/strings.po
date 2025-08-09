@@ -259,6 +259,11 @@ msgid "The tug appears next to the plane avoiding in certain case that he is "
     "travelling inside the buildings."
 msgstr  "El remolcador aparece junto al avión, evitando en ciertos casos que pase por dentro de los edificios."
 
+msgid   "Mutes the message that the GPU is still connected or "
+        "some doors are still open."
+msgstr  "Silencia el mensaje de que la GPU aún está conectada o "
+        "algunas puertas aún están abiertas."
+
 msgid "The tug will appear once the beacon light is switched from off to on "
       "then the process will proceed as 'connect the tug first'."
 msgstr  "El remolcador aparecerá una vez que la luz del faro pase de apagada a encendida, "
@@ -266,6 +271,9 @@ msgstr  "El remolcador aparecerá una vez que la luz del faro pase de apagada a 
 
 msgid "Tug starts near the aircraft"
 msgstr  "El remolcador comienza cerca del avión"
+
+msgid "Mute GPU and doors message
+msgstr  "Silenciar mensaje de GPU y puertas"
 
 msgid "Tug called by activating the beacon"
 msgstr  "El remolcador se activa encendiendo el faro"

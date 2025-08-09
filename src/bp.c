@@ -2377,7 +2377,12 @@ pb_step_connected(void) {
 static void
 pb_step_waiting_for_doors(void) {
     if (!acf_doors_closed(B_TRUE)) {
-        XPLMSpeakString(_(MSG_DOORS_GPU));
+        bool_t mute_when_gpu_still_connected = B_FALSE;
+        (void) conf_get_b(bp_conf,"mute_when_gpu_still_connected", &mute_when_gpu_still_connected);
+
+        if (!mute_when_gpu_still_connected) {
+            XPLMSpeakString(_(MSG_DOORS_GPU));
+        }
     } 
     bp.step++;
     bp.step_start_t = bp.cur_t;

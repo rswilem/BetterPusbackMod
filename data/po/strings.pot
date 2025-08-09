@@ -446,11 +446,18 @@ msgid   "The tug appears next to the plane avoiding in certain case that he "
         "is travelling inside the buildings."
 msgstr  ""
 
+msgid   "Mutes the message that the GPU is still connected or "
+        "some doors are still open."
+msgstr  ""
+
 msgid   "The tug will appear once the beacon light is switched from off to on "
         "then the process will proceed as 'connect the tug first'."
 msgstr  ""
 
 msgid   "Tug starts near the aircraft"
+msgstr  ""
+
+msgid   "Mute GPU and doors message"
 msgstr  ""
 
 msgid   "Tug called by activating the beacon"

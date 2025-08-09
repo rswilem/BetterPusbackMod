@@ -263,6 +263,11 @@ msgid "The tug appears next to the plane avoiding in certain case that he is "
     "travelling inside the buildings."
 msgstr  "Трактор появляется рядом с самолетом, избегая в некоторых случаях проезда через здания."
 
+msgid   "Mutes the message that the GPU is still connected or "
+        "some doors are still open."
+msgstr  "Заглушает сообщение о том, что GPU все еще подключен или "
+        "некоторые двери все еще открыты."
+
 msgid "The tug will appear once the beacon light is switched from off to on "
       "then the process will proceed as 'connect the tug first'."
 msgstr  "Трактор появится, как только свет маяка переключится с выключенного на включенный, "
@@ -270,6 +275,9 @@ msgstr  "Трактор появится, как только свет маяк�
 
 msgid "Tug starts near the aircraft"
 msgstr  "Трактор начинает движение рядом с самолетом"
+
+msgid "Mute GPU and doors message"
+msgstr  "Заглушить сообщение GPU и дверей"
 
 msgid "Tug called by activating the beacon"
 msgstr  "Трактор вызывается активацией маяка"

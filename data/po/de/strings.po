@@ -260,6 +260,11 @@ msgid "The tug appears next to the plane avoiding in certain case that he is "
     "travelling inside the buildings."
 msgstr  "Das Schleppfahrzeug erscheint neben dem Flugzeug und vermeidet in bestimmten Fällen, dass es durch Gebäude fährt."
 
+msgid   "Mutes the message that the GPU is still connected or "
+        "some doors are still open."
+msgstr  "Stummschaltet die Nachricht, dass die GPU noch verbunden ist oder "
+        "einige Türen noch offen sind."
+
 msgid "The tug will appear once the beacon light is switched from off to on "
       "then the process will proceed as 'connect the tug first'."
 msgstr  "Der Schlepper erscheint, sobald das Beacon-Licht von aus auf an geschaltet wird, "
@@ -267,6 +272,9 @@ msgstr  "Der Schlepper erscheint, sobald das Beacon-Licht von aus auf an geschal
         
 msgid "Tug starts near the aircraft"
 msgstr  "Das Schleppfahrzeug startet in der Nähe des Flugzeugs"
+
+msgid "Mute GPU and doors message"
+msgstr  "GPU- und Türmeldungen stummschalten"
 
 msgid "Tug called by activating the beacon"
 msgstr  "Das Schleppfahrzeug wird durch Aktivierung des Beacon-Lichts gerufen"
